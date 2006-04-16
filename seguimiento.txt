@@ -1,5 +1,5 @@
-                   SEMANA DEL 10-Abril-2006 AL 16-Abril-2006
-                   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+                             INFORME DE SEGUIMIENTO
+                             ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
 NOTA: Este es el primer informe que servirá como modelo para los restantes. Al
 final de cada sección se explica su significado. Cada descripción de tarea u
@@ -39,13 +39,12 @@ empezar.)
 $Revision$
 
 -- 
-Estos documentos no son definitivos hasta que se entregan, por ello es posible
-que se vayan modificando a lo largo de la semana. El ciclo de vida de estos
-breves informes es simple: 
+Desde fuera se irán creando documentos nuevos pero en el repositorio será una
+única entrada sobre la que se pondrá una etiqueta al final de cada semana para
+marcar el estado del informe de seguimiento que se entregará al BSCW.
 
-    1) El lunes de cada semana se crea un informe nuevo a partir del anterior.
-    2) Durante la semana se va modificando. Los nuevos objetivos/tareas se van
-       añadiendo a la sección "Por hacer", lo que se comienza pasa
-       automáticamente a "En progreso" y lo que se finaliza pasa a "Completado".
-    3) El domingo por la noche se congela el informe y se envía al BSCW.
+El tag indicará el día en que se congeló el informe para ser enviado. Será de la
+forma:
+
+REPORT_DD_MM_YYYY
 

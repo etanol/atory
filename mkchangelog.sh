@@ -19,26 +19,19 @@ rm -f ChangeLog*
 
 cvs2cl_arguments='-S -P -b -T --show-dead'
 
-jare="$IFS"
-IFS=:
+PATH="$PATH:$HOME/bin:$HOME:."
 
-for dir in $PATH:$HOME:$HOME/bin:.; do
+bin=`which cvs2cl 2>/dev/null`
+if [ -n "$bin" ]; then
+    $bin $cvs2cl_arguments
+    exit
+fi
 
-    # Probamos el nombre sin extensión (como en Debian)
-    if [ -x $dir/cvs2cl ]; then
-        # Restauramos el $IFS por si acaso
-        IFS="$jare"
-        $dir/cvs2cl $cvs2cl_arguments
-        exit
-    fi
+bin=`which cvs2cl.pl 2>/dev/null`
+if [ -n "$bin" ]; then
+    $bin $cvs2cl_arguments
+    exit
+fi
 
-    # Probamos con la extensión (descargado de la web)
-    if [ -x $dir/cvs2cl.pl ]; then
-        # Aquí hacemos exactamente lo mismo
-        IFS="$jare"
-        $dir/cvs2cl.pl $cvs2cl_arguments
-        exit
-    fi
-
-done
+echo "ERROR: No cvs2cl found"
 

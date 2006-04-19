@@ -1,50 +1,28 @@
                              INFORME DE SEGUIMIENTO
                              ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
-NOTA: Este es el primer informe que servirá como modelo para los restantes. Al
-final de cada sección se explica su significado. Cada descripción de tarea u
-objetivo va seguida de la lista de personal implicado, por orden alfabético,
-entre corchetes. Este párrafo no volverá a aparecer en informes posteriores. 
-
 Completado:
 
 - Creación e inicialización del repositorio, con dos módulos separados: uno para
   código y otro para documentación. [Isaac]
 - Definida la plantilla para los informes semanales. [Isaac]
 
-(En esta sección se resumirá lo completado durante la semana anterior.)
 
 En progreso:
 
 - Búsqueda de información relacionada con el proyecto. [Cecilia, Daniel, Isaac,
   Ivan, Sergi]
-
-(Aquí se ubicará lo que se haya empezado en semanas anteriores pero todavía no
-se ha podido terminar.)
-
-Por hacer:
-
 - Definir alternativas en el diseño lógico de la aplicación. [Cecilia, Daniel,
   Isaac, Ivan, Sergi]
 - Definir alternativas en el diseño gráfico de la aplicación. [Cecilia, Daniel,
   Sergi]
+
+
+Por hacer:
+
 - Crear plantillas para la memoria y las presentaciones. [Isaac, Ivan]
 - Comenzar el primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
-(Finalmente tenemos la lista de las cosas nuevas que hay que empezar a hacer a
-partir de ahora, que se suma a lo continuado. Aquí pueden aparecer tareas que
-constaban como nuevas en semanas anteriores pero todavía no se han llegado a
-empezar.)
 
 $Revision$
-
--- 
-Desde fuera se irán creando documentos nuevos pero en el repositorio será una
-única entrada sobre la que se pondrá una etiqueta al final de cada semana para
-marcar el estado del informe de seguimiento que se entregará al BSCW.
-
-El tag indicará el día en que se congeló el informe para ser enviado. Será de la
-forma:
-
-REPORT_DD_MM_YYYY
 

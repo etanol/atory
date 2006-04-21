@@ -12,6 +12,12 @@ ifdef Subdirs
 Targets += subdirs
 endif
 
+ifdef JarDeps
+CompleteClasspath := $(Root):$(Root)/../lib/$(JarDeps)
+else
+CompleteClasspath := $(Root)
+endif
+
 JAVACFLAGS := -deprecation #-encoding ISO-8859-1
 ifdef final
 export final
@@ -28,7 +34,7 @@ subdirs:
 	@$(foreach d, $(Subdirs), echo "[$(d)]"; $(MAKE) -C $(d);)
 
 %.class: %.java
-	javac $(JAVACFLAGS) -classpath $(Root) $<
+	javac $(JAVACFLAGS) -classpath $(CompleteClasspath) $<
 
 .PHONY: clean
 clean:

@@ -5,6 +5,8 @@
 #
 Root    := ../..
 Subdirs := 
+JarDeps := swt.jar 
+
 
 include $(Root)/rules.make
 

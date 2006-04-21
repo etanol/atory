@@ -4,20 +4,17 @@
 # $Revision$
 #
 Root    := .
-Subdirs := 
+Subdirs := atory
 
 include $(Root)/rules.make
 
-# Esto está pendiente
-#
-#jar:
-#	@find . -name \*.class | xargs jar cvf manifest abalone.jar
-#
-#.PHONY: dclean
-#dclean: clean
-#	@-rm -fv abalone.jar; 
+jar:
+	@find . -name \*.class | xargs jar cvf atory.jar
 
-.PHONY: help
+.PHONY: dclean help
+dclean: clean
+	@-rm -fv abalone.jar; 
+
 help:
 	@echo 'Reglas genéricas:';\
 	echo '   files    Compila los ficheros fuente del directorio actual.';\

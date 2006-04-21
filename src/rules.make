@@ -13,7 +13,7 @@ Targets += subdirs
 endif
 
 ifdef JarDeps
-CompleteClasspath := $(Root):$(Root)/../lib/$(JarDeps)
+CompleteClasspath := $(Root)$(foreach j,$(JarDeps),:$(Root)/../lib/$(j))
 else
 CompleteClasspath := $(Root)
 endif

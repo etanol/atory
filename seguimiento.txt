@@ -3,13 +3,6 @@
 
 Completado:
 
-- Creación e inicialización del repositorio, con dos módulos separados: uno para
-  código y otro para documentación. [Isaac]
-- Definida la plantilla para los informes semanales. [Isaac]
-
-
-En progreso:
-
 - Búsqueda de información relacionada con el proyecto. [Cecilia, Daniel, Isaac,
   Ivan, Sergi]
 - Definir alternativas en el diseño lógico de la aplicación. [Cecilia, Daniel,
@@ -17,11 +10,18 @@ En progreso:
 - Definir alternativas en el diseño gráfico de la aplicación. [Cecilia, Daniel,
   Sergi]
 
+En progreso:
+
+- Prequeñas aplicaciones de prueba para testear las librerías utilizadas.
+  [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+
 
 Por hacer:
 
-- Crear plantillas para la memoria y las presentaciones. [Isaac, Ivan]
-- Comenzar el primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Plantillas para la memoria y las presentaciones. [Isaac, Ivan]
+- Añadir reglas para generar paquetes ejecutables autocontenidos en cada
+  plataforma soportada. [Isaac]
 
 
 $Revision$

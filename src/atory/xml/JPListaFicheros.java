@@ -1,3 +1,12 @@
+package atory.xml;
+/*
+ * JPListaFicheros - Descripción breve de la clase
+ *
+ * Descripción detallada (por favor rellenad).
+ *
+ * $Revision$
+ */
+
 import org.xmlpull.v1.XmlPullParserException;
 import java.util.Vector;
 import java.io.IOException;

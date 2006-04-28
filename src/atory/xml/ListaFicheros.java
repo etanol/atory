@@ -1,3 +1,12 @@
+package atory.xml;
+/*
+ * ListaFicheros - Descripción breve de la clase
+ *
+ * Descripción detallada (por favor rellenad).
+ *
+ * $Revision$
+ */
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;

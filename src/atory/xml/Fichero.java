@@ -1,3 +1,12 @@
+package atory.xml;
+/*
+ * Fichero - Descripción breve de la clase
+ *
+ * Descripción detallada (por favor rellenad).
+ *
+ * $Revision$
+ */
+
 import java.lang.String;
 
 //queda por decidir si los sets son void o int segun el tratamiento de errores

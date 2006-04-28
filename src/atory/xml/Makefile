@@ -5,6 +5,7 @@
 #
 Root    := ../..
 Subdirs := 
+JarDeps := xpp3-1.1.3_7.jar
 
 include $(Root)/rules.make
 

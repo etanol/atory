@@ -4,8 +4,8 @@ package atory.net;
  * $Revision$
  */
 
-import java.io.*
-import java.net.*
+import java.io.*;
+import java.net.*;
 
 /**
  *  Clase encargada de enviar i/o recibir datos a través de la red
@@ -23,7 +23,7 @@ public class Netfolder
     * @param destino Dirección destino.
     * @param data Información a enviar.
     */
-   public static int send(InetAdress destino, String data)
+   public static int send(InetAddress destino, String data)
    {
       int i = 0;
       boolean b = true;
@@ -32,7 +32,7 @@ public class Netfolder
       {
          Socket dest = new Socket(destino , PORT);
          OutputStream output = dest.getOutputStream();
-         DataOutStream flujo = new DataOutputStream(output);
+         DataOutputStream flujo = new DataOutputStream(output);
          flujo.writeUTF(data);
          dest.close();
          b = false;

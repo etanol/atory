@@ -42,7 +42,7 @@ public class Netfolder
       {
          if(++i== INTENTOS)
          {
-            b = true;
+            b = false;
             i = -1;
          }
       }

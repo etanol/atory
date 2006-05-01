@@ -3,17 +3,12 @@
 
 Completado:
 
-- Búsqueda de información relacionada con el proyecto. [Cecilia, Daniel, Isaac,
-  Ivan, Sergi]
-- Definir alternativas en el diseño lógico de la aplicación. [Cecilia, Daniel,
-  Isaac, Ivan, Sergi]
-- Definir alternativas en el diseño gráfico de la aplicación. [Cecilia, Daniel,
-  Sergi]
+- Prequeñas aplicaciones de prueba para testear las librerías utilizadas.
+  [Cecilia, Daniel, Isaac, Ivan, Sergi]
+
 
 En progreso:
 
-- Prequeñas aplicaciones de prueba para testear las librerías utilizadas.
-  [Cecilia, Daniel, Isaac, Ivan, Sergi]
 - Primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
 

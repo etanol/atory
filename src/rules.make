@@ -8,12 +8,19 @@ SHELL   := sh
 Files   := $(wildcard *.java)
 Targets := files
 
+# Path separator
+ifeq ($(shell uname),WindowsNT)
+S := ;
+else
+S := :
+endif
+
 ifdef Subdirs
 Targets += subdirs
 endif
 
 ifdef JarDeps
-CompleteClasspath := $(Root)$(foreach j,$(JarDeps),:$(Root)/../lib/$(j))
+CompleteClasspath := $(Root)$(foreach j,$(JarDeps),$(S)$(Root)/../lib/$(j))
 else
 CompleteClasspath := $(Root)
 endif

@@ -245,355 +245,248 @@ public class ParserXML
 	}
 
 
-////////////////////////////////////////////////PRIVADAS IVAN///////////////////////////////////////////////////
+///////////////////////////////// SERIALIZACIÓN //////////////////////////////////////
 	
 
 
-/**
-* Función que crea un documento xml con una petición de transferencia de un 
-* fichero "fichero" que tiene el host "host".
-*/
-public void xmlNuevaConexion(String host) throws IOException, Exception
-{  
-   StringWriter documento = new StringWriter();
-   serializer.setOutput( documento ); 
-   
-   serializer.startTag("","NewConnection");
-   serializer.text("\n");
-   serializer.startTag("", "host")
-      .text(net.whoAmI())
-      .endTag("", "host");
-   serializer.text("\n");
-   serializer.endTag("", "NewConnection");
-   net.sendXML(host,documento.toString());
+   /**
+   * Función que crea un documento xml que alerta al host "host" que nos 
+   * conectamos.
+   */
+   public void xmlNuevaConexion(String host) throws IOException, Exception
+   {  
+      StringWriter documento = new StringWriter();
+      serializer.setOutput( documento ); 
 
-}
+      serializer.startTag("","NewConnection");
+      serializer.text("\n");
+      serializer.startTag("", "host")
+         .text(net.whoAmI())
+         .endTag("", "host");
+      serializer.text("\n");
+      serializer.endTag("", "NewConnection");
+      net.sendXML(host,documento.toString());
 
+   }
 
-public void xmlListaFicheros(String host) throws IOException, Exception
-{
-   Fichero f;
-   Enumeration e;
- 
-   StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-   
-   serializer.startTag("", "FilesList")
-      .text("\n");
-   
-    
-   for(Enumeration lista = storage.getListaFicheros(); lista.hasMoreElements();)
+   /**
+   * Función que crea un documento xml con la lista de ficheros compartidos.
+   */
+   public void xmlListaFicheros(String host) throws IOException, Exception
    {
-      f = (Fichero)lista.nextElement();
-      serializer.startTag("", "File")
-         .attribute("","name",f.getNombre())
-         .attribute("","md5",f.getMd5())
-         .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+      Fichero f;
+      Enumeration e;
+
+      StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
+
+      serializer.startTag("", "FilesList")
          .text("\n");
-      e = f.getHosts();
-      while(e.hasMoreElements())
+
+
+      for(Enumeration lista = storage.getListaFicheros(); lista.hasMoreElements();)
       {
-         serializer.startTag("","host")
-            .text((String)e.nextElement())
-            .endTag("","host")
+         f = (Fichero)lista.nextElement();
+         serializer.startTag("", "File")
+            .attribute("","name",f.getNombre())
+            .attribute("","md5",f.getMd5())
+            .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+            .text("\n");
+         e = f.getHosts();
+         while(e.hasMoreElements())
+         {
+            serializer.startTag("","host")
+               .text((String)e.nextElement())
+               .endTag("","host")
+               .text("\n");
+         }
+         serializer.endTag("", "File")
             .text("\n");
       }
+      serializer.endTag("", "FilesList");
+      net.sendXML(host,documento.toString());
+
+   }
+
+   /**
+   * Función que crea un documento xml con las IPs de los hosts que conforman 
+   * la red.
+   */
+   public void xmlListaHosts(String host) throws IOException, Exception
+   {
+      int n;
+      Vector v = net.getListaHosts();
+
+   StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
+
+      serializer.startTag("", "HostsList")
+         .text("\n");
+
+      n = v.size();
+      for(int i=0;i<n;i++)
+      {
+         serializer.startTag("", "host")
+            .text((String)v.elementAt(i))
+            .endTag("", "host")
+            .text("\n");
+      }
+      serializer.endTag("", "HostsList");
+      net.sendXML(host,documento.toString());
+   }
+
+
+   /*
+    * Función que crea un documento xml con una petición de transferencia de un 
+    * fichero "fichero" que tiene el host "host".
+      <ReqFile>
+         <File  name="juas.jpg">
+            <host> ..... </host>
+         </File>
+      </ReqFile>
+    *
+    */
+   public void xmlReqFichero(String fichero, String host) throws IOException,
+       Exception
+   {
+      StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
+
+      serializer.startTag("", "ReqFile")
+         .text("\n");
+      serializer.startTag("", "File")
+         .attribute("","name",fichero)
+         .text("\n");
+      serializer.startTag("", "host")
+         .text(net.whoAmI())
+         .endTag("", "host")
+         .text("\n");
       serializer.endTag("", "File")
          .text("\n");
-   }
-   serializer.endTag("", "FilesList");
-   net.sendXML(host,documento.toString());
-   
-}
+      serializer.endTag("", "ReqFile");
 
-public void xmlListaHosts(String host) throws IOException, Exception
-{
-   int n;
-   Vector v = net.getListaHosts();
-   
-StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-   
-   serializer.startTag("", "HostsList")
-      .text("\n");
-   
-   n = v.size();
-   for(int i=0;i<n;i++)
+      net.sendXML(host,documento.toString());
+   }
+
+
+   /*
+   <AddFiles>  |  <DelFiles>
+           <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+               <host> .....  </host>
+           <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+               <host> .....  </host>
+           ....
+       </AddFiles>  |  </DelFiles>
+    * 
+    * @param ficheros Vector con objetos Fichero
+    */
+   public void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
    {
-      serializer.startTag("", "host")
-         .text((String)v.elementAt(i))
-         .endTag("", "host")
-         .text("\n");
-   }
-   serializer.endTag("", "HostsList");
-   net.sendXML(host,documento.toString());
-}
+      Fichero f;
+      int n;
+      String ip_local;
 
-
-/*
-   <ReqFile>
-      <File  name="juas.jpg">
-         <host> ..... </host>
-      </File>
-   </ReqFile>
- *
- */
-
-public void xmlReqFichero(String fichero, String host) throws IOException,
-    Exception
-{
    StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-   
-   serializer.startTag("", "ReqFile")
-      .text("\n");
-   serializer.startTag("", "File")
-      .attribute("","name",fichero)
-      .text("\n");
-   serializer.startTag("", "host")
-      .text(net.whoAmI())
-      .endTag("", "host")
-      .text("\n");
-   serializer.endTag("", "File")
-      .text("\n");
-   serializer.endTag("", "ReqFile");
+      serializer.setOutput( documento );
 
-   net.sendXML(host,documento.toString());
-}
+      serializer.startTag("", "AddFiles")
+         .text("\n");
+
+      n = ficheros.size();
+      ip_local = net.whoAmI();
+
+      for(int i=0;i<n;i++)
+      {
+         f = (Fichero)ficheros.elementAt(i);
+         serializer.startTag("", "File")
+            .attribute("","name",f.getNombre())
+            .attribute("","md5",f.getMd5())
+            .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+            .text("\n");
+         serializer.startTag("", "host")
+            .text(ip_local)
+            .endTag("", "host")
+            .text("\n");
+         serializer.endTag("", "File");
+      }
+      serializer.endTag("", "AddFiles");
+      net.sendMessage(documento.toString());
+   }
 
 
-/*
-<AddFiles>  |  <DelFiles>
-        <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
-            <host> .....  </host>
-        <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
-            <host> .....  </host>
-        ....
-    </AddFiles>  |  </DelFiles>
- * 
- * @params: Vector con objetos Fichero
- */
-public void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
-{
-   Fichero f;
-   int n;
-   String ip_local;
-  
-StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-   
-   serializer.startTag("", "AddFiles")
-      .text("\n");
-   
-   n = ficheros.size();
-   ip_local = net.whoAmI();
-
-   for(int i=0;i<n;i++)
+   public void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
    {
-      f = (Fichero)ficheros.elementAt(i);
-      serializer.startTag("", "File")
-         .attribute("","name",f.getNombre())
-         .attribute("","md5",f.getMd5())
-         .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+      Fichero f;
+      int n;
+      String ip_local;
+
+   StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
+
+      serializer.startTag("", "DelFiles")
          .text("\n");
-      serializer.startTag("", "host")
-         .text(ip_local)
-         .endTag("", "host")
-         .text("\n");
-      serializer.endTag("", "File");
+
+      n = ficheros.size();
+      ip_local = net.whoAmI();
+
+      for(int i=0;i<n;i++)
+      {
+         f = (Fichero)ficheros.elementAt(i);
+         serializer.startTag("", "File")
+            .attribute("","name",f.getNombre())
+            .attribute("","md5",f.getMd5())
+            .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+            .text("\n");
+         serializer.startTag("", "host")
+            .text(ip_local)
+            .endTag("", "host")
+            .text("\n");
+         serializer.endTag("", "File");
+      }
+      serializer.endTag("", "AddFiles");
+      net.sendMessage(documento.toString());
    }
-   serializer.endTag("", "AddFiles");
-   net.sendMessage(documento.toString());
-}
 
 
-public void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
-{
-   Fichero f;
-   int n;
-   String ip_local;
-   
-StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-   
-   serializer.startTag("", "DelFiles")
-      .text("\n");
-   
-   n = ficheros.size();
-   ip_local = net.whoAmI();
+   /*
+      <AddHosts>  |  <DelHosts>
+           <host> ..... </host>
+           <host> ..... </host>
+           ....
+       </AddHosts>  |  </DelHosts>
+    * 
+    */
 
-   for(int i=0;i<n;i++)
+   public void xmlAnadirHosts(String host, Vector ips) throws IOException, Exception
    {
-      f = (Fichero)ficheros.elementAt(i);
-      serializer.startTag("", "File")
-         .attribute("","name",f.getNombre())
-         .attribute("","md5",f.getMd5())
-         .attribute("","size",java.lang.String.valueOf(f.getTamano()))
+
+   // No estic segur, però diria que només és per afegir/eliminar una ip //
+
+      StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
+
+      serializer.startTag("", "AddHost")
          .text("\n");
-      serializer.startTag("", "host")
-         .text(ip_local)
-         .endTag("", "host")
-         .text("\n");
-      serializer.endTag("", "File");
+      //Falta
+      serializer.endTag("", "AddHost");
+
+      net.sendMessage(documento.toString());
    }
-   serializer.endTag("", "AddFiles");
-   net.sendMessage(documento.toString());
-}
 
 
-/*
-   <AddHosts>  |  <DelHosts>
-        <host> ..... </host>
-        <host> ..... </host>
-        ....
-    </AddHosts>  |  </DelHosts>
- * 
- */
+   public void xmlEliminarHosts(String host, Vector ips) throws IOException, Exception
+   {
+      StringWriter documento = new StringWriter();
+      serializer.setOutput( documento );
 
-public void xmlAnadirHosts(String host, Vector ips) throws IOException, Exception
-{
-   
-// No estic segur, però diria que només és per afegir/eliminar una ip //
-   
-   StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
+      serializer.startTag("", "DelHost")
+         .text("\n");
+      //Falta
+      serializer.endTag("", "DelHost");
 
-   serializer.startTag("", "AddHost")
-      .text("\n");
-   //Falta
-   serializer.endTag("", "AddHost");
-
-   net.sendMessage(documento.toString());
-}
-
-
-public void xmlEliminarHosts(String host, Vector ips) throws IOException, Exception
-{
-   StringWriter documento = new StringWriter();
-   serializer.setOutput( documento );
-
-   serializer.startTag("", "DelHost")
-      .text("\n");
-   //Falta
-   serializer.endTag("", "DelHost");
-
-   net.sendMessage(documento.toString());
-}
+      net.sendMessage(documento.toString());
+   }
 
 
 
-
-/*
-	private void procesaDocumento(XmlPullParser xpp) 
-		throws XmlPullParserException, IOException
-	{
-		
-		
-		int i=0;
-		do 
-		{
-			if(eventType == XmlPullParser.START_TAG) 
-			{
-				System.out.println(" start: " + i);
-				
-				if(xpp.getName().equals("Fichero"))
-				  anadirComentario(xpp);
-				else if(xpp.getName().equals("Eliminar"))
-				  eliminarFichero(xpp);
-				else if(xpp.getName().equals("Modificar"))
-			}
-			else if(eventType == XmlPullParser.TEXT)
-				System.out.println(" text: " + i);
-			else if(eventType == XmlPullParser.END_TAG)
-				System.out.println(" end: " + i);
-			//	anadirComentario(xpp);
-			eventType = xpp.next();
-			i++;
-		} while (eventType != XmlPullParser.END_DOCUMENT);
-	}
-
-	private void anadirComentario(XmlPullParser xpp)
-		throws XmlPullParserException, IOException
-	{
-		int eventType = xpp.getEventType();
-
-			if(eventType == XmlPullParser.START_TAG) 
-			{
-				System.out.println(" start: ");
-				if(xpp.getName().equals("Anadir"))
-				 anadirFichero(xpp);
-				 else if(xpp.getName().equals("Eliminar"))
-				 eliminarFichero(xpp);
-				 else if(xpp.getName().equals("Modificar"))
-			}
-			else 
-				System.out.println("que putada");
-
-		
-	}*/
-
-	/*private void procesaDocumento(XmlPullParser xpp) 
-		throws XmlPullParserException, IOException
-	{
-		   boolean b=false;
-		   int eventType = xpp.getEventType();
-		   do 
-		   {
-			   if(eventType == XmlPullParser.START_TAG) 
-			   {
-				   if(xpp.getName().equals("Fichero"))
-				   {
-					   b = true;
-					   anadirFichero(xpp);
-				   }
-			   }
-			   else if(eventType == XmlPullParser.TEXT && b)
-				   anadirComentario(xpp);
-			   eventType = xpp.next();
-		   } while (eventType != XmlPullParser.END_DOCUMENT);
-    }
-
-
-    private void anadirFichero(XmlPullParser xpp)
-        throws XmlPullParserException, IOException
-	{
-		String valor;
-		Fichero f = new Fichero();
-		int n = xpp.getAttributeCount();
-
-		for(int i=0;i<n;i++)
-		{
-			valor = xpp.getAttributeValue(i);
-			switch(i)
-			{
-				case 0:  f.setNombre(valor);
-					     break;
-				case 1:  f.setMd5(valor);
-					     break;
-				case 2:  f.setTamano(Float.parseFloat(valor));
-					     break;
-				default: break;
-			
-			}
-			System.out.println(xpp.getAttributeValue(i));
-		}
-	
-        listaFicheros.addElement(f);
-	}
-
-	private void anadirComentario(XmlPullParser xpp)
-		throws XmlPullParserException, IOException
-	{
-		if(!xpp.getText().equals(""))
-		{
-			Fichero f;
-			 System.out.println(xpp.getText());
-			 f = (Fichero)listaFicheros.lastElement();
-			 listaFicheros.remove(listaFicheros.size()-1);
-			 f.setComentario(xpp.getText());
-			 listaFicheros.addElement(f);
-		}
-		  //((Fichero)listaFicheros.lastElement()).setComentario(xpp.getText());
-     
-	}*/
 }

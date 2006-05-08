@@ -23,7 +23,7 @@ public class Storage {
      */
     public Storage ()
     {
-        table = new Hashtable();
+        table = new Hashtable ();
     }
 
     /**
@@ -32,7 +32,7 @@ public class Storage {
      */
     public void listaVacia ()
     {
-        table = new Hashtable();
+        table = new Hashtable ();
     }
 
     /**
@@ -47,11 +47,11 @@ public class Storage {
     {
         Fichero file;
 
-        file = (Fichero) table.get( new_file.getNombre() );
-        if( file == null )
-            table.put( new_file.getNombre(), new_file );
+        file = (Fichero) table.get (new_file.getNombre ());
+        if (file == null)
+            table.put (new_file.getNombre (), new_file);
         else 
-            file.merge( new_file );
+            file.merge (new_file);
     }
 
     /**
@@ -66,11 +66,11 @@ public class Storage {
     {
         Fichero file;
 
-        file = (Fichero) table.get( nombre );
-        if( file != null ) {
-            file.delHost( host );
-            if( ! file.exists() )
-                table.remove( nombre );
+        file = (Fichero) table.get (nombre);
+        if (file != null) {
+            file.delHost (host);
+            if (!file.exists ())
+                table.remove (nombre);
         }
     }
 
@@ -84,12 +84,12 @@ public class Storage {
         Fichero file;
         Enumeration e;
 
-        e = table.elements();
-        while( e.hasMoreElements() ) {
-            file = (Fichero) e.nextElement();
-            file.delHost( host );
-            if( ! file.exists() )
-                table.remove( file.getNombre() );
+        e = table.elements ();
+        while (e.hasMoreElements ()) {
+            file = (Fichero) e.nextElement ();
+            file.delHost (host);
+            if (!file.exists ())
+                table.remove (file.getNombre ());
         }
     }
 
@@ -104,9 +104,9 @@ public class Storage {
     {
         Fichero file;
 
-        file = (Fichero) table.get( nombre );
-        if( file == null )
-            throw new Exception( "Fichero no encontrado" );
+        file = (Fichero) table.get (nombre);
+        if (file == null)
+            throw new Exception ("Fichero no encontrado");
     }
 
     /**
@@ -114,9 +114,9 @@ public class Storage {
      *
      * @return Un iterador de tipo Enumeration sobre la lista interna.
      */
-    public Enumeration getFicheros ()
+    public Enumeration getListaFicheros ()
     {
-        return table.elements();
+        return table.elements ();
     }
 
 }

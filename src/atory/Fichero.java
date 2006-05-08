@@ -17,7 +17,6 @@ public class Fichero
 {
 	private String  nombre;
 	private String  md5;
-	private String  comentario;
 	private long    tamano;
     private Vector  hosts;
 
@@ -26,11 +25,7 @@ public class Fichero
      */
 	public Fichero ()
 	{
-	    nombre     = "";
-	    tamano     = 0;
-	    md5        = "";
-	    comentario = "";
-        hosts      = new Vector();
+        this ("", "", 0);
 	}
 
     /**
@@ -41,13 +36,12 @@ public class Fichero
      * @param tam Tamaño en bytes.
      * @param com Comentario opcional.
      */
-	public Fichero (String nom, String enc, long tam, String com)
+	public Fichero (String nom, String enc, long tam)
 	{
-		nombre     = nom;
-		md5        = enc;
-		tamano     = tam;
-		comentario = com;
-        hosts      = new Vector();
+		nombre = nom;
+		md5    = enc;
+		tamano = tam;
+        hosts  = new Vector ();
 	}
 
     /**
@@ -58,8 +52,8 @@ public class Fichero
      */
     public void addHost (String host)
     {
-        if( ! hosts.contains( host ) )
-            hosts.addElement( host );
+        if (!hosts.contains (host))
+            hosts.addElement (host);
     }
 
     /**
@@ -70,9 +64,9 @@ public class Fichero
      */
     public void delHost (String host)
     {
-        int i = hosts.indexOf( host );
-        if( i > -1 )
-            hosts.removeElementAt( i );
+        int i = hosts.indexOf (host);
+        if (i > -1)
+            hosts.removeElementAt (i);
     }
 
     /**
@@ -87,14 +81,14 @@ public class Fichero
     {
         Enumeration e;
 
-        if( ! this.nombre.equals( file.nombre ) )
-            throw new Exception( "Los nombres no coinciden" );
-        if( ! this.md5.equals( file.md5 ) )
-            throw new Exception( "Los ficheros no son iguales" );
+        if (!this.nombre.equals (file.nombre))
+            throw new Exception ("Los nombres no coinciden");
+        if (!this.md5.equals (file.md5))
+            throw new Exception ("Los ficheros no son iguales");
         // Aquí ya es seguro que son iguales
-        e = file.hosts.elements();
-        while( e.hasMoreElements() )
-            this.addHost( (String) e.nextElement() );
+        e = file.hosts.elements ();
+        while (e.hasMoreElements ())
+            this.addHost ((String) e.nextElement ());
     }
 
     /**
@@ -105,7 +99,7 @@ public class Fichero
      */
     public boolean exists ()
     {
-        return ! hosts.isEmpty();
+        return !hosts.isEmpty ();
     }
 
     /**
@@ -118,7 +112,7 @@ public class Fichero
     {
         //String my_ip = Netfolder.whoAmI();
         String my_ip = "127.0.0.1";
-        return hosts.contains( my_ip );
+        return hosts.contains (my_ip);
     }
 
     /**
@@ -128,23 +122,21 @@ public class Fichero
      */
     public Enumeration getHosts ()
     {
-        return hosts.elements();
+        return hosts.elements ();
     }
 
     /*
      * Métodos GET
      */
-	public String getNombre     () { return nombre; }
-	public String getMd5        () { return md5; }
-	public String getComentario () { return comentario; }
-	public long   getTamano     () { return tamano; }
+	public String getNombre () { return nombre; }
+	public String getMd5    () { return md5; }
+	public long   getTamano () { return tamano; }
 
     /*
      * Métodos SET
      */
-	public void setNombre     (String nom) { nombre = nom; }
-	public void setMd5        (String enc) { md5 = enc; }
-	public void setTamano     (long tam)   { tamano = tam; }
-	public void setComentario (String com) { comentario = com; }
+	public void setNombre (String nom) { nombre = nom; }
+	public void setMd5    (String enc) { md5    = enc; }
+	public void setTamano (long tam)   { tamano = tam; }
 }
 

@@ -1,4 +1,4 @@
-//package atory.net;
+package atory.net;
 /**
  * Netfolder - Clase encargada de enviar i/o recibir datos a través de la red
  * $Revision$

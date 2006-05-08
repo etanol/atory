@@ -116,11 +116,9 @@ public class ParserXML
      *
      * AÑADIR HOSTS / ELIMINAR HOSTS
      *
-     *     <AddHosts>  |  <DelHosts>
+     *     <AddHost>  |  <DelHost>
      *         <host> ..... </host>
-     *         <host> ..... </host>
-     *         ....
-     *     </AddHosts>  |  </DelHosts>
+     *     </AddHost>  |  </DelHost>
      *
      * PETICIÓN FICHERO
      *
@@ -557,14 +555,11 @@ public class ParserXML
 
 
     /**
-       <AddHosts>  |  <DelHosts>
-       <host> ..... </host>
-       <host> ..... </host>
-       ....
-       </AddHosts>  |  </DelHosts>
+     * <AddHost>  |  <DelHost>
+     *    <host> ..... </host>
+     * </AddHost>  |  </DelHost>
      * 
      */
-
     public void xmlAnadirHost(String host) throws IOException, Exception
     {
 

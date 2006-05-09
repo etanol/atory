@@ -27,7 +27,7 @@ public class xmlThread extends Thread
          while ((inputLine = in.readLine()) != null)
             xml+=inputLine;
          
-         XmlParser parser = new XmlParser();
+         ParserXML parser = new ParserXML();
          parser.parser(xml);
       }
       finally

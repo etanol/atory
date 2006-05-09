@@ -212,7 +212,7 @@ public class Netfolder
    /**
     * Retorna la ip local.
     */
-   public static String whoAmI()
+   public static String whoAmI() throws Exception
    {
       InetAddress local = InetAddress.getLocalHost(); 
        return (local.getHostAddress()).toString();

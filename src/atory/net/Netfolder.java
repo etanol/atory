@@ -221,7 +221,7 @@ public class Netfolder
    /**
     * Devuelve la lista de hosts conectados.
     */
-   public Vector getListaHosts()
+   public static Vector getListaHosts()
    {
       return hoststr;
    }
@@ -240,6 +240,14 @@ public class Netfolder
          hosts.addElement(ip);
          hoststr.addElement(host);
       }
+   }
+
+   /**
+    * Borra un host de las listas de hosts.
+    * @param host Ip del host a borrar.
+    */
+   public static void removeHost(String host) throws Exception
+   {
    }
 
    /**

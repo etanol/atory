@@ -6,9 +6,10 @@ package atory.net;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 /**
- *  Clase encargada de enviar i/o recibir datos a través de la red
+ *  Clase encargada de enviar i/o recibir datos a trav√©s de la red
  */
 public class Netfolder
 {
@@ -16,11 +17,26 @@ public class Netfolder
    static final int DATAPORT = 3331;
    static final int INTENTOS = 3;
    static final int TIME_WAIT = 30000;
+   static boolean ipcalc = false;
+   static String myip;
+   static Vector hosts = new Vector(10,5);
+   static Vector hoststr = new Vector(10,5);
+   static boolean listening = true;
 
    /**
-    * Función encargada de enviar documentos XML a través de la red.
+    * Funci√≥n encargada de activar/desactivar el puerto de control.
     *
-    * @param ipdestino Dirección destino.
+    * @param listen Valor del par√°metro listening.
+    */
+   public static void setListening(boolean listen)
+   {
+      listening = listen;
+   }
+
+   /**
+    * Funci√≥n encargada de enviar documentos XML a trav√©s de la red.
+    *
+    * @param ipdestino Direcci√≥n destino.
     * @param data Documento XML a enviar.
     */
    public static void sendXml(String ipdestino, String data) throws Exception
@@ -35,7 +51,7 @@ public class Netfolder
       }
       catch(UnknownHostException e)
       {
-         throw new Exception("Direcci�n IP mal formada");
+         throw new Exception("Direcci√≥n IP mal formada");
       }
       while(i<INTENTOS)
       {
@@ -46,7 +62,6 @@ public class Netfolder
             flujo = new DataOutputStream(output);
             flujo.writeUTF(data);
             flujo.flush();
-            dest.close();
             i = INTENTOS;
          } 
          catch(Exception e)
@@ -65,9 +80,9 @@ public class Netfolder
    }
 
    /**
-    * Función encargada de enviar ficheros a través de la red.
+    * Funci√≥n encargada de enviar ficheros a trav√©s de la red.
     * 
-    * @param ipdestino Dirección destino.
+    * @param ipdestino Direcci√≥n destino.
     * @param fichero Fichero a enviar.
     */
    public static void sendFile(String ipdestino, File fichero) throws Exception
@@ -83,7 +98,7 @@ public class Netfolder
       }
       catch(UnknownHostException e)
       {
-         throw new Exception("Direcci�n IP mal formada");
+         throw new Exception("Direcci‚àön IP mal formada");
       }
       while(i<INTENTOS)
       {
@@ -98,7 +113,6 @@ public class Netfolder
                output.write(c);
             
             output.flush();
-            dest.close();
             i = INTENTOS;
          } 
          catch(Exception e)
@@ -117,7 +131,7 @@ public class Netfolder
    }
 
    /**
-    * Función encargada de recibir un archivo y escribirlo en disco.
+    * Funci√≥n encargada de recibir un archivo y escribirlo en disco.
     * @param file Nombre del archivo.
     */
 
@@ -131,7 +145,7 @@ public class Netfolder
       try
       {
          server = new ServerSocket(DATAPORT);
-         // tiempo de espera de conexión.
+         // tiempo de espera de conexi√≥n.
          server.setSoTimeout(TIME_WAIT);
          try
          {
@@ -149,14 +163,11 @@ public class Netfolder
             out.write(c);
 
          out.flush();
-         out.close();
-         origen.close();
-         server.close();
 
       }
       catch(Exception e)
       {
-         throw new Exception("Error en la conexión");
+         throw new Exception("Error en la conexi√≥n");
       }
       finally
       {
@@ -171,13 +182,82 @@ public class Netfolder
    }
 
    /**
+    * Recibe documentos XML.
+    */
+   public static void getXml() throws Exception
+   {
+      Socket origen = null;
+      ServerSocket server = null;
+      FileOutputStream out = null; 
+      try
+      {
+         server = new ServerSocket(XMLPORT);
+
+      }
+      catch(Exception e)
+      {
+         throw new Exception("Puerto en uso");
+      }
+      while(listening)
+         new xmlThread(server.accept()).start();
+
+      server.close();
+   }
+  
+   public static void sendMessage(String xml)
+   {
+    // while() 
+   }
+
+   /**
+    * Retorna la ip local.
+    */
+   public static String whoAmI()
+   {
+      InetAddress local = InetAddress.getLocalHost(); 
+       return (local.getHostAddress()).toString();
+   }
+
+   /**
+    * Devuelve la lista de hosts conectados.
+    */
+   public Vector getListaHosts()
+   {
+      return hoststr;
+   }
+   
+   /**
+    * A‚àö¬±ade un host a la lista de hosts conectados.
+    * @param host Ip del host.
+    */
+   public static void addHost(String host) throws UnknownHostException
+   {
+      int i;
+      InetAddress ip = getIp(host);
+      for(i=0;i<hosts.size() && ip.equals(hosts.get(i)) ;i++);
+      if(hosts.size()==i)
+      {
+         hosts.addElement(ip);
+         hoststr.addElement(host);
+      }
+   }
+
+   /**
     * Transforma una string ip en un tipo ip (InetAddress).
-    * @param destino Dirección ip.
+    * @param destino Direcci√≥n ip.
     */
    private static InetAddress getIp(String destino) throws UnknownHostException
    {
       byte[] ip = new byte[4];
-      String[] bytes = destino.split("[.]",4);
+      String[] bytes; 
+      try
+      {
+         bytes = destino.split("[.]",4);
+      }
+      catch(NullPointerException e)
+      {
+         throw new UnknownHostException();
+      }
       ip[0] = (new Integer(Integer.parseInt(bytes[0]))).byteValue();
       ip[1] = (new Integer(Integer.parseInt(bytes[1]))).byteValue();
       ip[2] = (new Integer(Integer.parseInt(bytes[2]))).byteValue();

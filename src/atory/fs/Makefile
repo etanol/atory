@@ -1,5 +1,5 @@
 #
-# Makefile - Clases para la interfaz gráfica.
+# Makefile - Clases relacionadas con el acceso al disco local.
 #
 # $Revision$
 #

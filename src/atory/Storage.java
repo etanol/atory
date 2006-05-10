@@ -5,9 +5,10 @@
  */
 package atory;
 
-//import atory.xml.*;
+import atory.xml.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Random;
 
 /**
  * Almacén de información sobre ficheros compartidos. Aquí se almacena la
@@ -15,16 +16,24 @@ import java.util.Enumeration;
  */
 public class Storage {
 
-    // ParserXML parser;
-    Hashtable table;
+    private ParserXML parser;
+    private Hashtable table;
+    private Random    rand; // Para pedir hosts aleatorios.
 
     /**
      * Constructor por defecto. Crea una lista vacía.
      */
     public Storage ()
     {
-        table = new Hashtable ();
+        table  = new Hashtable ();
+        rand   = new Random ();
+        parser = null;
     }
+
+    /**
+     * Define el parser que esta clase utilizará.
+     */
+    public void setParser (ParserXML p) { parser = p; }
 
     /**
      * Vacía la lista interna de ficheros. Haya lo que haya, todo se evacúa para
@@ -107,6 +116,7 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file == null)
             throw new Exception ("Fichero no encontrado");
+        parser.xmlReqFichero (file.getNombre (), file.getRandomHost (rand));
     }
 
     /**

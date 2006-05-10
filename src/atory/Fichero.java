@@ -7,6 +7,7 @@ package atory;
 
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.Random;
 
 /**
  * Representación de fichero utilizada por Atory. En esta clase meteremos lo que
@@ -34,7 +35,6 @@ public class Fichero
      * @param nom Nombre.
      * @param enc MD5 digest.
      * @param tam Tamaño en bytes.
-     * @param com Comentario opcional.
      */
 	public Fichero (String nom, String enc, long tam)
 	{
@@ -113,6 +113,21 @@ public class Fichero
         //String my_ip = Netfolder.whoAmI();
         String my_ip = "127.0.0.1";
         return hosts.contains (my_ip);
+    }
+
+    /**
+     * Obtener un propietario aleatorio de la lista de propietarios. De esta
+     * forma podemos repartir aleatoriamente la carga de cada peer en la red.
+     *
+     * @param rand Generador de números aleatorios para seleccionar un índice
+     *             del vector.
+     * @return     Una cadena que representa a uno de los propietarios de este
+     *             fichero.
+     */
+    public String getRandomHost (Random rand)
+    {
+        int i = rand.nextInt (hosts.size ());
+        return (String) hosts.elementAt (i);
     }
 
     /**

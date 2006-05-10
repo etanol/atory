@@ -7,6 +7,7 @@ package atory.xml;
 
 import atory.*;
 import atory.net.*;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -144,9 +145,9 @@ public class ParserXML
             if(s.equals("NewConnection"))
                 parseaNuevaConexion(xpp);
             else if(s.equals("HostsList"))
-                parseaListaHosts(xpp);
+                parseaAnadirHosts(xpp);
             else if(s.equals("FilesList"))
-                parseaListaFicheros(xpp);
+                parseaAnadirFicheros(xpp);
             else if(s.equals("AddFiles"))
                 parseaAnadirFicheros(xpp);
             else if(s.equals("DelFiles"))
@@ -176,43 +177,7 @@ public class ParserXML
             }
 
     
-    private void parseaListaHosts(XmlPullParser xpp) throws IOException,
-            XmlPullParserException
-            {
-                int tipoEvento = xpp.next();
-                while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("HostList"))
-                {
-                    if(tipoEvento == XmlPullParser.TEXT)
-                        net.addHost(xpp.getText());
 
-                    tipoEvento = xpp.next();
-                }
-            }
-
-    
-    private void parseaListaFicheros(XmlPullParser xpp) throws IOException,
-            XmlPullParserException, Exception
-            {
-                int tipoEvento = xpp.next();
-                Fichero f = new Fichero();
-
-                while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("FilesList"))
-                {
-                    if(tipoEvento == XmlPullParser.START_TAG)
-                    {
-                        if(xpp.getName().equals("File"))
-                            f = parseaAtributosFichero(xpp);
-                    }
-                    else if(tipoEvento == XmlPullParser.TEXT)
-                        f.addHost(xpp.getText());
-                    else if(tipoEvento == XmlPullParser.END_TAG)
-                    {
-                        if(xpp.getName().equals("File"))
-                            storage.addFichero(f);
-                    }
-                    tipoEvento = xpp.next();
-                }
-            }
 
     
     private void parseaAnadirFicheros(XmlPullParser xpp) throws 
@@ -221,20 +186,20 @@ public class ParserXML
             int tipoEvento = xpp.next();
             Fichero f = new Fichero();
 
-            while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("AddFiles"))
+            while(tipoEvento != XmlPullParser.END_DOCUMENT)
             {
-                if(tipoEvento == XmlPullParser.START_TAG)
-                {
-                    if(xpp.getName().equals("File"))
-                        f = parseaAtributosFichero(xpp);
-                }
-                else if(tipoEvento == XmlPullParser.TEXT)
-                    f.addHost(xpp.getText());
-                else if(tipoEvento == XmlPullParser.END_TAG)
-                {
-                    if(xpp.getName().equals("File"))
-                        storage.addFichero(f);
-                }
+				if(tipoEvento == XmlPullParser.START_TAG)
+				{
+					if(xpp.getName().equals("File"))
+						f = parseaAtributosFichero(xpp);
+				}
+				else if(tipoEvento == XmlPullParser.TEXT)
+					f.addHost(xpp.getText());
+				else if(tipoEvento == XmlPullParser.END_TAG)
+				{
+					if(xpp.getName().equals("File"))
+						storage.addFichero(f);
+				}
                 tipoEvento = xpp.next();
             }
         }
@@ -247,7 +212,7 @@ public class ParserXML
             String nombre="",host="";  
 
 
-            while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("DelFiles"))
+            while(tipoEvento != XmlPullParser.END_DOCUMENT)
             {
                 if(tipoEvento == XmlPullParser.START_TAG)
                 {
@@ -264,13 +229,12 @@ public class ParserXML
                 tipoEvento = xpp.next();
             }
         }
-
     
     private void parseaAnadirHosts(XmlPullParser xpp) throws IOException,
             XmlPullParserException
             {
                 int tipoEvento = xpp.next();
-                while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("AddHost"))
+                while(tipoEvento != XmlPullParser.END_DOCUMENT)
                 {
                     if(tipoEvento == XmlPullParser.TEXT)
                         net.addHost(xpp.getText());
@@ -284,7 +248,7 @@ public class ParserXML
             XmlPullParserException
             {
                 int tipoEvento = xpp.next();
-                while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("DelHost"))
+                while(tipoEvento != XmlPullParser.END_DOCUMENT)
                 {
                     if(tipoEvento == XmlPullParser.TEXT)
                     {
@@ -304,7 +268,7 @@ public class ParserXML
             String nombre="",host="";  
 
 
-            while(tipoEvento != XmlPullParser.END_TAG && xpp.getName().equals("ReqFile"))
+            while(tipoEvento != XmlPullParser.END_DOCUMENT)
             {
                 if(tipoEvento == XmlPullParser.START_TAG)
                 {

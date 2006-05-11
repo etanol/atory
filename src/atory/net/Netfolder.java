@@ -1,15 +1,16 @@
 package atory.net;
 /**
- * Netfolder - Clase encargada de enviar i/o recibir datos a trav√©s de la red
+ * Netfolder - Clase encargada de enviar i/o recibir datos a través de la red
  * $Revision$
  */
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import atory.xml.*;
 
 /**
- *  Clase encargada de enviar i/o recibir datos a trav‚àö¬©s de la red
+ *  Clase encargada de enviar i/o recibir datos a través de la red
  */
 public class Netfolder
 {
@@ -22,6 +23,8 @@ public class Netfolder
    static Vector hosts = new Vector(10,5);
    static Vector hoststr = new Vector(10,5);
    static boolean listening = true;
+   static ParserXML parser;
+   static String pathname;
 
    /**
     * Función encargada de activar/desactivar el puerto de control.
@@ -31,6 +34,26 @@ public class Netfolder
    public static void setListening(boolean listen)
    {
       listening = listen;
+   }
+   
+   /**
+    * Set de la referencia al parser.
+	*
+	* @param xmlp Parser.
+	*/
+   public void setParserXML(ParserXML xmlp)
+   {
+	  parser = xmlp;
+   }
+   
+   /**
+    * Introduce el pathname de referencia para leer y dejar los ficheros.
+	*
+	* @param path Directorio de trabajo.
+	*/
+   public void setPathname(String path)
+   {
+	  pathname=path;
    }
 
    /**
@@ -82,16 +105,17 @@ public class Netfolder
    /**
     * Función encargada de enviar ficheros a través de la red.
     * 
-    * @param ipdestino Direcci‚àö‚â•n destino.
-    * @param fichero Fichero a enviar.
+    * @param ipdestino Dirección destino.
+    * @param f Fichero a enviar.
     */
-   public void sendFile(String ipdestino, File fichero) throws Exception
+   public void sendFile(String ipdestino, String f) throws Exception
    {
       int i = 0;
       int c;
       Socket dest = null; 
       InetAddress destino;
       BufferedInputStream buf = null;
+	  File fichero = new File((pathname+f));
       try
       {
          destino = getIp(ipdestino);
@@ -132,7 +156,8 @@ public class Netfolder
 
    /**
     * Función encargada de recibir un archivo y escribirlo en disco.
-    * @param file Nombre del archivo.
+    *
+	* @param file Nombre del archivo.
     */
 
    public void getFile(String file) throws Exception
@@ -199,11 +224,16 @@ public class Netfolder
          throw new Exception("Puerto en uso");
       }
       while(listening)
-         new xmlThread(server.accept()).start();
+         new xmlThread(server.accept(),parser).start();
 
       server.close();
    }
   
+  /**
+   * Manda el mensaje xml a todas los hosts conocidos.
+   *
+   * @param xml Mensaje a enviar.
+   */
    public void sendMessage(String xml)
    {
 		for(int i=0; i<hosts.size(); i++)
@@ -310,7 +340,7 @@ public class Netfolder
 
    /**
     * Transforma una string ip en un tipo ip (InetAddress).
-    * @param destino Direcci‚àö‚â•n ip.
+    * @param destino Dirección ip.
     */
    private static InetAddress getIp(String destino) throws UnknownHostException
    {

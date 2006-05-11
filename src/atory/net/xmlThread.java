@@ -20,19 +20,30 @@ public class xmlThread extends Thread
    {
       String xml = new String();
       String inputLine;
-      try
-      {
-         BufferedReader in = new BufferedReader( new InputStreamReader(
-                socket.getInputStream()));
-         while ((inputLine = in.readLine()) != null)
-            xml+=inputLine;
+	  try
+	  {
+		try
+		{
+			BufferedReader in = new BufferedReader( new InputStreamReader(
+					socket.getInputStream()));
+			while ((inputLine = in.readLine()) != null)
+				xml+=inputLine;
          
-         ParserXML parser = new ParserXML();
-         parser.parser(xml);
-      }
-      finally
-      {
-         socket.close();
-      }
+			ParserXML parser = new ParserXML();
+			parser.parsea(xml);
+		}
+		catch(Exception e)
+		{
+			return;
+		}
+		finally
+		{
+			socket.close();
+		}
+	  }
+	  catch(Exception e)
+	  {
+		return;
+	  }
    }
 }

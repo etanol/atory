@@ -280,7 +280,7 @@ public class ParserXML
                 else if(tipoEvento == XmlPullParser.END_TAG)
                 {
                     if(xpp.getName().equals("File"))
-                        storage.sendFichero(host,nombre);
+                        net.sendFile(host,nombre);
                 }
                 tipoEvento = xpp.next();
             }

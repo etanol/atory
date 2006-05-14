@@ -28,6 +28,11 @@ public class Netfolder
    static ServerSocket dataserver;
    static ServerSocket controlserver;
    
+   /**
+    * Constructora de la clase. Se encarga de inicializar los puertos
+	* de datos y de control. Si están ocupados (cualquiera de los dos)
+	* se lanza una excepción.
+	*/
    public Netfolder() throws Exception
    {
      try
@@ -40,7 +45,7 @@ public class Netfolder
 	     if(dataserver != null)
 			dataserver.close();
 			
-         throw new Exception("Time out!");
+         throw new Exception("Puertos en uso");
 	 }
    }
 

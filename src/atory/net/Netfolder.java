@@ -25,6 +25,24 @@ public class Netfolder
    static boolean listening = true;
    static ParserXML parser;
    static String pathname;
+   static ServerSocket dataserver;
+   static ServerSocket controlserver;
+   
+   public Netfolder() throws Exception
+   {
+     try
+	 {
+		dataserver = new ServerSocket(DATAPORT);
+		controlserver = new ServerSocket(XMLPORT);
+	 }
+	 catch(InterruptedIOException e ) 
+	 {
+	     if(dataserver != null)
+			dataserver.close();
+			
+         throw new Exception("Time out!");
+	 }
+   }
 
    /**
     * Función encargada de activar/desactivar el puerto de control.
@@ -158,27 +176,26 @@ public class Netfolder
     * Función encargada de recibir un archivo y escribirlo en disco.
     *
 	* @param file Nombre del archivo.
+	* @deprecated El nuevo método getFile soporta múltiples conexiones al mismo puerto.
     */
 
    public void getFile(String file) throws Exception
    {
       int c;
-      File fichero = new File(file);
+      File fichero = new File((pathname+file));
       Socket origen = null;
-      ServerSocket server = null;
       FileOutputStream out = null; 
       try
       {
-         server = new ServerSocket(DATAPORT);
+	     
          // tiempo de espera de conexión.
-         server.setSoTimeout(TIME_WAIT);
+         dataserver.setSoTimeout(TIME_WAIT);
          try
          {
-            origen = server.accept();
+            origen = dataserver.accept();
          }
          catch(InterruptedIOException e ) 
          {
-            server.close();
             throw new Exception("Time out!");
          }
          InputStream in = origen.getInputStream();
@@ -198,40 +215,38 @@ public class Netfolder
       {
          if(origen!=null)
             origen.close();
-         if(server!=null)
-            server.close();
          if(out!=null)
             out.close();
       }
          
    }
+   
+   /**
+    * Método para obtener ficheros. Cuando es invocado crea un thread a la espera
+	* de la conexión indicada.
+	*
+	* @param file Nombre del archivo a recibir.
+	* @param host Ip del cliente.
+	*/
+   public void getFile(String file, String host) throws Exception
+   {
+     (new FileTransferer(dataserver, (pathname+file), getIp(host))).start();
+   }
 
    /**
-    * Recibe documentos XML.
+    * Recibe documentos XML. Función bloqueante.
     */
    public void getXml() throws Exception
    {
-      Socket origen = null;
-      ServerSocket server = null;
-      FileOutputStream out = null; 
-      try
-      {
-         server = new ServerSocket(XMLPORT);
 
-      }
-      catch(Exception e)
-      {
-         throw new Exception("Puerto en uso");
-      }
       while(listening)
-         new xmlThread(server.accept(),parser).start();
+         new xmlThread(controlserver.accept(),parser).start();
 
-      server.close();
+     controlserver.close();
    }
   
   /**
    * Manda el mensaje xml a todas los hosts conocidos.
-   *
    * @param xml Mensaje a enviar.
    */
    public void sendMessage(String xml)

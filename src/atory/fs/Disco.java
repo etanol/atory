@@ -48,7 +48,7 @@ public class Disco
       Vector ficheros = new Vector(10,5);
       File vfiles[];
       int n;
-      long l;
+      long l, fecha;
       Fichero f;
       String name, enc;
       MD5 md = new MD5();
@@ -63,15 +63,17 @@ public class Disco
             name = vfiles[i].getName();
             enc = md.fromFile(vfiles[i]);
             l = vfiles[i].length();
+            fecha = vfiles[i].lastModified();
             //Se añade aquí el host?
             //Si fuese asi, tendria que llamar al metodo whoAmI
             //con lo que esta clase se tendria que relacionar tambien
             //con Netfolder
-            f = new Fichero(name,enc,l);
+            f = new Fichero(name,enc,l,fecha);
             ficheros.addElement(f);
          }
       }
 
       return ficheros;
    }
+
 }

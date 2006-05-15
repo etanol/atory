@@ -15,7 +15,7 @@ public class Disco
    /**
     * Directorio Compartido.
     */
-   private File DirComp; 
+   private File dirComp; 
    
    /**
     * Constructora Disco.
@@ -23,8 +23,8 @@ public class Disco
     */
    public Disco(String path_dir) throws Exception
    {
-      DirComp = new File(path_dir);
-      if(!DirComp.isDirectory())
+      dirComp = new File(path_dir);
+      if(!dirComp.isDirectory())
          throw new Exception("Path no existe o no es un directorio");
    }
 
@@ -34,7 +34,7 @@ public class Disco
     */
    public String getDirComp()
    {
-      return DirComp.getAbsolutePath();
+      return dirComp.getAbsolutePath();
    }
 
    
@@ -54,7 +54,7 @@ public class Disco
       MD5 md = new MD5();
       
      
-      vfiles = DirComp.listFiles();
+      vfiles = dirComp.listFiles();
       n = vfiles.length;
       for(int i=0;i<n;i++)
       {

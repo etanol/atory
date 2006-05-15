@@ -19,6 +19,7 @@ public class Fichero
 	private String  nombre;
 	private String  md5;
 	private long    tamano;
+    private long    fecha;
     private Vector  hosts;
 
     /**
@@ -26,7 +27,7 @@ public class Fichero
      */
 	public Fichero ()
 	{
-        this ("", "", 0);
+        this ("", "", 0, 0);
 	}
 
     /**
@@ -36,11 +37,12 @@ public class Fichero
      * @param enc MD5 digest.
      * @param tam Tamaño en bytes.
      */
-	public Fichero (String nom, String enc, long tam)
+	public Fichero (String nom, String enc, long tam, long fec)
 	{
 		nombre = nom;
 		md5    = enc;
 		tamano = tam;
+        fecha  = fec;
         hosts  = new Vector ();
 	}
 
@@ -146,6 +148,7 @@ public class Fichero
 	public String getNombre () { return nombre; }
 	public String getMd5    () { return md5; }
 	public long   getTamano () { return tamano; }
+    public long   getFecha  () { return fecha; }
 
     /*
      * Métodos SET
@@ -153,5 +156,6 @@ public class Fichero
 	public void setNombre (String nom) { nombre = nom; }
 	public void setMd5    (String enc) { md5    = enc; }
 	public void setTamano (long tam)   { tamano = tam; }
+    public void setFecha  (long fec)   { fecha  = fec; }
 }
 

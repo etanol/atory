@@ -3,16 +3,15 @@
 
 Completado:
 
-- Prequeñas aplicaciones de prueba para testear las librerías utilizadas.
-  [Cecilia, Daniel, Isaac, Ivan, Sergi]
-- Plantilla para las presentaciones. [Ivan]
+- Primera presentación. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
 
 En progreso:
 
 - Primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
-- Primera presentación. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 - Diseño de pruebas para verificar el funcionamiento del prototipo. [Sergi]
+- Plantilla para la memoria. [Isaac, Ivan]
+- Memoria del documento. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
 
 Por hacer:
@@ -21,7 +20,7 @@ Por hacer:
   plataforma soportada. [Isaac]
 - Pruebas para verificar el funcionamiento del prototipo.
   [Cecilia, Daniel, Isaac, Ivan, Sergi]
-- Plantilla para la memoria. [Isaac, Ivan]
+- Pruebas de escalabilidad. [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
 
 $Revision$

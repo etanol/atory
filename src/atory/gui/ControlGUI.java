@@ -2,7 +2,11 @@ package atory.gui;
 
 public class ControlGUI {
 
-   //TODO: public visualizarLista()
+   //TODO: 
+//   public void visualizarLista(Vector lista)
+  // {
+
+   //}
    //TODO: public actualizarLista()
    //TODO: public notificarModif()
    //TODO: public solicitarFichero()

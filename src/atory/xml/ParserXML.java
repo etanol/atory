@@ -1,6 +1,7 @@
 /*
  * ParserXML.java
- *
+ * Clase encargada de parsear, interpretar y serializar los comandos que 
+ * se envian por la red.
  * $Revision$
  */
 package atory.xml;
@@ -40,8 +41,8 @@ public class ParserXML
     /**
      *Constructora del parser especificando instáncias.
      *
-     *@Param n instáncia de Netfolder 
-     *@Param s instáncia de Storage
+     *@param n instáncia de Netfolder 
+     *@param s instáncia de Storage
      */
     public ParserXML(Netfolder n, Storage s) throws IOException,
            XmlPullParserException
@@ -72,16 +73,18 @@ public class ParserXML
     
     /**
      * Parsea todo tipo de documentos en xml.
+     */
+    
+     /* Las funcionalidades del programa, con su correspondiente representación 
+     * en xml son los siguientes: 
      *
-     * Las funcionalidades del programa, con su correspondiente representación en xml son los siguientes:
-     *
-     * AÑADIR CONEXIÓN
-     *
-     *     <NewConnection>
-     *         <host> 10.10.10.10 </host>
-     *     </NewConnection>
+     * AÑADIR CONEXIÓN 
      * 
-     * ENVIO LISTA IPS
+     *     <NewConnection> 
+     *         <host> 10.10.10.10 </host> 
+     *     </NewConnection> 
+     * 
+     * ENVIO LISTA IPS 
      *
      *     <HostsList>
      *         <host> .....  </host>
@@ -92,11 +95,11 @@ public class ParserXML
      * ENVIO LISTA FICHEROS
      *
      *     <FilesList>
-     *         <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
      *             <host> .....  </host>
      *             .....
      *         </File>
-     *         <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
      *             <host> .....  </host>
      *             .....
      *         </File>
@@ -106,10 +109,10 @@ public class ParserXML
      * AÑADIR FICHEROS / ELIMINAR FICHEROS
      *
      *     <AddFiles>  |  <DelFiles>
-     *         <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
      *             <host> .....  </host>
      *         </File>
-     *         <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
+     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
      *             <host> .....  </host>
      *         </File>
      *         ....
@@ -398,14 +401,8 @@ public class ParserXML
 
 
     /**
-     * Función que crea un documento xml con una petición de transferencia de un 
-     * fichero "fichero" que tiene el host "host".
-     <ReqFile>
-     <File  name="juas.jpg">
-     <host> ..... </host>
-     </File>
-     </ReqFile>
-     *
+     * Función que crea un documento xml con una petición de transferencia de 
+     * un fichero "fichero" que tiene el host "host".
      */
     public void xmlReqFichero(String fichero, String host) throws IOException,
            Exception
@@ -427,17 +424,9 @@ public class ParserXML
 
 
     /**
-     * <AddFiles>  |  <DelFiles>
-     *    <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
-     *       <host> .....  </host>
-     *    </File>
-     *    <File  name="juas.jpg"  md5="dgfjhgiueh" size="56">
-     *       <host> .....  </host>
-     *    </File>
-     *     ....
-     * </AddFiles>  |  </DelFiles>
-     * 
-     * @param ficheros Vector con objetos Fichero
+     * Función que crea un documento xml con los nuevos ficheros que pasan a 
+     * estar compartidos.
+     * @param ficheros Vector con objetos Fichero.
      */
     public void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
     {
@@ -469,7 +458,11 @@ public class ParserXML
         net.sendMessage(documento.toString());
     }
 
-
+    /**
+     * Función que crea un documento xml con los ficheros que dejan de estar 
+     * compartidos.
+     * @param ficheros Vector con objetos Fichero.
+     */
     public void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
     {
         Fichero f;
@@ -496,16 +489,14 @@ public class ParserXML
                 .endTag("", "host");
             serializer.endTag("", "File");
         }
-        serializer.endTag("", "AddFiles");
+        serializer.endTag("", "DelFiles");
         net.sendMessage(documento.toString());
     }
 
 
-    /**
-     * <AddHost>  |  <DelHost>
-     *    <host> ..... </host>
-     * </AddHost>  |  </DelHost>
-     * 
+   /**
+     * Función que crea un documento xml indicando el nuevo host "host" que 
+     * entra a formar parte de la red.
      */
     public void xmlAnadirHost(String host) throws IOException, Exception
     {
@@ -522,7 +513,10 @@ public class ParserXML
         net.sendMessage(documento.toString());
     }
 
-
+   /**
+     * Función que crea un documento xml indicando el host "host" que ha caido 
+     * de la red.
+     */
     public void xmlEliminarHost(String host) throws IOException, Exception
     {
         StringWriter documento = new StringWriter();

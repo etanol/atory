@@ -69,8 +69,8 @@ public class MainWindow {
             con = (Conexion) (conexion.elementAt(lista.getSelectionIndex()));
             //Storage.reqHosts(con.nombre);
             Vector fichi=new Vector();
-            fichi.addElement(new Fichero("dani.java","1234567abcd",(long)567.8));
-            fichi.addElement(new Fichero("c5.hjk","8765432abcd",(long)99));
+            fichi.addElement(new Fichero("dani.java","1234567abcd",(long)567.8, 1234));
+            fichi.addElement(new Fichero("c5.hjk","8765432abcd",(long)99, 345));
             visualizarLista(fichi);
             dialogo1.dispose();
             //TODO:entretener al usuario mientras se conecta??

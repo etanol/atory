@@ -29,11 +29,16 @@ public class Netfolder
    static ServerSocket controlserver;
    
    /**
-    * Constructora de la clase. Se encarga de inicializar los puertos
-	* de datos y de control. Si están ocupados (cualquiera de los dos)
-	* se lanza una excepción.
+    * Constructor (ignorado).
+    */
+   public Netfolder () {}
+
+   /**
+    * Inicializadora de la clase. Se encarga de inicializar los puertos de datos
+    * y de control. Si están ocupados (cualquiera de los dos) se lanza una
+    * excepción.
 	*/
-   public Netfolder() throws Exception
+   public static void init () throws Exception
    {
      try
 	 {
@@ -60,21 +65,11 @@ public class Netfolder
    }
    
    /**
-    * Set de la referencia al parser.
-	*
-	* @param xmlp Parser.
-	*/
-   public void setParserXML(ParserXML xmlp)
-   {
-	  parser = xmlp;
-   }
-   
-   /**
     * Introduce el pathname de referencia para leer y dejar los ficheros.
 	*
 	* @param path Directorio de trabajo.
 	*/
-   public void setPathname(String path)
+   public static void setPathname(String path)
    {
 	  pathname=path;
    }
@@ -85,7 +80,7 @@ public class Netfolder
     * @param ipdestino Dirección destino.
     * @param data Documento XML a enviar.
     */
-   public void sendXml(String ipdestino, String data) throws Exception
+   public static void sendXml(String ipdestino, String data) throws Exception
    {
       int i = 0;
       InetAddress destino;
@@ -131,7 +126,7 @@ public class Netfolder
     * @param ipdestino Dirección destino.
     * @param f Fichero a enviar.
     */
-   public void sendFile(String ipdestino, String f) throws Exception
+   public static void sendFile(String ipdestino, String f) throws Exception
    {
       int i = 0;
       int c;
@@ -184,7 +179,7 @@ public class Netfolder
 	* @deprecated El nuevo método getFile soporta múltiples conexiones al mismo puerto.
     */
 
-   public void getFile(String file) throws Exception
+   public static void getFile(String file) throws Exception
    {
       int c;
       File fichero = new File((pathname+file));
@@ -233,7 +228,7 @@ public class Netfolder
 	* @param file Nombre del archivo a recibir.
 	* @param host Ip del cliente.
 	*/
-   public void getFile(String file, String host) throws Exception
+   public static void getFile(String file, String host) throws Exception
    {
      (new FileTransferer(dataserver, (pathname+file), getIp(host))).start();
    }
@@ -241,11 +236,11 @@ public class Netfolder
    /**
     * Recibe documentos XML. Función bloqueante.
     */
-   public void getXml() throws Exception
+   public static void getXml() throws Exception
    {
 
       while(listening)
-         new xmlThread(controlserver.accept(),parser).start();
+         new xmlThread(controlserver.accept()).start();
 
      controlserver.close();
    }
@@ -254,7 +249,7 @@ public class Netfolder
    * Manda el mensaje xml a todas los hosts conocidos.
    * @param xml Mensaje a enviar.
    */
-   public void sendMessage(String xml)
+   public static void sendMessage(String xml)
    {
 		for(int i=0; i<hosts.size(); i++)
 		{
@@ -270,7 +265,7 @@ public class Netfolder
 			
    }
    
-   private void sendprivate(InetAddress destino, String data) throws Exception
+   private static void sendprivate(InetAddress destino, String data) throws Exception
    {
       int i = 0;
 	  Socket dest = null;
@@ -304,7 +299,7 @@ public class Netfolder
    /**
     * Retorna la ip local.
     */
-   public String whoAmI() throws Exception
+   public static String whoAmI() throws Exception
    {
       InetAddress local = InetAddress.getLocalHost(); 
        return (local.getHostAddress()).toString();
@@ -313,7 +308,7 @@ public class Netfolder
    /**
     * Devuelve la lista de hosts conectados.
     */
-   public Vector getListaHosts()
+   public static Vector getListaHosts()
    {
       return hoststr;
    }
@@ -322,7 +317,7 @@ public class Netfolder
     * Añade un host a la lista de hosts conectados.
     * @param host Ip del host.
     */
-   public void addHost(String host) throws UnknownHostException
+   public static void addHost(String host) throws UnknownHostException
    {
       int i;
       InetAddress ip = getIp(host);
@@ -338,7 +333,7 @@ public class Netfolder
     * Borra un host de las listas de hosts.
     * @param host Ip del host a borrar.
     */
-   public void removeHost(String host)
+   public static void removeHost(String host)
    {
 	try
 	{

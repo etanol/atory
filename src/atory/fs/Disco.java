@@ -1,17 +1,18 @@
-/**
- * Clase Disco.
- * $Revision$
- * Implementa el acceso a disco del directorio compartido.
+/*
+ * Disco.java
  *
+ * $Revision$
  */
-
 package atory.fs;
+
 import atory.*;
 import java.io.File;
 import java.util.Vector;
 
-public class Disco
-{
+/**
+ * Clase para gestionar el acceso al directorio compartido.
+ */
+public class Disco {
    /**
     * Directorio Compartido.
     */

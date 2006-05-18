@@ -9,6 +9,7 @@ import atory.xml.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Random;
+import java.util.Vector;
 
 /**
  * Almacén de información sobre ficheros compartidos. Aquí se almacena la
@@ -16,30 +17,28 @@ import java.util.Random;
  */
 public class Storage {
 
-    private ParserXML parser;
-    private Hashtable table;
-    private Random    rand; // Para pedir hosts aleatorios.
+    private static Hashtable table;
+    private static Random    rand; // Para pedir hosts aleatorios.
 
     /**
-     * Constructor por defecto. Crea una lista vacía.
+     * Constructor (ignorado).
      */
-    public Storage ()
+    public Storage () {}
+    
+    /**
+     * Inicializador de la clase.
+     */
+    public static void init ()
     {
         table  = new Hashtable ();
         rand   = new Random ();
-        parser = null;
     }
-
-    /**
-     * Define el parser que esta clase utilizará.
-     */
-    public void setParser (ParserXML p) { parser = p; }
 
     /**
      * Vacía la lista interna de ficheros. Haya lo que haya, todo se evacúa para
      * quedar sin ningún fichero en la lista.
      */
-    public void listaVacia ()
+    public static void listaVacia ()
     {
         table = new Hashtable ();
     }
@@ -52,7 +51,7 @@ public class Storage {
      *                   utilizará para actualizar el existente.
      * @throws Exception Cuando no se pueden unir los ficheros.
      */
-    public void addFichero (Fichero new_file) throws Exception
+    public static void addFichero (Fichero new_file) throws Exception
     {
         Fichero file;
 
@@ -61,6 +60,12 @@ public class Storage {
             table.put (new_file.getNombre (), new_file);
         else 
             file.merge (new_file);
+
+        if (file.isLocal ()) {
+            Vector v = new Vector ();
+            v.addElement (file);
+            ParserXML.xmlAnadirFicheros (v);
+        }
     }
 
     /**
@@ -71,7 +76,7 @@ public class Storage {
      * @param nombre Nombre del fichero que se elimina.
      * @param host   Máquina que eliminó el fichero de su disco duro.
      */
-    public void delFichero (String nombre, String host)
+    public static void delFichero (String nombre, String host)
     {
         Fichero file;
 
@@ -88,7 +93,7 @@ public class Storage {
      *
      * @param host El nombre (IP) del host que se está retirando de la red.
      */
-    public void delHost (String host)
+    public static void delHost (String host)
     {
         Fichero file;
         Enumeration e;
@@ -109,14 +114,14 @@ public class Storage {
      * @param  nombre    El nombre del fichero a transferir.
      * @throws Exception Si el fichero con dicho nombre no está en la lista.
      */
-    public void reqFichero (String nombre) throws Exception
+    public static void reqFichero (String nombre) throws Exception
     {
         Fichero file;
 
         file = (Fichero) table.get (nombre);
         if (file == null)
             throw new Exception ("Fichero no encontrado");
-        parser.xmlReqFichero (file.getNombre (), file.getRandomHost (rand));
+        ParserXML.xmlReqFichero (file.getNombre (), file.getRandomHost (rand));
     }
 
     /**
@@ -124,7 +129,7 @@ public class Storage {
      *
      * @return Un iterador de tipo Enumeration sobre la lista interna.
      */
-    public Enumeration getListaFicheros ()
+    public static Enumeration getListaFicheros ()
     {
         return table.elements ();
     }

@@ -9,13 +9,11 @@ import atory.xml.*;
 public class xmlThread extends Thread
 {
    Socket socket = null;
-   ParserXML parser = null;
    
-   public xmlThread(Socket conexion, ParserXML xmlp)
+   public xmlThread(Socket conexion)
    {
       super("xmlThread");
       socket = conexion;
-	  parser = xmlp;
    }
    
    public void run()
@@ -31,7 +29,7 @@ public class xmlThread extends Thread
 			while ((inputLine = in.readLine()) != null)
 				xml+=inputLine;
          
-			parser.parsea(xml);
+			ParserXML.parsea(xml);
 		}
 		catch(Exception e)
 		{

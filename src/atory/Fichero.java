@@ -5,6 +5,7 @@
  */
 package atory;
 
+import atory.net.Netfolder;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Random;
@@ -108,12 +109,17 @@ public class Fichero
      * Test de localidad del fichero. Con este método podemos comprobar si el
      * fichero es accesible directamente a través de nuestro disco duro.
      *
-     * @return true si somos uno de los propietarios del fichero, false sino.
+     * @return true si somos uno de los propietarios del fichero, false sino o
+     *              si se produjo alguna excepción.
      */
     public boolean isLocal ()
     {
-        //String my_ip = Netfolder.whoAmI();
-        String my_ip = "127.0.0.1";
+        String my_ip = "";
+        try {
+            my_ip = Netfolder.whoAmI();
+        } catch (Exception ex) {
+            return false;
+        }
         return hosts.contains (my_ip);
     }
 

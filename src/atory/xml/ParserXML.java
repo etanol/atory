@@ -22,53 +22,26 @@ import java.util.Enumeration;
 
 public class ParserXML
 {
-
-    private Netfolder net;
-    private Storage storage;
-
-    private XmlPullParserFactory factory;
-    private XmlSerializer serializer;
+    private static XmlPullParserFactory factory;
+    private static XmlSerializer serializer;
 
     /**
-    * Constructora del parser sin parámetros.
-    */
-    public ParserXML() throws IOException, XmlPullParserException
-    {
-        this(null,null);
-    }
+     * Constructor (ignorado).
+     */
+    public ParserXML() {}
 
     
     /**
-     *Constructora del parser especificando instáncias.
-     *
-     *@param n instáncia de Netfolder 
-     *@param s instáncia de Storage
+     * Inicializadora del parser.
      */
-    public ParserXML(Netfolder n, Storage s) throws IOException,
-           XmlPullParserException
+    public static void init () throws IOException, XmlPullParserException
     {
-
-       net = n;
-       storage = s;
-
        factory = XmlPullParserFactory.newInstance(
                System.getProperty(XmlPullParserFactory.PROPERTY_NAME), null);
 
        factory.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
        serializer = factory.newSerializer();      
     }
-
-    
-    /**
-     * Consultora del campo Netfolder. 
-     */ 
-    public Netfolder getNetfolder() { return net; }
-
-    
-    /**
-     * Consultora del campo Storage. 
-     */ 
-    public Storage getStorage() { return storage; } 
 
     
     /**
@@ -133,7 +106,7 @@ public class ParserXML
      *     </ReqFile>
      *     
      */
-    public void parsea(String xml)
+    public static void parsea(String xml)
         throws XmlPullParserException, IOException, Exception
         {
             String s;
@@ -164,7 +137,7 @@ public class ParserXML
         }
 
     
-    private void parseaNuevaConexion(XmlPullParser xpp) throws IOException,
+    private static void parseaNuevaConexion(XmlPullParser xpp) throws IOException,
             XmlPullParserException, Exception
             {
                 //Sabemos que esta bien formado, y accedemos directamente al TEXT
@@ -176,14 +149,14 @@ public class ParserXML
 
                 xmlListaFicheros(host);
                 xmlListaHosts(host);
-                net.addHost(host);
+                Netfolder.addHost(host);
             }
 
     
 
 
     
-    private void parseaAnadirFicheros(XmlPullParser xpp) throws 
+    private static void parseaAnadirFicheros(XmlPullParser xpp) throws 
         IOException, XmlPullParserException, Exception
         {
             int tipoEvento = xpp.next();
@@ -201,14 +174,14 @@ public class ParserXML
 				else if(tipoEvento == XmlPullParser.END_TAG)
 				{
 					if(xpp.getName().equals("File"))
-						storage.addFichero(f);
+						Storage.addFichero(f);
 				}
                 tipoEvento = xpp.next();
             }
         }
 
     
-    private void parseaEliminarFicheros(XmlPullParser xpp) throws 
+    private static void parseaEliminarFicheros(XmlPullParser xpp) throws 
         IOException, XmlPullParserException
         {
             int tipoEvento = xpp.next();
@@ -227,27 +200,27 @@ public class ParserXML
                 else if(tipoEvento == XmlPullParser.END_TAG)
                 {
                     if(xpp.getName().equals("File"))
-                        storage.delFichero(nombre,host);
+                        Storage.delFichero(nombre,host);
                 }
                 tipoEvento = xpp.next();
             }
         }
     
-    private void parseaAnadirHosts(XmlPullParser xpp) throws IOException,
+    private static void parseaAnadirHosts(XmlPullParser xpp) throws IOException,
             XmlPullParserException
             {
                 int tipoEvento = xpp.next();
                 while(tipoEvento != XmlPullParser.END_DOCUMENT)
                 {
                     if(tipoEvento == XmlPullParser.TEXT)
-                        net.addHost(xpp.getText());
+                        Netfolder.addHost(xpp.getText());
 
                     tipoEvento = xpp.next();
                 }
             }
 
     
-    private void parseaEliminarHosts(XmlPullParser xpp) throws IOException,
+    private static void parseaEliminarHosts(XmlPullParser xpp) throws IOException,
             XmlPullParserException
             {
                 int tipoEvento = xpp.next();
@@ -255,8 +228,8 @@ public class ParserXML
                 {
                     if(tipoEvento == XmlPullParser.TEXT)
                     {
-                        net.removeHost(xpp.getText());
-                        storage.delHost(xpp.getText());
+                        Netfolder.removeHost(xpp.getText());
+                        Storage.delHost(xpp.getText());
                     }
 
                     tipoEvento = xpp.next();
@@ -264,7 +237,7 @@ public class ParserXML
             }
 
     
-    private void parseaPeticionFichero(XmlPullParser xpp) throws 
+    private static void parseaPeticionFichero(XmlPullParser xpp) throws 
        XmlPullParserException, IOException, Exception
     {
             int tipoEvento = xpp.next();
@@ -283,7 +256,7 @@ public class ParserXML
                 else if(tipoEvento == XmlPullParser.END_TAG)
                 {
                     if(xpp.getName().equals("File"))
-                        net.sendFile(host,nombre);
+                        Netfolder.sendFile(host,nombre);
                 }
                 tipoEvento = xpp.next();
             }
@@ -291,7 +264,7 @@ public class ParserXML
     }
 
     
-    private Fichero parseaAtributosFichero(XmlPullParser xpp)
+    private static Fichero parseaAtributosFichero(XmlPullParser xpp)
         throws XmlPullParserException, IOException
         {
             String valor;
@@ -325,24 +298,24 @@ public class ParserXML
      * Función que crea un documento xml que alerta al host "host" que nos 
      * conectamos.
      */
-    public void xmlNuevaConexion(String host) throws IOException, Exception
+    public static void xmlNuevaConexion(String host) throws IOException, Exception
     {  
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento ); 
 
         serializer.startTag("","NewConnection");
         serializer.startTag("", "host")
-            .text(net.whoAmI())
+            .text(Netfolder.whoAmI())
             .endTag("", "host");
         serializer.endTag("", "NewConnection");
-        net.sendXml(host,documento.toString());
+        Netfolder.sendXml(host,documento.toString());
 
     }
 
     /**
      * Función que crea un documento xml con la lista de ficheros compartidos.
      */
-    public void xmlListaFicheros(String host) throws IOException, Exception
+    public static void xmlListaFicheros(String host) throws IOException, Exception
     {
         Fichero f;
         Enumeration e;
@@ -353,7 +326,7 @@ public class ParserXML
         serializer.startTag("", "FilesList");
 
 
-        for(Enumeration lista = storage.getListaFicheros(); lista.hasMoreElements();)
+        for(Enumeration lista = Storage.getListaFicheros(); lista.hasMoreElements();)
         {
             f = (Fichero)lista.nextElement();
             serializer.startTag("", "File")
@@ -370,7 +343,7 @@ public class ParserXML
             serializer.endTag("", "File");
         }
         serializer.endTag("", "FilesList");
-        net.sendXml(host,documento.toString());
+        Netfolder.sendXml(host,documento.toString());
 
     }
 
@@ -378,10 +351,10 @@ public class ParserXML
      * Función que crea un documento xml con las IPs de los hosts que conforman 
      * la red.
      */
-    public void xmlListaHosts(String host) throws IOException, Exception
+    public static void xmlListaHosts(String host) throws IOException, Exception
     {
         int n;
-        Vector v = net.getListaHosts();
+        Vector v = Netfolder.getListaHosts();
 
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
@@ -396,7 +369,7 @@ public class ParserXML
                 .endTag("", "host");
         }
         serializer.endTag("", "HostsList");
-        net.sendXml(host,documento.toString());
+        Netfolder.sendXml(host,documento.toString());
     }
 
 
@@ -404,7 +377,7 @@ public class ParserXML
      * Función que crea un documento xml con una petición de transferencia de 
      * un fichero "fichero" que tiene el host "host".
      */
-    public void xmlReqFichero(String fichero, String host) throws IOException,
+    public static void xmlReqFichero(String fichero, String host) throws IOException,
            Exception
            {
                StringWriter documento = new StringWriter();
@@ -414,12 +387,12 @@ public class ParserXML
                serializer.startTag("", "File")
                    .attribute("","name",fichero);
                serializer.startTag("", "host")
-                   .text(net.whoAmI())
+                   .text(Netfolder.whoAmI())
                    .endTag("", "host");
                serializer.endTag("", "File");
                serializer.endTag("", "ReqFile");
 
-               net.sendXml(host,documento.toString());
+               Netfolder.sendXml(host,documento.toString());
            }
 
 
@@ -428,7 +401,7 @@ public class ParserXML
      * estar compartidos.
      * @param ficheros Vector con objetos Fichero.
      */
-    public void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
+    public static void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
     {
         Fichero f;
         int n;
@@ -440,7 +413,7 @@ public class ParserXML
         serializer.startTag("", "AddFiles");
 
         n = ficheros.size();
-        ip_local = net.whoAmI();
+        ip_local = Netfolder.whoAmI();
 
         for(int i=0;i<n;i++)
         {
@@ -455,7 +428,7 @@ public class ParserXML
             serializer.endTag("", "File");
         }
         serializer.endTag("", "AddFiles");
-        net.sendMessage(documento.toString());
+        Netfolder.sendMessage(documento.toString());
     }
 
     /**
@@ -463,7 +436,7 @@ public class ParserXML
      * compartidos.
      * @param ficheros Vector con objetos Fichero.
      */
-    public void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
+    public static void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
     {
         Fichero f;
         int n;
@@ -475,7 +448,7 @@ public class ParserXML
         serializer.startTag("", "DelFiles");
 
         n = ficheros.size();
-        ip_local = net.whoAmI();
+        ip_local = Netfolder.whoAmI();
 
         for(int i=0;i<n;i++)
         {
@@ -490,7 +463,7 @@ public class ParserXML
             serializer.endTag("", "File");
         }
         serializer.endTag("", "DelFiles");
-        net.sendMessage(documento.toString());
+        Netfolder.sendMessage(documento.toString());
     }
 
 
@@ -498,7 +471,7 @@ public class ParserXML
      * Función que crea un documento xml indicando el nuevo host "host" que 
      * entra a formar parte de la red.
      */
-    public void xmlAnadirHost(String host) throws IOException, Exception
+    public static void xmlAnadirHost(String host) throws IOException, Exception
     {
 
         StringWriter documento = new StringWriter();
@@ -510,14 +483,14 @@ public class ParserXML
             .endTag("","host");
         serializer.endTag("", "AddHost");
 
-        net.sendMessage(documento.toString());
+        Netfolder.sendMessage(documento.toString());
     }
 
    /**
      * Función que crea un documento xml indicando el host "host" que ha caido 
      * de la red.
      */
-    public void xmlEliminarHost(String host) throws IOException, Exception
+    public static void xmlEliminarHost(String host) throws IOException, Exception
     {
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
@@ -528,7 +501,7 @@ public class ParserXML
             .endTag("","host");
         serializer.endTag("", "DelHost");
 
-        net.sendMessage(documento.toString());
+        Netfolder.sendMessage(documento.toString());
     }
 
 }

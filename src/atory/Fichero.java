@@ -116,11 +116,29 @@ public class Fichero
     {
         String my_ip = "";
         try {
-            my_ip = Netfolder.whoAmI();
+            my_ip = Netfolder.whoAmI ();
         } catch (Exception ex) {
             return false;
         }
         return hosts.contains (my_ip);
+    }
+
+    /**
+     * Configurar este ficher como local. Modificar el estado de "localidad" de
+     * este fichero. Esto modifica el valor devuelto por isLocal().
+     *
+     * @param val Con true se define el fichero como local.
+     */
+    public void setLocal (boolean val)
+    {
+        String my_ip = "";
+        try {
+            my_ip = Netfolder.whoAmI ();
+            if (val && !hosts.contains (my_ip))
+                hosts.addElement (my_ip);
+            else
+                hosts.removeElement (my_ip);
+        } catch (Exception ex) {}
     }
 
     /**

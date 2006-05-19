@@ -8,73 +8,118 @@ package atory.fs;
 import atory.*;
 import java.io.File;
 import java.util.Vector;
+import java.util.Hashtable;
+import java.util.Enumeration;
+
 
 /**
  * Clase para gestionar el acceso al directorio compartido.
  */
 public class Disco {
-   /**
-    * Directorio Compartido.
-    */
-   private File dirComp; 
-   
-   /**
-    * Constructora Disco.
-    * @param path_dir Path del directorio compartido.
-    */
-   public Disco(String path_dir) throws Exception
-   {
-      dirComp = new File(path_dir);
-      if(!dirComp.isDirectory())
-         throw new Exception("Path no existe o no es un directorio");
-   }
 
-   
-   /**
-    * @return Devuelve un String con el path del directorio compartido.
-    */
-   public String getDirComp()
-   {
-      return dirComp.getAbsolutePath();
-   }
+    private static boolean   iniciado = false;
+    private static File      dirComp; 
 
-   
-   /**
-    * @return Vector de tipo "Fichero" con los ficheros del directorio
-    * compartido con los atributos nombre, md5 y tamano correspondiente
-    * (atributo hosts no se rellena). 
-    */
-   public Vector ficherosDirComp() throws Exception 
-   {
-      Vector ficheros = new Vector(10,5);
-      File vfiles[];
-      int n;
-      long l, fecha;
-      Fichero f;
-      String name, enc;
-      MD5 md = new MD5();
-      
-     
-      vfiles = dirComp.listFiles();
-      n = vfiles.length;
-      for(int i=0;i<n;i++)
-      {
-         if(vfiles[i].isFile() && vfiles[i].canRead())
-         {
-            name = vfiles[i].getName();
-            enc = md.fromFile(vfiles[i]);
-            l = vfiles[i].length();
-            fecha = vfiles[i].lastModified();
-            //Se añade aquí el host?
-            //Si fuese asi, tendria que llamar al metodo whoAmI
-            //con lo que esta clase se tendria que relacionar tambien
-            //con Netfolder
-            f = new Fichero(name,enc,l,fecha);
-            ficheros.addElement(f);
-         }
-      }
+    /**
+     * Constructor (ignorado).
+     */
+    public Disco () {}
 
-      return ficheros;
-   }
+    /**
+     * Inicializadora de la clase.
+     */
+    public static void init () throws Exception
+    {
+        if (iniciado) return;
+
+        int i;
+        File lista[];
+        Fichero f;
+        Vector fLocales;
+
+        iniciado = true;
+        dirComp  = new File (System.getProperty ("sharedir"));
+        fLocales = new Vector ();
+
+        // Escanea el directorio inicialmente
+        lista = dirComp.listFiles ();
+        for (i = 0; i < lista.length; i++)
+            if (lista[i].isFile ()) {
+                f = new Fichero (lista[i].getName (),
+                                 MD5.fromFile (lista[i]),
+                                 lista[i].length (),
+                                 lista[i].lastModified ());
+                f.setLocal (true);
+                fLocales.addElement (f);
+            }
+
+        // Y fusiónalo con la lista actual
+        Storage.addFicheros (fLocales);
+    }
+
+    /**
+     * Escanea el directorio compartido en busca de cambios.
+     */
+    public static void sync () throws Exception
+    {
+        int i;
+        File lista[];
+        Fichero f;
+        Hashtable actual;
+        Vector removed, added;
+        Enumeration e;
+        String md5;
+
+        actual    = new Hashtable ();
+        removed   = new Vector ();
+        added     = new Vector ();
+
+        // Construímos la lista de ficheros locales (sí, lo sé, esto es muy
+        // lento)
+        e = Storage.getListaFicheros ();
+        while (e.hasMoreElements ()) {
+            f = (Fichero) e.nextElement ();
+            if (f.isLocal ())
+                actual.put (f.getNombre (), f);
+        }
+
+        // Recorrer el directorio compartido en busca de cambios
+        lista = dirComp.listFiles ();
+        for (i = 0; i < lista.length; i++)
+            if (lista[i].isFile ()) {
+                f = (Fichero) actual.remove (lista[i].getName ());
+                if (f == null) {
+                    // Nuevo fichero local
+                    f = new Fichero (lista[i].getName (),
+                                     MD5.fromFile (lista[i]),
+                                     lista[i].length(),
+                                     lista[i].lastModified ());
+                    f.setLocal (true);
+                    added.addElement (f);
+                } else {
+                    if (f.getFecha () < lista[i].lastModified ()) {
+                        // Fichero local modificado. Esto implica eliminación y
+                        // adición
+                        removed.addElement (f);
+                        f = new Fichero (lista[i].getName (),
+                                         MD5.fromFile (lista[i]),
+                                         lista[i].length(),
+                                         lista[i].lastModified ());
+                        f.setLocal (true);
+                        added.addElement (f);
+                    } 
+                }
+            }
+
+        // Buscar por elementos eliminados
+        e = actual.elements ();
+        while (e.hasMoreElements ())
+            removed.addElement (e.nextElement ());
+
+        // Actualizar Storage, primero eliminados y luego añadidos
+        Storage.delFicheros (removed);
+        Storage.addFicheros (added);
+    }
 
 }
+

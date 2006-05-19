@@ -6,6 +6,7 @@
 package atory;
 
 import atory.xml.*;
+import atory.fs.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Random;
@@ -17,6 +18,7 @@ import java.util.Vector;
  */
 public class Storage {
 
+    private static boolean   iniciado = false;
     private static Hashtable table;
     private static Random    rand; // Para pedir hosts aleatorios.
 
@@ -30,8 +32,11 @@ public class Storage {
      */
     public static void init ()
     {
-        table  = new Hashtable ();
-        rand   = new Random ();
+        if (iniciado) return;
+
+        iniciado = true;
+        table    = new Hashtable ();
+        rand     = new Random ();
     }
 
     /**
@@ -60,12 +65,37 @@ public class Storage {
             table.put (new_file.getNombre (), new_file);
         else 
             file.merge (new_file);
+    }
 
-        if (file.isLocal ()) {
-            Vector v = new Vector ();
-            v.addElement (file);
-            ParserXML.xmlAnadirFicheros (v);
+    /**
+     * Añadir una lista de ficheros locales o ampliar su información. Hace lo
+     * mismo que addFichero() pero para una lista y sólo para ficheros locales.
+     * Si alguno de los ficheros no se puede unir se descarta. 
+     *
+     * @param lista Vector de objetos Fichero en el directorio local.
+     */
+    public static void addFicheros (Vector lista) throws Exception
+    {
+        Fichero file, new_file;
+        Vector added = new Vector();
+
+        Enumeration e = lista.elements ();
+        while (e.hasMoreElements ()) {
+            new_file = (Fichero) e.nextElement ();
+            file     = (Fichero) table.get (new_file.getNombre ());
+            if (file == null) {
+                // El fichero no estaba, lo insertamos
+                table.put (new_file.getNombre (), new_file);
+                added.addElement (new_file);
+            } else {
+                try {
+                    // El fichero estaba, intentamos fusionar ambas versiones
+                    file.merge (new_file);
+                    added.addElement (file);
+                } catch (Exception ex) {}
+            }
         }
+        ParserXML.xmlAnadirFicheros (added);
     }
 
     /**
@@ -86,6 +116,34 @@ public class Storage {
             if (!file.exists ())
                 table.remove (nombre);
         }
+    }
+
+    /**
+     * Elimina nuestra participación en los ficheros de la lista. Sólo se invoca
+     * al producirse un evento de este tipo localmente.
+     *
+     * @param lista Vector de objetos Fichero que ya no existen localmente.
+     */
+    public static void delFicheros (Vector lista) throws Exception
+    {
+        Fichero old_file, file;
+        Vector removed = new Vector();
+
+        Enumeration e = lista.elements ();
+        while (e.hasMoreElements ()) {
+            old_file = (Fichero) e.nextElement ();
+            file     = (Fichero) table.get (old_file.getNombre ());
+            if (file != null) {
+                // El fichero está, así que hay que borrarlo de nuestra
+                // participación local.
+                file.setLocal (false);
+                // ¿Se ha eliminado de la red?
+                if (!file.exists ())
+                    table.remove (file.getNombre ());
+                removed.addElement (file);
+            }
+        }
+        ParserXML.xmlEliminarFicheros (removed);
     }
 
     /**
@@ -122,6 +180,28 @@ public class Storage {
         if (file == null)
             throw new Exception ("Fichero no encontrado");
         ParserXML.xmlReqFichero (file.getNombre (), file.getRandomHost (rand));
+    }
+
+    /**
+     * Comprueba la integridad de un fichero. Verifica que el contenido de un
+     * fichero corresponde con el MD5 indicado en su meta-información.
+     *
+     * @param nombre El nombre del fichero en el directorio compartido.
+     * @return true si el fichero es correcto, false sino.
+     */
+    public static boolean checkIntegrity (String nombre)
+    {
+        Fichero file;
+        String md5;
+
+        file = (Fichero) table.get (nombre);
+        if (file != null) {
+            try {
+                md5 = MD5.fromFile (nombre);
+                return md5.equals (file.getMd5 ());
+            } catch (Exception ex) {}
+        }
+        return false;
     }
 
     /**

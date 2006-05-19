@@ -4,7 +4,7 @@
 # $Revision$
 #
 Root    := ..
-Subdirs := xml net gui
+Subdirs := xml net gui fs
 
 include $(Root)/rules.make
 

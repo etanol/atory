@@ -71,7 +71,7 @@ public class MainWindow {
                   con = (Conexion) (conexion.elementAt(lista.getSelectionIndex()));
                   try
                   {
-                     ParserXML.xmlNuevaConexion(con.nombre);
+                     ParserXML.xmlNuevaConexion(con.IP);
                   } catch (Exception e)
                   {
                      System.out.println("Error al conectar");
@@ -214,6 +214,11 @@ public class MainWindow {
          trayItem.setImage(trayImage);
       }
 
+      visualizarLista (new Vector ());
+      try {
+          atory.fs.Disco.merge ();
+      } catch (Exception ex) {}
+
       //fin
       //shell.setSize (290, 420);
       shell.pack();
@@ -224,55 +229,67 @@ public class MainWindow {
       display.dispose ();
    }
 
-   public static void visualizarLista(Vector lista)  //lista de ficheros
+   public static void visualizarLista(final Vector lista)  //lista de ficheros
    {
-      papi =  new TreeItem (tree, SWT.NONE);
-      papi.setText (new String[]{con.nombre,"",""});
-      for(int i=0;i<lista.size();i++)
-      {
-         Fichero f = (Fichero) lista.elementAt(i);
-         anyadirFichero(f);
-      }
+      final Vector lst = lista;
+      display.asyncExec (new Runnable () {
+          public void run ()
+          {
+              papi =  new TreeItem (tree, SWT.NONE);
+              papi.setText (new String[]{(con == null ? "" : con.nombre),"",""});
+              for(int i=0;i<lst.size();i++) {
+                  Fichero f = (Fichero) lst.elementAt(i);
+                  anyadirFichero(f);
+              }
+          }
+      });
    }
 
-   public static void anyadirFichero(Fichero f)
+   public static void anyadirFichero(Fichero fich)
    {
-      String ubi, nombre, nimag;
-      Image icon;
-      if(f.isLocal()) ubi="Local";
-      else ubi="Remoto";
-      nombre = f.getNombre();
-      String[] ext = nombre.split("[.]");
-      if(ext.length==0)
-      {
-         icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
-      }
-      else
-      {
-         nimag="images/" + ext[(ext.length)-1] + ".png";
-         try{
-            icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream(nimag))).scaledTo(20,20) );
-         } catch (Exception e) {
-            icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
-         }
-      }
-      TreeItem hijo = new TreeItem (papi, SWT.NONE);
-      hijo.setImage(icon);
-      hijo.setText (new String[]{ nombre, ubi, String.valueOf(f.getTamano())+" B"});
+       final Fichero f = fich;
+       display.asyncExec (new Runnable() {
+           public void run ()
+           {
+               String ubi, nombre, nimag;
+               Image icon;
+               if(f.isLocal()) ubi="Local";
+               else ubi="Remoto";
+               nombre = f.getNombre();
+               String[] ext = nombre.split("[.]");
+               if(ext.length==0) {
+                   icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
+               } else {
+                   nimag="images/" + ext[(ext.length)-1] + ".png";
+                   try{
+                       icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream(nimag))).scaledTo(20,20) );
+                   } catch (Exception e) {
+                       icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
+                   }
+               }
+               TreeItem hijo = new TreeItem (papi, SWT.NONE);
+               hijo.setImage(icon);
+               hijo.setText (new String[]{ nombre, ubi, String.valueOf(f.getTamano())+" B"});
+           }
+       });
    }
 
-   public void eliminarFichero(Fichero f)
+   public void eliminarFichero(Fichero fich)
    {
-      TreeItem[] ti=papi.getItems();
-      for(int i=0; i < ti.length; i++)
-      {
-         if (ti[i].getText() == f.getNombre())
-         {
-            (ti[i].getItem(i)).dispose();
-            break;
-         }   
-      }
-      //TODO:tratar si no existe fichero a eliminar??
+       final Fichero f = fich;
+       display.asyncExec (new Runnable () {
+           public void run ()
+           {
+               TreeItem[] ti=papi.getItems();
+               for(int i=0; i < ti.length; i++) {
+                   if (ti[i].getText() == f.getNombre()) {
+                       (ti[i].getItem(i)).dispose();
+                       break;
+                   }   
+               }
+       //TODO:tratar si no existe fichero a eliminar??
+           }
+       });
    }
 
    private static void configurarConexion(Shell shell)
@@ -297,6 +314,7 @@ public class MainWindow {
             //TODO: tratar excepcion IP mal formada??
             String n = nombre.getText();
             String p = ip.getText();
+System.out.println ("MainWindow 3: " + p);
             if(n.equals("") || p.equals(""))
             {
             final Shell error = new Shell (dialogo3, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
@@ -324,6 +342,10 @@ public class MainWindow {
                Conexion c5=new Conexion();
                c5.nombre=n;
                c5.IP=p;
+                System.out.println ("MainWindow 2: " + c5.IP);
+                try {
+                    ParserXML.xmlNuevaConexion (c5.IP);
+                } catch (Exception ex) {}
                conexion.addElement(c5);
                dialogo3.dispose();
             }

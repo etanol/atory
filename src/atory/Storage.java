@@ -7,6 +7,7 @@ package atory;
 
 import atory.xml.*;
 import atory.fs.*;
+import atory.gui.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Random;
@@ -46,6 +47,7 @@ public class Storage {
     public static void listaVacia ()
     {
         table = new Hashtable ();
+        MainWindow.visualizarLista (new Vector ());
     }
 
     /**
@@ -65,6 +67,8 @@ public class Storage {
             table.put (new_file.getNombre (), new_file);
         else 
             file.merge (new_file);
+
+        MainWindow.anyadirFichero (file);
     }
 
     /**
@@ -72,26 +76,27 @@ public class Storage {
      * mismo que addFichero() pero para una lista y sólo para ficheros locales.
      * Si alguno de los ficheros no se puede unir se descarta. 
      *
-     * @param lista Vector de objetos Fichero en el directorio local.
+     * @param lista Iterador de objetos Fichero en el directorio local.
      */
-    public static void addFicheros (Vector lista) throws Exception
+    public static void addFicheros (Enumeration lista) throws Exception
     {
         Fichero file, new_file;
         Vector added = new Vector();
 
-        Enumeration e = lista.elements ();
-        while (e.hasMoreElements ()) {
-            new_file = (Fichero) e.nextElement ();
+        while (lista.hasMoreElements ()) {
+            new_file = (Fichero) lista.nextElement ();
             file     = (Fichero) table.get (new_file.getNombre ());
             if (file == null) {
                 // El fichero no estaba, lo insertamos
                 table.put (new_file.getNombre (), new_file);
                 added.addElement (new_file);
+                MainWindow.anyadirFichero (new_file);
             } else {
                 try {
                     // El fichero estaba, intentamos fusionar ambas versiones
                     file.merge (new_file);
                     added.addElement (file);
+                    MainWindow.anyadirFichero (file);
                 } catch (Exception ex) {}
             }
         }
@@ -122,16 +127,15 @@ public class Storage {
      * Elimina nuestra participación en los ficheros de la lista. Sólo se invoca
      * al producirse un evento de este tipo localmente.
      *
-     * @param lista Vector de objetos Fichero que ya no existen localmente.
+     * @param lista Iterador de objetos Fichero que ya no existen localmente.
      */
-    public static void delFicheros (Vector lista) throws Exception
+    public static void delFicheros (Enumeration lista) throws Exception
     {
         Fichero old_file, file;
         Vector removed = new Vector();
 
-        Enumeration e = lista.elements ();
-        while (e.hasMoreElements ()) {
-            old_file = (Fichero) e.nextElement ();
+        while (lista.hasMoreElements ()) {
+            old_file = (Fichero) lista.nextElement ();
             file     = (Fichero) table.get (old_file.getNombre ());
             if (file != null) {
                 // El fichero está, así que hay que borrarlo de nuestra

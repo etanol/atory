@@ -17,8 +17,8 @@ import java.util.Enumeration;
  */
 public class Disco {
 
-    private static boolean   iniciado = false;
     private static File      dirComp; 
+    private static Hashtable localFiles;
 
     /**
      * Constructor (ignorado).
@@ -30,16 +30,12 @@ public class Disco {
      */
     public static void init () throws Exception
     {
-        if (iniciado) return;
-
         int i;
         File lista[];
         Fichero f;
-        Vector fLocales;
 
-        iniciado = true;
-        dirComp  = new File (System.getProperty ("sharedir"));
-        fLocales = new Vector ();
+        dirComp    = new File (System.getProperty ("sharedir"));
+        localFiles = new Hashtable ();
 
         // Escanea el directorio inicialmente
         lista = dirComp.listFiles ();
@@ -50,11 +46,16 @@ public class Disco {
                                  lista[i].length (),
                                  lista[i].lastModified ());
                 f.setLocal (true);
-                fLocales.addElement (f);
+                localFiles.put (f.getNombre (), f);
             }
+    }
 
-        // Y fusiónalo con la lista actual
-        Storage.addFicheros (fLocales);
+    /**
+     * Fusiona la lista local con la lista de ficheros remotos.
+     */
+    public static void merge () throws Exception
+    {
+        Storage.addFicheros (localFiles.elements ());
     }
 
     /**
@@ -76,12 +77,7 @@ public class Disco {
 
         // Construímos la lista de ficheros locales (sí, lo sé, esto es muy
         // lento)
-        e = Storage.getListaFicheros ();
-        while (e.hasMoreElements ()) {
-            f = (Fichero) e.nextElement ();
-            if (f.isLocal ())
-                actual.put (f.getNombre (), f);
-        }
+        actual = (Hashtable) localFiles.clone ();
 
         // Recorrer el directorio compartido en busca de cambios
         lista = dirComp.listFiles ();
@@ -96,29 +92,36 @@ public class Disco {
                                      lista[i].lastModified ());
                     f.setLocal (true);
                     added.addElement (f);
+                    localFiles.put (f.getNombre (), f);
                 } else {
                     if (f.getFecha () < lista[i].lastModified ()) {
                         // Fichero local modificado. Esto implica eliminación y
                         // adición
                         removed.addElement (f);
+                        localFiles.remove (f.getNombre ());
+
                         f = new Fichero (lista[i].getName (),
                                          MD5.fromFile (lista[i]),
                                          lista[i].length(),
                                          lista[i].lastModified ());
                         f.setLocal (true);
                         added.addElement (f);
+                        localFiles.put (f.getNombre (), f);
                     } 
                 }
             }
 
         // Buscar por elementos eliminados
         e = actual.elements ();
-        while (e.hasMoreElements ())
-            removed.addElement (e.nextElement ());
+        while (e.hasMoreElements ()) {
+            f = (Fichero) e.nextElement ();
+            removed.addElement (f);
+            localFiles.remove (f.getNombre ());
+        }
 
         // Actualizar Storage, primero eliminados y luego añadidos
-        Storage.delFicheros (removed);
-        Storage.addFicheros (added);
+        Storage.delFicheros (removed.elements ());
+        Storage.addFicheros (added.elements ());
     }
 
 }

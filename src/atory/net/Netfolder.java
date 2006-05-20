@@ -24,7 +24,7 @@ public class Netfolder
    static Vector hoststr = new Vector(10,5);
    static boolean listening = true;
    static ParserXML parser;
-   static String pathname;
+   static String pathname = "./";
    static ServerSocket dataserver;
    static ServerSocket controlserver;
    
@@ -88,6 +88,7 @@ public class Netfolder
       DataOutputStream flujo = null; 
       try
       {
+          System.out.println ("sendXML: ip (" + ipdestino + "), data (" + data + ")");
          destino = getIp(ipdestino);
       }
       catch(UnknownHostException e)
@@ -251,6 +252,7 @@ public class Netfolder
    */
    public static void sendMessage(String xml)
    {
+       System.out.println ("Hola manola");
 		for(int i=0; i<hosts.size(); i++)
 		{
 			try
@@ -301,8 +303,9 @@ public class Netfolder
     */
    public static String whoAmI() throws Exception
    {
-      InetAddress local = InetAddress.getLocalHost(); 
-       return (local.getHostAddress()).toString();
+//      InetAddress local = InetAddress.getLocalHost(); 
+ //      return (local.getHostAddress()).toString();
+        return "10.10.25.183";
    }
 
    /**

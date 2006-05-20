@@ -9,21 +9,32 @@ Subdirs := atory
 include $(Root)/rules.make
 
 jar: all
-	@find . -name \*.class | xargs jar cvf atory.jar
+	@find atory \( -name \*.class -or -name \*.png \) -print0 | xargs -0 jar cvf atory.jar
+#	@jar cvf atory.jar atory
 
-package: linux_package
+package: jar linux_package #win_package
 
-linux_package: jar
+win_package:
+	@test -d win_package/atory || mkdir -p win_package/atory; \
+	cd win_package/atory; \
+	cp -v ../../atory.jar .; \
+	cp -v ../../../win_atory.bat atory.bat; \
+	cp -v ../../../lib/swt_win32.jar swt.jar; \
+	cp -v ../../../lib/xpp3-1.1.3_7.jar .; \
+	cp -v ../../../sysdeps/*.dll .; \
+	cp -v ../../../sysdeps/javaw.exe.manifest .; \
+	cd .. && zip -r9 atory_win.zip atory; \
+	cd ..
+
+linux_package:
 	@test -d linux_package/atory || mkdir -p linux_package/atory; \
 	cd linux_package/atory; \
-	test -d images || mkdir images; \
 	cp -v ../../atory.jar .; \
 	cp -v ../../../linux_atory.run atory.run; \
 	cp -v ../../../lib/swt.jar .; \
 	cp -v ../../../lib/xpp3-1.1.3_7.jar .; \
 	cp -v ../../../sysdeps/*.so .; \
-	cp -v ../../atory/gui/images/*.png images; \
-	cd .. && zip -r9 atory.zip atory; \
+	cd .. && zip -r9 atory_lin.zip atory; \
 	cd ..
 
 .PHONY: dclean help

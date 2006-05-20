@@ -8,6 +8,7 @@ package atory.xml;
 
 import atory.*;
 import atory.net.*;
+import atory.fs.*;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -122,9 +123,11 @@ public class ParserXML
                 parseaNuevaConexion(xpp);
             else if(s.equals("HostsList"))
                 parseaAnadirHosts(xpp);
-            else if(s.equals("FilesList"))
+            else if(s.equals("FilesList")) {
+                Storage.listaVacia ();
                 parseaAnadirFicheros(xpp);
-            else if(s.equals("AddFiles"))
+                Disco.merge ();
+            } else if(s.equals("AddFiles"))
                 parseaAnadirFicheros(xpp);
             else if(s.equals("DelFiles"))
                 parseaEliminarFicheros(xpp);

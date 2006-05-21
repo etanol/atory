@@ -1,7 +1,5 @@
 /*
- * Atory.java - Clase principal.
- *
- * Esta es la clase que arranca todo el tinglado.
+ * Atory.java
  *
  * $Revision$
  */
@@ -13,9 +11,8 @@ import atory.xml.ParserXML;
 import atory.fs.Disco;
 
 /* 
- * La idea es que todos los hilos vayan igual. Ya que nuestras clases
- * principales son estáticas, lo que tenemos que hacer es envolverlas en
- * hilos.
+ * Ya que nuestras clases principales son estáticas, lo que tenemos que hacer es
+ * envolverlas en hilos.
  */
 class NET extends Thread {
     public NET () {}
@@ -28,6 +25,10 @@ class NET extends Thread {
     }
 }
 
+/**
+ * Clase principal. Esta clase es la que monta todo el tinglado. Se limita a
+ * invocar a las inicializaciones y crear los hilos básicos necesarios.
+ */
 public class Atory {
 
     public static void main (String args[]) throws Exception

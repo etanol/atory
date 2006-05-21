@@ -6,14 +6,15 @@
 #
 SHELL   := sh
 Files   := $(First) $(wildcard *.java)
-Targets := files
 JarPath := $(Root)/../lib
 
 # CLASSPATH for compilation
 Classpath := $(Root):$(JarPath)/xpp3-1.1.3_7.jar:$(JarPath)/swt.jar
 
 ifdef Subdirs
-Targets += subdirs
+Targets := subdirs files
+else
+Targets := files
 endif
 
 JAVACFLAGS := -deprecation -encoding UTF-8 #-encoding ISO-8859-1

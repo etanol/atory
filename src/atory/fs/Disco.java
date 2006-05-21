@@ -120,8 +120,10 @@ public class Disco {
         }
 
         // Actualizar Storage, primero eliminados y luego añadidos
-        Storage.delFicheros (removed.elements ());
-        Storage.addFicheros (added.elements ());
+        if (removed.size () > 0)
+            Storage.delFicheros (removed.elements ());
+        if (added.size () > 0)
+            Storage.addFicheros (added.elements ());
     }
 
 }

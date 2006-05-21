@@ -25,10 +25,12 @@ public class xmlThread extends Thread
 	  {
 		try
 		{
+            int temp = (socket.getLocalAddress().toString()).indexOf('/');
+            
 			input = (new DataInputStream(
 					socket.getInputStream()));
 			xml = input.readUTF();
-         regularip(xml);
+      		xml = regularip(xml, ((socket.getLocalAddress()).toString()).substring(temp+1));
 			ParserXML.parsea(xml);
 		}
 		catch(Exception e)
@@ -46,43 +48,19 @@ public class xmlThread extends Thread
 	  }
    }
 	
-   private static String regularip(String data)
-   {
+   private static String regularip(String data, String ip)
+    {
      String cadena = null;
      boolean b = false;
      try{
-	  System.out.println("xml a convertir: " + data);
-     Enumeration e1 = NetworkInterface.getNetworkInterfaces();
-	  System.out.println("x");
-     while(e1.hasMoreElements())
-     {
-		   NetworkInterface netface = (NetworkInterface)
-            e1.nextElement();
-			Enumeration e2 = netface.getInetAddresses();
-
-		  while(e2.hasMoreElements())
-		  {
-
-			  if(!b)
-			  {
-				  cadena +=((InetAddress)e2.nextElement()).toString();
-				  b = true;
-			  }
-			  cadena +="|"+((InetAddress)e2.nextElement()).toString();
-		  }
-		  System.out.println("Cadena "+ cadena);
-	  } 
-	  System.out.println("Ultima cadena "+ cadena);
-	  data = data.replaceAll(cadena,"127.0.0.1");
+	  System.out.println("xml a convertir: " + data+ " IP "+ ip);
+	  data = data.replaceAll(ip, Netfolder.whoAmI());
 	  System.out.println("xml reconvertido: " + data);
      return data;
      }
      catch(Exception e)
-     {
-		  System.out.println("error");
-	  }
+     {;}
      return data;
    }
-
 
 }

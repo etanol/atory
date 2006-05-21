@@ -65,12 +65,13 @@ public class Storage {
         file = (Fichero) table.get (new_file.getNombre ());
         if (file == null) {
             table.put (new_file.getNombre (), new_file);
-				file = new_file;
-		  } else {
+            MainWindow.anyadirFichero (new_file);
+        } else {
+            MainWindow.eliminarFichero (file);
             file.merge (new_file);
-		  }
+            MainWindow.anyadirFichero (file);
+        }
 
-        MainWindow.anyadirFichero (file);
     }
 
     /**
@@ -96,9 +97,10 @@ public class Storage {
             } else {
                 try {
                     // El fichero estaba, intentamos fusionar ambas versiones
+                    MainWindow.eliminarFichero (file);
                     file.merge (new_file);
-                    added.addElement (file);
                     MainWindow.anyadirFichero (file);
+                    added.addElement (file);
                 } catch (Exception ex) {}
             }
         }

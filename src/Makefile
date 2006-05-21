@@ -9,7 +9,7 @@ Subdirs := atory
 include $(Root)/rules.make
 
 jar: all
-	@find atory \( -name \*.class -or -name \*.png \) -print0 | xargs -0 jar cvf atory.jar
+	@rm -f atory.jar && find atory \( -name \*.class -or -name \*.png \) -print0 | xargs -0 jar cvf atory.jar
 
 package: jar linux_package #win_package
 
@@ -28,12 +28,12 @@ win_package:
 linux_package:
 	@test -d linux_package/atory || mkdir -p linux_package/atory; \
 	cd linux_package/atory; \
-	cp -v ../../atory.jar .; \
-	cp -v ../../../linux_atory.run atory.run; \
-	cp -v ../../../lib/swt.jar .; \
-	cp -v ../../../lib/xpp3-1.1.3_7.jar .; \
-	cp -v ../../../sysdeps/*.so .; \
-	cd .. && zip -r9 atory_lin.zip atory; \
+	cp -vf ../../atory.jar .; \
+	cp -vf ../../../linux_atory.run atory.run; \
+	cp -vf ../../../lib/swt.jar .; \
+	cp -vf ../../../lib/xpp3-1.1.3_7.jar .; \
+	cp -vf ../../../sysdeps/*.so .; \
+	cd .. && rm -f atory_lin.zip && zip -r9 atory_lin.zip atory; \
 	cd ..
 
 .PHONY: dclean help

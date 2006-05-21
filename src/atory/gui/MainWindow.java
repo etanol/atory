@@ -214,7 +214,7 @@ public class MainWindow {
        });
    }
 
-   public void eliminarFichero(Fichero fich)
+   public static void eliminarFichero(Fichero fich)
    {
        final Fichero f = fich;
        display.asyncExec (new Runnable () {

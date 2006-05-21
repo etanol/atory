@@ -358,6 +358,7 @@ public class ParserXML
     {
         int n;
         Vector v = Netfolder.getListaHosts();
+		  v.addElement(Netfolder.whoAmI());
 
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
@@ -372,6 +373,7 @@ public class ParserXML
                 .endTag("", "host");
         }
         serializer.endTag("", "HostsList");
+		  System.out.println("parserxml: " + documento.toString());
         Netfolder.sendXml(host,documento.toString());
     }
 

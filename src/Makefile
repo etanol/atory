@@ -10,7 +10,6 @@ include $(Root)/rules.make
 
 jar: all
 	@find atory \( -name \*.class -or -name \*.png \) -print0 | xargs -0 jar cvf atory.jar
-#	@jar cvf atory.jar atory
 
 package: jar linux_package #win_package
 

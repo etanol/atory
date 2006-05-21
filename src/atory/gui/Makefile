@@ -5,6 +5,7 @@
 #
 Root    := ../..
 Subdirs := 
+First   := Listeners.java
 
 include $(Root)/rules.make
 

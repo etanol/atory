@@ -37,6 +37,7 @@ public class Fichero
      * @param nom Nombre.
      * @param enc MD5 digest.
      * @param tam Tamaño en bytes.
+     * @param fec Fecha de última modificación.
      */
 	public Fichero (String nom, String enc, long tam, long fec)
 	{

@@ -7,6 +7,7 @@ package atory.net;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.nio.*;
 import atory.xml.*;
 
 /**
@@ -88,7 +89,7 @@ public class Netfolder
       DataOutputStream flujo = null; 
       try
       {
-          System.out.println ("sendXML: ip (" + ipdestino + "), data (" + data + ")");
+         System.out.println ("sendXML: ip (" + ipdestino + "), data (" + data + ")");
          destino = getIp(ipdestino);
       }
       catch(UnknownHostException e)
@@ -100,6 +101,8 @@ public class Netfolder
          try
          {
             dest = new Socket(destino , XMLPORT);
+				int temp = (dest.getLocalAddress().toString()).indexOf('/');
+      		data = regularip(data, ((dest.getLocalAddress()).toString()).substring(temp+1));
             OutputStream output = dest.getOutputStream();
             flujo = new DataOutputStream(output);
             flujo.writeUTF(data);
@@ -120,6 +123,22 @@ public class Netfolder
          }
       }
    }
+	
+	private static String regularip(String data, String ip)
+   {
+     String cadena = null;
+     boolean b = false;
+     try{
+	  System.out.println("xml a convertir: " + data+ " IP "+ ip);
+	  data = data.replaceAll(whoAmI(),ip);
+	  System.out.println("xml reconvertido: " + data);
+     return data;
+     }
+     catch(Exception e)
+     {;}
+     return data;
+   }
+
 
    /**
     * Función encargada de enviar ficheros a través de la red.
@@ -252,7 +271,9 @@ public class Netfolder
    */
    public static void sendMessage(String xml)
    {
-       System.out.println ("Hola manola");
+      // Medicion de tiempo
+		Date fin;
+      Date inicio = new Date();
 		for(int i=0; i<hosts.size(); i++)
 		{
 			try
@@ -262,9 +283,14 @@ public class Netfolder
 			catch(Exception e)
 			{
 				removeHost((String)hoststr.get(i));
+            //TODO:borrar host de clase disco
 			}
 		}
-			
+		fin = new Date();
+      
+      long ttotal=fin.getTime()-inicio.getTime();//milisegundos
+      System.out.println(ttotal);
+      
    }
    
    private static void sendprivate(InetAddress destino, String data) throws Exception
@@ -277,6 +303,8 @@ public class Netfolder
          try
          {
             dest = new Socket(destino , XMLPORT);
+				int temp = (dest.getLocalAddress().toString()).indexOf('/');
+      		data = regularip(data,((dest.getLocalAddress()).toString()).substring(temp+1));
             OutputStream output = dest.getOutputStream();
             flujo = new DataOutputStream(output);
             flujo.writeUTF(data);
@@ -303,9 +331,8 @@ public class Netfolder
     */
    public static String whoAmI() throws Exception
    {
-//      InetAddress local = InetAddress.getLocalHost(); 
- //      return (local.getHostAddress()).toString();
-        return "10.10.25.183";
+      InetAddress local = InetAddress.getLocalHost(); 
+      return (local.getHostAddress()).toString();
    }
 
    /**
@@ -336,25 +363,25 @@ public class Netfolder
     * Borra un host de las listas de hosts.
     * @param host Ip del host a borrar.
     */
-   public static void removeHost(String host)
-   {
-	try
+	public static void removeHost(String host)
 	{
-	  for(int i=0; i<hoststr.size(); i++)
-	  {
-		if((hoststr.get(i)).equals(host))
+		try
 		{
-			hosts.remove(i);
-			hoststr.remove(i);
-			break;
+			for(int i=0; i<hoststr.size(); i++)
+			{
+				if((hoststr.get(i)).equals(host))
+				{
+					hosts.remove(i);
+					hoststr.remove(i);
+					break;
+				}
+			}
 		}
-	  }
+		catch(Exception e)
+		{
+			return;
+		}
 	}
-	catch(Exception e)
-	{
-		return;
-	}
-   }
 
    /**
     * Transforma una string ip en un tipo ip (InetAddress).

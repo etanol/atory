@@ -9,164 +9,97 @@ import org.eclipse.swt.graphics.*;
 import java.util.Vector;
 
 /**
- *Clase para mostrar la ventana principal y gestionar sus eventos
+ * Clase para mostrar la ventana principal y gestionar sus eventos. Comunicación
+ * con el usuario.
  */
 public class MainWindow {
 
-   static Tree tree;
-   static Conexion con;
-   static TreeItem papi;
-   static Display display;
-   static Vector conexion;
+    static Display display;
+    static Shell   shell;
+    static Tree tree;
+    static Conexion con;
+    static TreeItem papi;
+    static Vector conexion;
 
-   /**
-    * @param args
-    */
-   public static void main(String[] args) {
+    /**
+     * Función principal. Utilizamos main con un doble propósito: poder arrancar
+     * la interfaz directamente por separado para previsualizaciones y la
+     * invocación normal junto con los demás módulos.
+     *
+     * @param args No se utiliza, únicamente se especifica para que el prototipo
+     *             encaje.
+     */
+    public static void main(String[] args)
+    {
+        display = new Display ();
+        shell   = new Shell(display);
+        shell.setText("ATORY");
 
-      display = new Display ();
-      final Shell shell = new Shell(display);
-      shell.setText("ATORY");
+        conexion = new Vector();
 
-      conexion=new Vector();
-      //menu
-      Menu menuBar = new Menu (shell, SWT.BAR);
-      MenuItem archivo = new MenuItem (menuBar, SWT.CASCADE);
-      archivo.setText ("&Atory");
-      MenuItem ayuda = new MenuItem (menuBar, SWT.CASCADE);
-      ayuda.setText ("A&yuda");
-      Menu subArchivo = new Menu (menuBar);
-      archivo.setMenu (subArchivo);
-      Menu subAyuda = new Menu (menuBar);
-      ayuda.setMenu (subAyuda);
+        // Barra de menú, elementos principales.
+        Menu menuBar     = new Menu (shell, SWT.BAR);
+        Menu subArchivo  = new Menu (menuBar);
+        Menu subAyuda    = new Menu (menuBar);
+        MenuItem archivo = new MenuItem (menuBar, SWT.CASCADE);
+        MenuItem ayuda   = new MenuItem (menuBar, SWT.CASCADE);
 
-      MenuItem item11 = new MenuItem (subArchivo,SWT.PUSH);
-      item11.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-            if (conexion.size()>0)
+        archivo.setText ("&Atory");
+        archivo.setMenu (subArchivo);
+        ayuda  .setText ("A&yuda");
+        ayuda  .setMenu (subAyuda);
+
+        // Barra de menú, submenú Archivo
+
+        // Conectar
+        MenuItem item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("C&onectar\tCtrl+O");
+        item.setAccelerator (SWT.MOD1 + 'O');
+        item.addListener    (SWT.Selection, new ConectarListener ()); 
+
+        // Desconectar
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("&Desconectar\tCtrl+D");
+        item.setAccelerator (SWT.MOD1 + 'D');
+        item.addListener    (SWT.Selection, new DesconectarListener ());
+
+        // Configurar conexión
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("Con&figurar conexión\tCtrl+F");
+        item.setAccelerator (SWT.MOD1 + 'F');
+        item.addListener    (SWT.Selection, new ConfigurarListener ());
+
+        // Sincronizar
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("&Sincronizar\tCtrl+N");
+        item.setAccelerator (SWT.MOD1 + 'N');
+        item.addListener    (SWT.Selection, new SincronizarListener ());
+
+        // Descargar
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("Descargar\tCtrl+L");
+        item.setAccelerator (SWT.MOD1 + 'L');
+        item.addListener    (SWT.Selection, new DescargarListener ());
+
+        // Cerrar (Salir)
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("&Cerrar\tCtrl+C");
+        item.setAccelerator (SWT.MOD1 + 'C');
+        item.addListener    (SWT.Selection, new Listener () {
+            public void handleEvent (Event e)
             {
-            final Shell dialogo1 = new Shell (shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-            dialogo1.setText("Conectar");
-            RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-            layoutv.wrap = true;
-            layoutv.fill = true;
-            layoutv.justify = false;
-            dialogo1.setLayout(layoutv);
-            Label txt = new Label (dialogo1, SWT.LEFT);
-            txt.setText("Elija el ATORY al que desea conectarse:");
-            final List lista = new List (dialogo1, SWT.SINGLE);
-            //YETDO: get de conexiones ya configuradas como array de strings
-            //para pasarselas a la lista
-            String[] conex;
-            Vector v=new Vector();
-            for(int i=0;i<conexion.size();i++)
-            v.addElement(((Conexion)(conexion.get(i))).nombre);
-            conex=(String[])v.toArray(new String[v.size()]);
-            lista.setItems (conex);
-            Button b = new Button(dialogo1, SWT.PUSH);
-            b.setText("Conectar");
-            b.addListener (SWT.Selection, new Listener () {
-                  public void handleEvent (Event eb) {
-                  //TODO: enviar al FS la peticion de conexion del atory indicado (?)
-                  con = (Conexion) (conexion.elementAt(lista.getSelectionIndex()));
-                  try
-                  {
-                     ParserXML.xmlNuevaConexion(con.IP);
-                  } catch (Exception e)
-                  {
-                     System.out.println("Error al conectar");
-                     }
-                  Vector fichi=new Vector();
-                  /*fichi.addElement(new Fichero("dani.java","1234567abcd",(long)567.8, 1234));
-                    fichi.addElement(new Fichero("c5.hjk","8765432abcd",(long)99, 345));
-                    visualizarLista(fichi);*/
-                  dialogo1.dispose();
-                  //TODO:entretener al usuario mientras se conecta??
-                  }
-                  });
-            dialogo1.pack();
-            dialogo1.open();
+                shell.setVisible (false);
             }
-            else
-            {
-               configurarConexion(shell);
-            }
-            }
-      });
-      item11.setText ("C&onectar\tCtrl+O");
-      item11.setAccelerator (SWT.MOD1 + 'O');
+        });
 
-      MenuItem item12 = new MenuItem (subArchivo,SWT.PUSH);
-      item12.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-            //TODO: enviar peticion de desconexion
-            }
-            });
-      item12.setText ("&Desconectar\tCtrl+D");
-      item12.setAccelerator (SWT.MOD1 + 'D');
+        // Barra de menú, submenú Ayuda
 
-      MenuItem item13 = new MenuItem (subArchivo,SWT.PUSH);
-      item13.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) 
-            {
-            configurarConexion(shell);
-            }
-            });
-      item13.setText ("Con&figurar conexion\tCtrl+F");
-      item13.setAccelerator (SWT.MOD1 + 'F');
+        // Acerca de
+        item = new MenuItem (subAyuda,SWT.PUSH);
+        item.setText     ("Acerca de...");
+        item.addListener (SWT.Selection, new AcercaDeListener ());
 
-      MenuItem item14 = new MenuItem (subArchivo,SWT.PUSH);
-      item14.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-            }
-            });
-      item14.setText ("&Sincronizar\tCtrl+N");
-      item14.setAccelerator (SWT.MOD1 + 'N');
-
-      MenuItem item15 = new MenuItem (subArchivo,SWT.PUSH);
-      item15.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-            }
-            });
-      item15.setText ("Descargar\tCtrl+L");
-      item15.setAccelerator (SWT.MOD1 + 'L');
-
-      MenuItem item16 = new MenuItem (subArchivo,SWT.PUSH);
-      item16.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e) {
-            display.dispose ();    }
-            });
-      item16.setText ("&Cerrar\tCtrl+C");
-      item16.setAccelerator (SWT.MOD1 + 'C');
-
-      MenuItem item21 = new MenuItem (subAyuda,SWT.PUSH);
-      item21.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event e){
-            final Shell dialogoAD = new Shell (shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-            dialogoAD.setText("Acerca de ATORY");
-            RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-            layoutv.wrap = true;
-            layoutv.fill = true;
-            layoutv.justify = false;
-            dialogoAD.setLayout(layoutv);
-            Label txt = new Label (dialogoAD, SWT.LEFT);
-            txt.setText("This program is free software, YEAH!\nDevelopers: \nDC, XG, CG, IJ, IM");
-            Button b = new Button(dialogoAD, SWT.PUSH);
-            b.setText("I will pay your fees");
-            b.addListener (SWT.Selection, new Listener () {
-               public void handleEvent (Event eb) {
-               //TODO: enviar al FS la peticion de conexion del atory indicado (?)
-               // ControlGUI.sendConexion(lista.getSelection()[0]);  <-- algo asi
-               dialogoAD.dispose();
-               }
-               });
-            dialogoAD.pack();
-            dialogoAD.open();
-            }
-      });
-      item21.setText ("Acerca de...");
-
-      shell.setMenuBar (menuBar);
+        shell.setMenuBar (menuBar);
       //////TODO??
       RowLayout layoutv = new RowLayout(SWT.VERTICAL);
       layoutv.wrap = true;
@@ -184,10 +117,14 @@ public class MainWindow {
       ToolItem syncItem = new ToolItem (toolBar, SWT.PUSH);
       downItem.setImage (imaged);
       syncItem.setImage (images);
+      downItem.setToolTipText ("Descargar");
+      syncItem.setToolTipText ("Sincronizar");
+      downItem.addListener (SWT.Selection, new DescargarListener());
+      syncItem.addListener (SWT.Selection, new SincronizarListener());
       toolBar.pack ();
 
       //arboles
-      tree = new Tree(shell, SWT.V_SCROLL | SWT.H_SCROLL);
+      tree = new Tree(shell, SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE);
       tree.setHeaderVisible(true);
       tree.setLayoutData(new RowData(260, 300));
       TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
@@ -202,14 +139,12 @@ public class MainWindow {
       column3.setText("Tamaño");
       column3.setWidth(60);
       column3.setResizable(true);
-      //TreeItem one = new TreeItem (tree, 0);
-      //one.setText (new String[]{"Atory X", "Local", "5 K"});
 
       //System Tray
       Tray tray = display.getSystemTray();
       if(tray != null) {
       Image trayImage = new Image(display, (new
-      ImageData(MainWindow.class.getResourceAsStream("images/sync.png"))).scaledTo(30,25));
+      ImageData(MainWindow.class.getResourceAsStream("images/ninjahiro.png"))).scaledTo(25,25));
          TrayItem trayItem = new TrayItem(tray, SWT.NONE);
          trayItem.setImage(trayImage);
       }
@@ -223,6 +158,11 @@ public class MainWindow {
       //shell.setSize (290, 420);
       shell.pack();
       shell.open ();
+      /*while (true)
+      {
+         if (!display.readAndDispatch ()) display.sleep ();
+      }*/
+      
       while (!shell.isDisposed ()) {
          if (!display.readAndDispatch ()) display.sleep ();
       }
@@ -292,67 +232,33 @@ public class MainWindow {
        });
    }
 
-   private static void configurarConexion(Shell shell)
+   /**
+    * Muestra un mensaje emergente de error. La ventana es modal y, por tanto,
+    * la ejecución se detiene hasta que el usuario ha presionado el botón de
+    * acpetar.
+    *
+    * @param padre Ventana padre sobre la que se mostrará esta ventana
+    *              emergente.
+    * @param msg   Mensaje de error que se mostrará en la ventana emergente.
+    */
+   public static void error (Shell padre, String msg)
    {
-      final Shell dialogo3 = new Shell (shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-      dialogo3.setText("Configurar conexion");
-      RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-      layoutv.wrap = true;
-      layoutv.fill = true;
-      layoutv.justify = false;
-      dialogo3.setLayout(layoutv);
-      Label nombreLabel = new Label (dialogo3, SWT.LEFT);
-      nombreLabel.setText("Introduzca un nombre para la conexión:");
-      final Text nombre = new Text (dialogo3, SWT.SINGLE);
-      Label ipLabel = new Label (dialogo3, SWT.SINGLE);
-      ipLabel.setText("Introduzca la dirección IP:");
-      final Text ip = new Text (dialogo3, SWT.SINGLE);
-      Button b = new Button(dialogo3, SWT.PUSH);
-      b.setText("Aceptar");
-      b.addListener (SWT.Selection, new Listener () {
-            public void handleEvent (Event eb) {
-            //TODO: tratar excepcion IP mal formada??
-            String n = nombre.getText();
-            String p = ip.getText();
-System.out.println ("MainWindow 3: " + p);
-            if(n.equals("") || p.equals(""))
-            {
-            final Shell error = new Shell (dialogo3, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-            RowLayout lay = new RowLayout(SWT.VERTICAL);
-            lay.wrap = true;
-            lay.fill = true;
-            lay.justify = false;
-            error.setLayout(lay);
-            (new Label(error,SWT.SINGLE)).setText("No deje ningún campo vacío");
-            Button bb=new Button(error, SWT.PUSH);
-            bb.setText("Aceptar");
-            bb.addListener (SWT.Selection, new Listener () {
-               public void handleEvent (Event ev) {
-               error.dispose();
-               }
-               });
-            //MessageDialog ups = new MessageDialog (dialogo3,new String("Atención"), null, 
-            //   new String("No deje ningún campo vacío"),MessageDialog.WARNING,null,0);
-            error.pack();
-            error.open();
-            }
-            else
-            {
-               //Conexion c=new Conexion(n,p);
-               Conexion c5=new Conexion();
-               c5.nombre=n;
-               c5.IP=p;
-                System.out.println ("MainWindow 2: " + c5.IP);
-                try {
-                    ParserXML.xmlNuevaConexion (c5.IP);
-                } catch (Exception ex) {}
-               conexion.addElement(c5);
-               dialogo3.dispose();
-            }
-            }
-      });
-      dialogo3.pack();
-      dialogo3.open();
+       MessageBox errMsg;
+       
+       errMsg = new MessageBox (padre, SWT.ICON_ERROR | SWT.OK);
+       errMsg.setMessage (msg);
+       errMsg.open       ();
+   }
+
+   /**
+    * Muestra un mensaje emergente de error. En este caso la ventana padre es la
+    * ventana principal.
+    *
+    * @param msg El mensaje de error a visualizar en la ventana emergente.
+    */
+   public static void error (String msg)
+   {
+       error (shell, msg);
    }
 
 }

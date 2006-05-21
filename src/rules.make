@@ -5,25 +5,18 @@
 # $Revision$
 #
 SHELL   := sh
-Files   := $(wildcard *.java)
+Files   := $(First) $(wildcard *.java)
 Targets := files
 JarPath := $(Root)/../lib
 
-# Path separator
-ifeq ($(shell uname),WindowsNT)
-S := ;
-else
-S := :
-endif
-
 # CLASSPATH for compilation
-Classpath := $(Root)$(S)$(JarPath)/xpp3-1.1.3_7.jar$(S)$(JarPath)/swt.jar
+Classpath := $(Root):$(JarPath)/xpp3-1.1.3_7.jar:$(JarPath)/swt.jar
 
 ifdef Subdirs
 Targets += subdirs
 endif
 
-JAVACFLAGS := -deprecation #-encoding ISO-8859-1
+JAVACFLAGS := -deprecation -encoding UTF-8 #-encoding ISO-8859-1
 ifdef final
 export final
 JAVACFLAGS += -g:none

@@ -63,10 +63,12 @@ public class Storage {
         Fichero file;
 
         file = (Fichero) table.get (new_file.getNombre ());
-        if (file == null)
+        if (file == null) {
             table.put (new_file.getNombre (), new_file);
-        else 
+				file = new_file;
+		  } else {
             file.merge (new_file);
+		  }
 
         MainWindow.anyadirFichero (file);
     }

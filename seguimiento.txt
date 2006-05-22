@@ -3,24 +3,26 @@
 
 Completado:
 
-- Primera presentación. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Diseño de pruebas para verificar el funcionamiento del prototipo. [Sergi]
+- Plantilla para la memoria. [Isaac, Ivan]
+- Añadir reglas para generar paquetes ejecutables autocontenidos en cada
+  plataforma soportada. [Isaac]
 
 
 En progreso:
 
 - Primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
-- Diseño de pruebas para verificar el funcionamiento del prototipo. [Sergi]
-- Plantilla para la memoria. [Isaac, Ivan]
 - Memoria del documento. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Pruebas de escalabilidad. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Pruebas para verificar el funcionamiento del prototipo.
+  [Cecilia, Daniel, Isaac, Ivan, Sergi]
 
 
 Por hacer:
 
-- Añadir reglas para generar paquetes ejecutables autocontenidos en cada
-  plataforma soportada. [Isaac]
-- Pruebas para verificar el funcionamiento del prototipo.
-  [Cecilia, Daniel, Isaac, Ivan, Sergi]
-- Pruebas de escalabilidad. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Correcciones estéticas en la interfaz gráfica. [Cecilia]
+- Guión para la demostración ante el profesor. [Daniel, Ivan, Sergi]]
+- Empaquetado final y envío al BSCW. [Isaac]
 
 
 $Revision$

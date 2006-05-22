@@ -8,37 +8,17 @@ Subdirs := atory
 
 include $(Root)/rules.make
 
-jar: all
-	@rm -f atory.jar && find atory \( -name \*.class -or -name \*.png \) -print0 | xargs -0 jar cvf atory.jar
-
-package: jar linux_package #win_package
+package: linux_package win_package
 
 win_package:
-	@test -d win_package/atory || mkdir -p win_package/atory; \
-	cd win_package/atory; \
-	cp -v ../../atory.jar .; \
-	cp -v ../../../win_atory.bat atory.bat; \
-	cp -v ../../../lib/swt_win32.jar swt.jar; \
-	cp -v ../../../lib/xpp3-1.1.3_7.jar .; \
-	cp -v ../../../sysdeps/*.dll .; \
-	cp -v ../../../sysdeps/javaw.exe.manifest .; \
-	cd .. && zip -r9 atory_win.zip atory; \
-	cd ..
+	@./pack hase
 
 linux_package:
-	@test -d linux_package/atory || mkdir -p linux_package/atory; \
-	cd linux_package/atory; \
-	cp -vf ../../atory.jar .; \
-	cp -vf ../../../linux_atory.run atory.run; \
-	cp -vf ../../../lib/swt.jar .; \
-	cp -vf ../../../lib/xpp3-1.1.3_7.jar .; \
-	cp -vf ../../../sysdeps/*.so .; \
-	cd .. && rm -f atory_lin.zip && zip -r9 atory_lin.zip atory; \
-	cd ..
+	@./pack linux
 
-.PHONY: dclean help
-dclean: clean
-	@-rm -rfv atory.jar *_package
+.PHONY: pclean help
+pclean:
+	@-rm -rfv linux_package win_package
 
 help:
 	@echo 'Reglas genéricas:';\
@@ -47,9 +27,8 @@ help:
 	echo '   clean    Limpia recursivamente los binarios generados.';\
 	echo '';\
 	echo 'Reglas para el directorio raíz:';\
-	echo '   jar      Crea un fichero JAR que contiene todo el programa.';\
-	echo '   package  Crea los paquetes con los binarios para su distribución';\
-	echo '   dclean   Limpia el JAR generado y los paquetes (implica "clean")';\
+	echo '   package  Crea los paquetes con los binarios para su distribución.';\
+	echo '   pclean   Limpia los paquetes.';\
 	echo '   help     Esta ayuda.';\
 	echo '';\
 	echo 'La acción por defecto es "files". Si el Makefile define subdirectorios,';\

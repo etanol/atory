@@ -21,8 +21,11 @@ JAVACFLAGS := -deprecation -encoding UTF-8 #-encoding ISO-8859-1
 ifdef final
 export final
 JAVACFLAGS += -g:none
+hint := [final]
 else
 JAVACFLAGS += -g
+a :=
+hint := $(a)       
 endif
 
 all: $(Targets)
@@ -30,13 +33,13 @@ all: $(Targets)
 files: $(Files:.java=.class)
 
 subdirs:
-	@$(foreach d, $(Subdirs), echo "[$(d)]"; $(MAKE) -C $(d);)
+	@$(foreach d, $(Subdirs), $(MAKE) -C $(d);)
 
 %.class: %.java
-	javac $(JAVACFLAGS) -classpath $(Classpath) $<
+	@echo "JAVAC $(hint) $<" && javac $(JAVACFLAGS) -classpath $(Classpath) $<
 
 .PHONY: clean
 clean:
 	@-rm -fv *.class; \
-	$(foreach d, $(Subdirs), echo "[$(d)]"; $(MAKE) -C $(d) clean;)
+	$(foreach d, $(Subdirs), $(MAKE) -C $(d) clean;)
 

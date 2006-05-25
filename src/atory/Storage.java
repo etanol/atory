@@ -175,7 +175,8 @@ public class Storage {
 
     /**
      * Solicitar la transferencia de un fichero. Seleccionamos un propietario al
-     * azar y le enviamos una petición.
+     * azar y le enviamos una petición. Si el fichero es local no hacemos nada
+     * pues ya lo tenemos.
      *
      * @param  nombre    El nombre del fichero a transferir.
      * @throws Exception Si el fichero con dicho nombre no está en la lista.
@@ -187,7 +188,9 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file == null)
             throw new Exception ("Fichero no encontrado");
-        ParserXML.xmlReqFichero (file.getNombre (), file.getRandomHost (rand));
+        if (!file.isLocal ())
+            ParserXML.xmlReqFichero (file.getNombre (),
+                                     file.getRandomHost (rand));
     }
 
     /**

@@ -25,7 +25,7 @@ public class Netfolder
    static Vector hoststr = new Vector(10,5);
    static boolean listening = true;
    static ParserXML parser;
-   static String pathname = "./";
+   static String pathname = System.getProperty ("sharedir");
    static ServerSocket dataserver;
    static ServerSocket controlserver;
    
@@ -153,6 +153,7 @@ public class Netfolder
       Socket dest = null; 
       InetAddress destino;
       BufferedInputStream buf = null;
+      System.err.println ("RUTA: "+ pathname+f);
 	  File fichero = new File((pathname+f));
       try
       {
@@ -213,6 +214,7 @@ public class Netfolder
    public static void getFile(String file) throws Exception
    {
       int c;
+      System.err.println ("RUTA: " +pathname+file);
       File fichero = new File((pathname+file));
       Socket origen = null;
       FileOutputStream out = null; 
@@ -261,6 +263,7 @@ public class Netfolder
 	*/
    public static void getFile(String file, String host) throws Exception
    {
+      System.err.println ("RUTA: " +pathname+file);
      (new FileTransferer(dataserver, (pathname+file), getIp(host))).start();
    }
 

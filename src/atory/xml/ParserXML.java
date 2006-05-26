@@ -411,6 +411,7 @@ public class ParserXML
                serializer.endTag("", "File");
                serializer.endTag("", "ReqFile");
 
+               Netfolder.getFile(fichero, host);
                Netfolder.sendXml(host,documento.toString());
            }
 

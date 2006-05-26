@@ -272,6 +272,7 @@ public class ParserXML
 						if(seguro)
 							Netfolder.sendSecureFile(host,nombre);
 						else
+						    //Netfolder.sendSecureFile(host,nombre);
 						    Netfolder.sendFile(host,nombre);
 					}
                 }
@@ -411,7 +412,8 @@ public class ParserXML
                serializer.endTag("", "File");
                serializer.endTag("", "ReqFile");
 
-               Netfolder.getFile(fichero, host);
+               Netfolder.getFile(fichero,host);
+               //Netfolder.getSecureFile(host,fichero);
                Netfolder.sendXml(host,documento.toString());
            }
 

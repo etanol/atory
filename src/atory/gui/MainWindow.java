@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.graphics.*;
 import java.util.Vector;
+import java.text.NumberFormat;
 
 /**
  * Clase para mostrar la ventana principal y gestionar sus eventos. Comunicación
@@ -16,9 +17,8 @@ public class MainWindow {
 
     static Display display;
     static Shell   shell;
-    static Tree tree;
+    static Table tabla;
     static Conexion con;
-    static TreeItem papi;
     static Vector conexion;
 
     /**
@@ -127,28 +127,26 @@ public class MainWindow {
         syncItem.addListener (SWT.Selection, new SincronizarListener());
         toolBar.pack ();
 
-        //arboles
-        tree = new Tree(shell, SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE);
-        tree.setHeaderVisible(true);
-
+        //tabla de ficheros
+        tabla = new Table(shell, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        tabla.setHeaderVisible(true);
+        
         // El listado de los ficheros SÍ se expande verticalmente
         gdata = new GridData (GridData.FILL_BOTH);
         gdata.grabExcessVerticalSpace = true;
-        tree.setLayoutData (gdata);
+        tabla.setLayoutData (gdata);
 
-        TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
+        //columnas
+        TableColumn column1 = new TableColumn(tabla, SWT.LEFT);
         column1.setText("Nombre");
-        column1.setWidth(120);
+        column1.setWidth(200);
         column1.setResizable(true);
-        TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
-        column2.setText("Ubicación");
-        column2.setWidth(80);
-        column2.setResizable(true);
-        TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
-        column3.setText("Tamaño");
-        column3.setWidth(60);
-        column3.setResizable(true);
-
+        TableColumn column2 = new TableColumn(tabla, SWT.CENTER);
+        column2.setText("Tamaño");
+        column2.setWidth(100);
+        column2.setResizable(false);
+        tabla.pack();
+        
       //System Tray
       Tray tray = display.getSystemTray();
       if(tray != null) {
@@ -164,8 +162,8 @@ public class MainWindow {
       } catch (Exception ex) {}
 
       //fin
-      //shell.setSize (290, 420);
-      shell.pack();
+      shell.setSize (320, 420);
+      //shell.pack();
       shell.open ();
       /*while (true)
       {
@@ -177,15 +175,20 @@ public class MainWindow {
       }
       display.dispose ();
    }
-
+   
+   /**
+    * Comunica a la interfaz que se tiene que
+    * visualizar la lista. Esta función llama a
+    * anyadirFichero() por cada uno de los
+    * ficheros de la lista.
+    * @param lista Lista de ficheros a mostrar
+    */
    public static void visualizarLista(final Vector lista)  //lista de ficheros
    {
       final Vector lst = lista;
       display.asyncExec (new Runnable () {
           public void run ()
           {
-              papi =  new TreeItem (tree, SWT.NONE);
-              papi.setText (new String[]{(con == null ? "" : con.nombre),"",""});
               for(int i=0;i<lst.size();i++) {
                   Fichero f = (Fichero) lst.elementAt(i);
                   anyadirFichero(f);
@@ -194,49 +197,76 @@ public class MainWindow {
       });
    }
 
+   /**
+    * Añade un fichero a la lista gráfica. Recoge
+    * los datos del fichero de entrada para
+    * mostrar los datos correspondientes.
+    * @param fich Fichero a insertar
+    */
    public static void anyadirFichero(Fichero fich)
    {
        final Fichero f = fich;
        display.asyncExec (new Runnable() {
            public void run ()
            {
-               String ubi, nombre, nimag;
+               String nombre, nimag, tam;
                Image icon;
-               if(f.isLocal()) ubi="Local";
-               else ubi="Remoto";
                nombre = f.getNombre();
                String[] ext = nombre.split("[.]");
                if(ext.length==0) {
-                   icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
+                   icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(25,25) );
                } else {
                    nimag="images/" + ext[(ext.length)-1] + ".png";
                    try{
                        icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream(nimag))).scaledTo(20,20) );
                    } catch (Exception e) {
-                       icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(20,20) );
+                       icon = new Image (display, (new ImageData(MainWindow.class.getResourceAsStream("images/generico.png"))).scaledTo(25,25) );
                    }
                }
-               TreeItem hijo = new TreeItem (papi, SWT.NONE);
-               hijo.setImage(icon);
-               hijo.setText (new String[]{ nombre, ubi, String.valueOf(f.getTamano())+" B"});
+               NumberFormat nf = NumberFormat.getInstance();
+               nf.setMaximumFractionDigits(3);
+               //que escala de bytes ponemos?
+               if (f.getTamano()>1024*1024)
+                  tam = nf.format((double)(f.getTamano()) / (1024*1024)) + " MB";
+                  //tam = String.valueOf((double)(f.getTamano()) / (1024*1024)) + " MB";
+               else if (f.getTamano()>1024)
+                  tam = nf.format((double)(f.getTamano()) / 1024) + " KB";
+               else 
+                  tam = String.valueOf((double)(f.getTamano())) + " B";
+                  
+               //crear el item
+               TableItem item = new TableItem (tabla, SWT.NONE);
+               if(f.isLocal()) 
+                  item.setChecked(true);
+               else 
+                  item.setChecked(false);
+               item.setImage(icon);
+               item.setText (new String[]{ nombre, tam });
            }
        });
    }
 
+   /**
+    * Elimina un fichero de la lista gráfica.
+    * Busca el fichero según su nombre y lo
+    * elimina de la tabla.
+    * @param fich Fichero a eliminar.
+    */
    public static void eliminarFichero(Fichero fich)
    {
        final Fichero f = fich;
        display.asyncExec (new Runnable () {
            public void run ()
            {
-               TreeItem[] ti=papi.getItems();
-               for(int i=0; i < ti.length; i++) {
-                   if (ti[i].getText().equals(f.getNombre())) {
-                       (ti[i].getItem(i)).dispose();
+               TableItem[] ti = tabla.getItems();
+               for(int i=0; i < ti.length; i++) 
+               {
+                   if (ti[i].getText(0).equals(f.getNombre())) 
+                   {
+                       tabla.remove(i);
                        break;
                    }   
                }
-       //TODO:tratar si no existe fichero a eliminar??
            }
        });
    }

@@ -68,8 +68,11 @@ class DescargarListener implements Listener {
     public void handleEvent (Event ev)
     {
         try {
-           TreeItem[] t_select = (MainWindow.tree).getSelection();
-           atory.Storage.reqFichero (t_select[0].getText(0)); 
+           TableItem[] t_select = (MainWindow.tabla).getSelection();
+           for(int i=0; i<t_select.length; i++)
+           {
+              atory.Storage.reqFichero (t_select[0].getText(0));  
+            }
         } catch (Exception e) {
            MainWindow.error (MainWindow.shell, e.getMessage() );
         }

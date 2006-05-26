@@ -30,7 +30,7 @@ class Conexiones extends Dialog implements Listener {
 
     /**
      * Constructor. Desde aquí seleccionamos el modo de visualización de este
-     * cuadro de diálogo en funzión del parámetro booleano suministrado. Es
+     * cuadro de diálogo en función del parámetro booleano suministrado. Es
      * necesario indicar cuál será la ventana padre pues nosotros siempre
      * aparecermos de forma modal.
      *

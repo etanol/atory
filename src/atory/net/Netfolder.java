@@ -55,7 +55,8 @@ public class Netfolder
 	  catch(Exception e) 
 	  {		 
 		  if(controlserver != null)
-			  throw new Exception("Error en SSLSocket");
+			  //throw new Exception("Error en SSLSocket");
+			  throw e;
 
 		  if(dataserver != null)
 			  dataserver.close();
@@ -232,6 +233,7 @@ public class Netfolder
 			try
 			{
 				dest = socketFactory.createSocket(destino , SECUREPORT);
+            System.out.println("SSL abierto");
 				OutputStream output = dest.getOutputStream();
 				FileInputStream in = new FileInputStream(fichero);
 				buf = new BufferedInputStream(in);
@@ -240,10 +242,12 @@ public class Netfolder
 					output.write(c);
 
 				output.flush();
+            System.out.println("he acabado de enviar");
 				i = INTENTOS;
 			} 
 			catch(Exception e)
 			{
+            System.out.println("Envias?");
 				if(++i== INTENTOS)
 					throw new Exception("Error al conectar"); 
 			}

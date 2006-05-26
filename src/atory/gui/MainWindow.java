@@ -128,7 +128,7 @@ public class MainWindow {
         toolBar.pack ();
 
         //tabla de ficheros
-        tabla = new Table(shell, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        tabla = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         tabla.setHeaderVisible(true);
         
         // El listado de los ficheros SÍ se expande verticalmente
@@ -139,8 +139,12 @@ public class MainWindow {
         //columnas
         TableColumn column1 = new TableColumn(tabla, SWT.LEFT);
         column1.setText("Nombre");
-        column1.setWidth(200);
+        column1.setWidth(150);
         column1.setResizable(true);
+        TableColumn column3 = new TableColumn(tabla, SWT.CENTER);
+        column3.setText("Ubicación");
+        column3.setWidth(80);
+        column3.setResizable(false);
         TableColumn column2 = new TableColumn(tabla, SWT.CENTER);
         column2.setText("Tamaño");
         column2.setWidth(100);
@@ -162,7 +166,7 @@ public class MainWindow {
       } catch (Exception ex) {}
 
       //fin
-      shell.setSize (320, 420);
+      shell.setSize (350, 420);
       //shell.pack();
       shell.open ();
       /*while (true)
@@ -209,7 +213,7 @@ public class MainWindow {
        display.asyncExec (new Runnable() {
            public void run ()
            {
-               String nombre, nimag, tam;
+               String nombre, nimag, tam, ubi;
                Image icon;
                nombre = f.getNombre();
                String[] ext = nombre.split("[.]");
@@ -237,11 +241,11 @@ public class MainWindow {
                //crear el item
                TableItem item = new TableItem (tabla, SWT.NONE);
                if(f.isLocal()) 
-                  item.setChecked(true);
+                  ubi = "Local";
                else 
-                  item.setChecked(false);
+                  ubi = "Remoto";
                item.setImage(icon);
-               item.setText (new String[]{ nombre, tam });
+               item.setText (new String[]{ nombre, ubi, tam });
            }
        });
    }

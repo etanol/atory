@@ -99,46 +99,55 @@ public class MainWindow {
         item.setText     ("Acerca de...");
         item.addListener (SWT.Selection, new AcercaDeListener ());
 
+        // Coloca, finalmente, la barra de menú
         shell.setMenuBar (menuBar);
-      //////TODO??
-      RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-      layoutv.wrap = true;
-      layoutv.fill = true;
-      layoutv.justify = true;
-      shell.setLayout(layoutv);
 
-      //toolbar
+        // Prepara el layout para la ventana
+        GridLayout layoutv = new GridLayout (1, true);
+        layoutv.verticalSpacing = 3;
+        shell.setLayout (layoutv);
+        GridData gdata; // Ajustes para cada widget
 
-      Image imaged = new Image (display, MainWindow.class.getResourceAsStream("images/stock_down.png"));
-      Image images = new Image (display, MainWindow.class.getResourceAsStream("images/sync.png"));
-      ToolBar toolBar = new ToolBar (shell, SWT.FLAT|SWT.BORDER);
-      toolBar.setLayoutData(new RowData(260, 30));
-      ToolItem downItem = new ToolItem (toolBar, SWT.PUSH);
-      ToolItem syncItem = new ToolItem (toolBar, SWT.PUSH);
-      downItem.setImage (imaged);
-      syncItem.setImage (images);
-      downItem.setToolTipText ("Descargar");
-      syncItem.setToolTipText ("Sincronizar");
-      downItem.addListener (SWT.Selection, new DescargarListener());
-      syncItem.addListener (SWT.Selection, new SincronizarListener());
-      toolBar.pack ();
+        Image imaged = new Image (display, MainWindow.class.getResourceAsStream("images/stock_down.png"));
+        Image images = new Image (display, MainWindow.class.getResourceAsStream("images/sync.png"));
+        ToolBar toolBar = new ToolBar (shell, SWT.FLAT|SWT.BORDER);
 
-      //arboles
-      tree = new Tree(shell, SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE);
-      tree.setHeaderVisible(true);
-      tree.setLayoutData(new RowData(260, 300));
-      TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-      column1.setText("Nombre");
-      column1.setWidth(120);
-      column1.setResizable(true);
-      TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
-      column2.setText("Ubicación");
-      column2.setWidth(80);
-      column2.setResizable(true);
-      TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
-      column3.setText("Tamaño");
-      column3.setWidth(60);
-      column3.setResizable(true);
+        // La barra de herramientas NO se expande verticalmente
+        gdata = new GridData (GridData.FILL_BOTH);
+        gdata.grabExcessVerticalSpace = false;
+        toolBar.setLayoutData (gdata);
+
+        ToolItem downItem = new ToolItem (toolBar, SWT.PUSH);
+        ToolItem syncItem = new ToolItem (toolBar, SWT.PUSH);
+        downItem.setImage (imaged);
+        syncItem.setImage (images);
+        downItem.setToolTipText ("Descargar");
+        syncItem.setToolTipText ("Sincronizar");
+        downItem.addListener (SWT.Selection, new DescargarListener());
+        syncItem.addListener (SWT.Selection, new SincronizarListener());
+        toolBar.pack ();
+
+        //arboles
+        tree = new Tree(shell, SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE);
+        tree.setHeaderVisible(true);
+
+        // El listado de los ficheros SÍ se expande verticalmente
+        gdata = new GridData (GridData.FILL_BOTH);
+        gdata.grabExcessVerticalSpace = true;
+        tree.setLayoutData (gdata);
+
+        TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
+        column1.setText("Nombre");
+        column1.setWidth(120);
+        column1.setResizable(true);
+        TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
+        column2.setText("Ubicación");
+        column2.setWidth(80);
+        column2.setResizable(true);
+        TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
+        column3.setText("Tamaño");
+        column3.setWidth(60);
+        column3.setResizable(true);
 
       //System Tray
       Tray tray = display.getSystemTray();
@@ -222,7 +231,7 @@ public class MainWindow {
            {
                TreeItem[] ti=papi.getItems();
                for(int i=0; i < ti.length; i++) {
-                   if (ti[i].getText() == f.getNombre()) {
+                   if (ti[i].getText().equals(f.getNombre())) {
                        (ti[i].getItem(i)).dispose();
                        break;
                    }   

@@ -13,7 +13,10 @@ import java.util.Enumeration;
 
 
 /**
- * Clase para gestionar el acceso al directorio compartido.
+ * Clase para gestionar el acceso al directorio compartido. Por comodidad
+ * mantendremos en una estructura de memoria la lista de ficheros locales del
+ * último escaneo. Esa lista contendrá elementos de la clase Fichero, todos
+ * ellos con el atributo isLocal() a verdadero.
  */
 public class Disco {
 
@@ -26,7 +29,13 @@ public class Disco {
     public Disco () {}
 
     /**
-     * Inicializadora de la clase.
+     * Inicializadora de la clase. Inicialmente escaneamos el directorio
+     * compartido para tener una lista inicial con la que trabajar. Nótese que
+     * únicamente se genera esa lista, NO se fusiona con el directorio
+     * compartido (clase Storage).
+     *
+     * @throws Exception cuando ha habido algún problema con la entrada/salida
+     *                   de disco.
      */
     public static void init () throws Exception
     {
@@ -37,7 +46,6 @@ public class Disco {
         dirComp    = new File (System.getProperty ("sharedir"));
         localFiles = new Hashtable ();
 
-        // Escanea el directorio inicialmente
         lista = dirComp.listFiles ();
         for (i = 0; i < lista.length; i++)
             if (lista[i].isFile ()) {
@@ -51,7 +59,16 @@ public class Disco {
     }
 
     /**
-     * Fusiona la lista local con la lista de ficheros remotos.
+     * Fusiona la lista local con la lista de ficheros remotos. Este método
+     * únicamente se utiliza para fusionar la lista de ficheros locales con el
+     * directorio compartido inicialmente.
+     * <p>
+     * Se ha separado de la inicialización para permitir que primero se procese
+     * la lista de ficheros compartidos que viene de fuera y, posteriormente, se
+     * añadan los ficheros locales para que se generen los mensajes de
+     * notificación al resto de los hosts.
+     *
+     * @throws Exception simplemente propagada desde abajo.
      */
     public static void merge () throws Exception
     {
@@ -59,7 +76,12 @@ public class Disco {
     }
 
     /**
-     * Escanea el directorio compartido en busca de cambios.
+     * Escanea el directorio compartido en busca de cambios. Método invocado
+     * periódicamente o bajo petición del usuario. Si ha habido cambios se
+     * notifica a la clase Storage automáticamente.
+     *
+     * @throws Exception cuando ha habido algún problema con la entrada/salida
+     *                   de disco.
      */
     public static void sync () throws Exception
     {
@@ -111,7 +133,8 @@ public class Disco {
                 }
             }
 
-        // Buscar por elementos eliminados
+        // Si todavía quedan elementos en 'actual' es que han sido borrados del
+        // directorio local.
         e = actual.elements ();
         while (e.hasMoreElements ()) {
             f = (Fichero) e.nextElement ();

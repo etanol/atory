@@ -208,7 +208,7 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file != null) {
             try {
-                md5 = MD5.fromFile (nombre);
+                md5 = MD5.fromFile (System.getProperty ("sharedir") + nombre);
                 return md5.equals (file.getMd5 ());
             } catch (Exception ex) {}
         }

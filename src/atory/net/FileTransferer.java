@@ -76,7 +76,7 @@ public class FileTransferer extends Thread
 		}
 		catch(Exception e)
 		{;}
-		//comprobar MD5;
+		//TODO:comprobar MD5;
 	}
 	
 	int isMine(InetAddress ip)

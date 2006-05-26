@@ -6,6 +6,8 @@ package atory.net;
 
 import java.io.*;
 import java.net.*;
+import javax.net.*;
+import javax.net.ssl.*;
 import java.util.*;
 import java.nio.*;
 import atory.xml.*;
@@ -17,6 +19,7 @@ public class Netfolder
 {
    static final int XMLPORT = 9001;
    static final int DATAPORT = 9002;
+	static final int SECUREPORT = 9003;
    static final int INTENTOS = 3;
    static final int TIME_WAIT = 30000;
    static boolean ipcalc = false;
@@ -28,7 +31,8 @@ public class Netfolder
    static String pathname = System.getProperty ("sharedir");
    static ServerSocket dataserver;
    static ServerSocket controlserver;
-   
+	static ServerSocket secureserver;  
+
    /**
     * Constructor (ignorado).
     */
@@ -43,16 +47,21 @@ public class Netfolder
    {
      try
 	 {
-		dataserver = new ServerSocket(DATAPORT);
-		controlserver = new ServerSocket(XMLPORT);
+		 dataserver = new ServerSocket(DATAPORT);
+		 controlserver = new ServerSocket(XMLPORT);
+		 ServerSocketFactory ssocketFactory = SSLServerSocketFactory.getDefault();
+		 secureserver = ssocketFactory.createServerSocket(SECUREPORT);	
 	 }
-	 catch(InterruptedIOException e ) 
-	 {
-	     if(dataserver != null)
-			dataserver.close();
-			
-         throw new Exception("Puertos en uso");
-	 }
+	  catch(Exception e) 
+	  {		 
+		  if(controlserver != null)
+			  throw new Exception("Error en SSLSocket");
+
+		  if(dataserver != null)
+			  dataserver.close();
+
+		  throw new Exception("Puertos en uso");
+	  }
    }
 
    /**
@@ -146,53 +155,52 @@ public class Netfolder
     * @param ipdestino Dirección destino.
     * @param f Fichero a enviar.
     */
-   public static void sendFile(String ipdestino, String f) throws Exception
-   {
-      int i = 0;
-      int c;
-      Socket dest = null; 
-      InetAddress destino;
-      BufferedInputStream buf = null;
-      System.err.println ("RUTA: "+ pathname+f);
-	  File fichero = new File((pathname+f));
-      try
-      {
-         destino = getIp(ipdestino);
-      }
-      catch(UnknownHostException e)
-      {
-         throw new Exception("Dirección IP mal formada");
-      }
-      while(i<INTENTOS)
-      {
-         try
-         {
-            dest = new Socket(destino , DATAPORT);
-            OutputStream output = dest.getOutputStream();
-            FileInputStream in = new FileInputStream(fichero);
-            buf = new BufferedInputStream(in);
-            // Lectura y envío del archivo
-            while((c = buf.read())!=-1)
-               output.write(c);
-            
-            output.flush();
-            i = INTENTOS;
-         } 
-         catch(Exception e)
-         {
-            if(++i== INTENTOS)
-               throw new Exception("Error al conectar"); 
-         }
-         finally
-         {
-            if(dest!=null)
-               dest.close();
-            if(buf!=null)
-               buf.close();
-         }
-      }
-   }
+	public static void sendFile(String ipdestino, String f) throws Exception
+	{
+		int i = 0;
+		int c;
+		Socket dest = null; 
+		InetAddress destino;
+		BufferedInputStream buf = null;
+		System.err.println ("RUTA: "+ pathname+f);
+		File fichero = new File((pathname+f));
+		try
+		{
+			destino = getIp(ipdestino);
+		}
+		catch(UnknownHostException e)
+		{
+			throw new Exception("Dirección IP mal formada");
+		}
+		while(i<INTENTOS)
+		{
+			try
+			{
+				dest = new Socket(destino , DATAPORT);
+				OutputStream output = dest.getOutputStream();
+				FileInputStream in = new FileInputStream(fichero);
+				buf = new BufferedInputStream(in);
+				// Lectura y envío del archivo
+				while((c = buf.read())!=-1)
+					output.write(c);
 
+				output.flush();
+				i = INTENTOS;
+			} 
+			catch(Exception e)
+			{
+				if(++i== INTENTOS)
+					throw new Exception("Error al conectar"); 
+			}
+			finally
+			{
+				if(dest!=null)
+					dest.close();
+				if(buf!=null)
+					buf.close();
+			}
+		}
+	}
 
 	/**
 	 * Función encargada de enviar ficheros a través de la red de forma segura.
@@ -202,17 +210,75 @@ public class Netfolder
 	 */
 	public static void sendSecureFile(String ipdestino, String f) throws Exception
 	{
+		int i = 0;
+		int c;
+		Socket dest = null; 
+		InetAddress destino;
+		BufferedInputStream buf = null;
+		//TODO: quitar chivato
+		System.err.println ("RUTA SSl: "+ pathname+f);
+		File fichero = new File((pathname+f));
+		try
+		{
+			destino = getIp(ipdestino);
+		}
+		catch(UnknownHostException e)
+		{
+			throw new Exception("Dirección IP mal formada");
+		}
+      SocketFactory socketFactory = SSLSocketFactory.getDefault();
+		while(i<INTENTOS)
+		{
+			try
+			{
+				dest = socketFactory.createSocket(destino , SECUREPORT);
+				OutputStream output = dest.getOutputStream();
+				FileInputStream in = new FileInputStream(fichero);
+				buf = new BufferedInputStream(in);
+				// Lectura y envío del archivo
+				while((c = buf.read())!=-1)
+					output.write(c);
+
+				output.flush();
+				i = INTENTOS;
+			} 
+			catch(Exception e)
+			{
+				if(++i== INTENTOS)
+					throw new Exception("Error al conectar"); 
+			}
+			finally
+			{
+				if(dest!=null)
+					dest.close();
+				if(buf!=null)
+					buf.close();
+			}
+		}
 	}
 
-   /**
-    * Función encargada de recibir un archivo y escribirlo en disco.
-    *
-	* @param file Nombre del archivo.
-	* @deprecated El nuevo método getFile soporta múltiples conexiones al mismo puerto.
-    */
 
-   public static void getFile(String file) throws Exception
-   {
+	/**
+	 * Función encargada de recibir ficheros a través de la red de forma segura.
+	 * 
+	 * @param ipdestino Dirección destino.
+	 * @param f Fichero a enviar.
+	 */
+	public static void getSecureFile(String host, String file) throws Exception
+	{
+		System.err.println ("RUTA SEGURA: " +pathname+file);
+     (new FileTransferer(secureserver, (pathname+file), getIp(host))).start();
+	}
+
+	/**
+	 * Función encargada de recibir un archivo y escribirlo en disco.
+	 *
+	 * @param file Nombre del archivo.
+	 * @deprecated El nuevo método getFile soporta múltiples conexiones al mismo puerto.
+	 */
+
+	public static void getFile(String file) throws Exception
+	{
       int c;
       System.err.println ("RUTA: " +pathname+file);
       File fichero = new File((pathname+file));

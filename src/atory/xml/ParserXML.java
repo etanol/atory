@@ -142,10 +142,10 @@ public class ParserXML
                 parseaAnadirHosts(xpp);
             else if(s.equals("DelHost"))
                 parseaEliminarHosts(xpp);
-            else if(s.equals("ReqFile");
+            else if(s.equals("ReqFile"))
                 parseaPeticionFichero(xpp,false);
-			else //ReqSecureFile
-				parseaPeticionFichero(xpp,true);
+			   else //ReqSecureFile
+				    parseaPeticionFichero(xpp,true);
         }
 
     

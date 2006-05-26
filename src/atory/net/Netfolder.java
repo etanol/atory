@@ -15,8 +15,8 @@ import atory.xml.*;
  */
 public class Netfolder
 {
-   static final int XMLPORT = 3330;
-   static final int DATAPORT = 3331;
+   static final int XMLPORT = 9001;
+   static final int DATAPORT = 9002;
    static final int INTENTOS = 3;
    static final int TIME_WAIT = 30000;
    static boolean ipcalc = false;
@@ -191,6 +191,17 @@ public class Netfolder
          }
       }
    }
+
+
+	/**
+	 * Función encargada de enviar ficheros a través de la red de forma segura.
+	 * 
+	 * @param ipdestino Dirección destino.
+	 * @param f Fichero a enviar.
+	 */
+	public static void sendSecureFile(String ipdestino, String f) throws Exception
+	{
+	}
 
    /**
     * Función encargada de recibir un archivo y escribirlo en disco.

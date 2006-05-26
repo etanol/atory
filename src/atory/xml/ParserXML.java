@@ -105,7 +105,14 @@ public class ParserXML
      *            <host> ..... </host>
      *        </File>
      *     </ReqFile>
-     *     
+     * 
+     * PETICIÓN FICHERO SEGURO
+     *
+     *     <ReqSecureFile>
+     *        <File  name="juas.jpg">
+     *            <host> ..... </host>
+     *        </File>
+     *     </ReqSecureFile>    
      */
     public static void parsea(String xml)
         throws XmlPullParserException, IOException, Exception
@@ -135,8 +142,10 @@ public class ParserXML
                 parseaAnadirHosts(xpp);
             else if(s.equals("DelHost"))
                 parseaEliminarHosts(xpp);
-            else //ReqFile
-                parseaPeticionFichero(xpp);
+            else if(s.equals("ReqFile");
+                parseaPeticionFichero(xpp,false);
+			else //ReqSecureFile
+				parseaPeticionFichero(xpp,true);
         }
 
     
@@ -240,7 +249,7 @@ public class ParserXML
             }
 
     
-    private static void parseaPeticionFichero(XmlPullParser xpp) throws 
+    private static void parseaPeticionFichero(XmlPullParser xpp, boolean seguro) throws 
        XmlPullParserException, IOException, Exception
     {
             int tipoEvento = xpp.next();
@@ -258,8 +267,13 @@ public class ParserXML
                     host = xpp.getText();
                 else if(tipoEvento == XmlPullParser.END_TAG)
                 {
-                    if(xpp.getName().equals("File"))
-                        Netfolder.sendFile(host,nombre);
+					if(xpp.getName().equals("File"))
+					{
+						if(seguro)
+							Netfolder.sendSecureFile(host,nombre);
+						else
+						    Netfolder.sendFile(host,nombre);
+					}
                 }
                 tipoEvento = xpp.next();
             }
@@ -399,6 +413,30 @@ public class ParserXML
 
                Netfolder.sendXml(host,documento.toString());
            }
+
+
+	/**
+	 * Función que crea un documento xml con una petición de transferencia de 
+	 * un fichero "fichero" que tiene el host "host". Esta función hace petición
+	 * para que el fichero se envie con SSL de forma segura.
+	 */
+	public static void xmlReqSecureFichero(String fichero, String host) throws IOException,
+		Exception
+	{
+		StringWriter documento = new StringWriter();
+		serializer.setOutput( documento );
+
+		serializer.startTag("", "ReqSecureFile");
+		serializer.startTag("", "File")
+			.attribute("","name",fichero);
+		serializer.startTag("", "host")
+			.text(Netfolder.whoAmI())
+			.endTag("", "host");
+		serializer.endTag("", "File");
+		serializer.endTag("", "ReqSecureFile");
+
+		Netfolder.sendXml(host,documento.toString());
+	}
 
 
     /**

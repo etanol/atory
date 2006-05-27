@@ -81,6 +81,8 @@ public class FileTransferer extends Thread
 			}
 
 			out.flush();
+            out.close();
+            socket.close();
 			
 		}
 		catch(Exception e)

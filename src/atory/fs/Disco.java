@@ -149,5 +149,14 @@ public class Disco {
             Storage.addFicheros (added.elements ());
     }
 
+
+    public static void updateDownloaded (File fd, String md5)
+    {
+        Fichero f;
+
+        f = new Fichero (fd.getName (), md5, fd.length (), fd.lastModified ());
+        localFiles.put (f.getNombre (), f);
+    }
+
 }
 

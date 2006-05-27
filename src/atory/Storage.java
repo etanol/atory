@@ -148,6 +148,7 @@ public class Storage {
                 // El fichero está, así que hay que borrarlo de nuestra
                 // participación local.
                 file.setLocal (false);
+                MainWindow.cambiarUbicacion (file);
                 // ¿Se ha eliminado de la red?
                 if (!file.exists ()) {
                     table.remove (file.getNombre ());
@@ -197,12 +198,15 @@ public class Storage {
             throw new Exception ("Fichero no encontrado");
         if (!file.isLocal ())
             ParserXML.xmlReqFichero (file.getNombre (),
-                                     file.getRandomHost (rand));
+                                     file.getRandomHost (rand),
+                                     file.getTamano ());
     }
 
     /**
      * Comprueba la integridad de un fichero. Verifica que el contenido de un
-     * fichero corresponde con el MD5 indicado en su meta-información.
+     * fichero corresponde con el MD5 indicado en su meta-información. Además,
+     * actualiza la lista de ficheros locales para poder refrescar la interfaz
+     * más rápidamente.
      *
      * @param nombre El nombre del fichero en el directorio compartido.
      * @return true si el fichero es correcto, false sino.
@@ -216,7 +220,12 @@ public class Storage {
         if (fich != null) {
             try {
                 md5 = MD5.fromFile (fd);
-                return md5.equals (fich.getMd5 ());
+                if (md5.equals (fich.getMd5 ())) {
+                    fich.setLocal (true);
+                    Disco.updateDownloaded (fd, md5);
+                    MainWindow.cambiarUbicacion (fich);
+                    return true;
+                }
             } catch (Exception ex) {}
         }
         return false;

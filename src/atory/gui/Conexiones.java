@@ -59,13 +59,13 @@ class Conexiones extends Dialog implements Listener {
         ventana.setText("Conexiones");
         
         gl = new GridLayout();
-        gl.numColumns = 2;
+        gl.numColumns = 5;
         ventana.setLayout(gl);
 
         lConex = new Label(ventana, SWT.CENTER);
         lConex.setText("Conexiones");
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalSpan = 2;
+        gd.horizontalSpan = 5;
         lConex.setLayoutData(gd);
 
         lstConexiones = new List(ventana, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL);
@@ -74,7 +74,12 @@ class Conexiones extends Dialog implements Listener {
          {
             lstConexiones.add((String)(listaNombres.elementAt(i)));
          }
-         lstConexiones.setSize(80,120);
+         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+         GridData.VERTICAL_ALIGN_FILL);
+         gd.widthHint = 80;
+         gd.heightHint = 120;
+         gd.verticalSpan = 3;
+         lstConexiones.setLayoutData(gd);
          //TODO listener y layout
 
          grpInfo = new Group(ventana, SWT.NONE);

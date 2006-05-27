@@ -51,69 +51,70 @@ public class ParserXML
      * Las funcionalidades del programa, con su correspondiente representación 
      * en xml son los siguientes: 
      *
-     * AÑADIR CONEXIÓN 
+     * <P>AÑADIR CONEXIÓN<BR> 
      * 
-     *     &lt;NewConnection&gt; 
-     *         &lt;host&gt; 10.10.10.10 &lt;/host&gt; 
-     *     &lt;/NewConnection&gt; 
+     *     &lt;NewConnection&gt;<BR>
+     *         &lt;host&gt; 10.10.10.10 &lt;/host&gt; <BR>
+     *     &lt;/NewConnection&gt; <BR>
      * 
-     * ENVIO LISTA IPS 
+     * <P>ENVIO LISTA IPS<BR> 
      *
-     *     &lt;HostsList&gt;
-     *         &lt;host&gt; .....  &lt;/host&gt;
-     *         &lt;host&gt; .....  &lt;/host&gt;
-     *         .....
-     *     &lt;/HostsList&gt;
+     *     &lt;HostsList&gt;<BR>
+     *         &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *         &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *         .....<BR>
+     *     &lt;/HostsList&gt;<BR>
      * 
-     * ENVIO LISTA FICHEROS
+     * <P>ENVIO LISTA FICHEROS<BR>
      *
-     *     &lt;FilesList&gt;
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
-     *             &lt;host&gt; .....  &lt;/host&gt;
-     *             .....
-     *         &lt;/File&gt;
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
-     *             &lt;host&gt; .....  &lt;/host&gt;
-     *             .....
-     *         &lt;/File&gt;
-     *         .....
-     *     &lt;/FilesList&gt;
+     *     &lt;FilesList&gt;<BR>
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
+     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *             .....<BR>
+     *         &lt;/File&gt;<BR>
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
+     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *             .....<BR>
+     *         &lt;/File&gt;<BR>
+     *         .....<BR>
+     *     &lt;/FilesList&gt;<BR>
      *
-     * AÑADIR FICHEROS / ELIMINAR FICHEROS
+     * <P>AÑADIR FICHEROS / ELIMINAR FICHEROS<BR>
      *
-     *     &lt;AddFiles&gt;  |  &lt;DelFiles&gt;
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
-     *             &lt;host&gt; .....  &lt;/host&gt;
-     *         &lt;/File&gt;
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
-     *             &lt;host&gt; .....  &lt;/host&gt;
-     *         &lt;/File&gt;
-     *         ....
-     *     &lt;/AddFiles&gt;  |  &lt;/DelFiles&gt;
+     *     &lt;AddFiles&gt;  |  &lt;DelFiles&gt;<BR>
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
+     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *         &lt;/File&gt;<BR>
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
+     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
+     *         &lt;/File&gt;<BR>
+     *         ....<BR>
+     *     &lt;/AddFiles&gt;  |  &lt;/DelFiles&gt;<BR>
      *
-     * AÑADIR HOSTS / ELIMINAR HOSTS
+     * <P>AÑADIR HOSTS / ELIMINAR HOSTS<BR>
      *
-     *     &lt;AddHost&gt;  |  &lt;DelHost&gt;
-     *         &lt;host&gt; ..... &lt;/host&gt;
-     *     &lt;/AddHost&gt;  |  &lt;/DelHost&gt;
+     *     &lt;AddHost&gt;  |  &lt;DelHost&gt;<BR>
+     *         &lt;host&gt; ..... &lt;/host&gt;<BR>
+     *     &lt;/AddHost&gt;  |  &lt;/DelHost&gt;<BR>
      *
-     * PETICIÓN FICHERO
+     * <P>PETICIÓN FICHERO<BR>
      *
-     *     &lt;ReqFile&gt;
-     *        &lt;File  name="juas.jpg"&gt;
-     *            &lt;host&gt; ..... &lt;/host&gt;
-     *        &lt;/File&gt;
-     *     &lt;/ReqFile&gt;
+     *     &lt;ReqFile&gt;<BR>
+     *        &lt;File  name="juas.jpg"&gt;<BR>
+     *            &lt;host&gt; ..... &lt;/host&gt;<BR>
+     *        &lt;/File&gt;<BR>
+     *     &lt;/ReqFile&gt;<BR>
      * 
-     * PETICIÓN FICHERO SEGURO
+     * <P>PETICIÓN FICHERO SEGURO<BR>
      *
-     *     &lt;ReqSecureFile&gt;
-     *        &lt;File  name="juas.jpg"&gt;
-     *            &lt;host&gt; ..... &lt;/host&gt;
-     *        &lt;/File&gt;
-     *     &lt;/ReqSecureFile&gt; 
+     *     &lt;ReqSecureFile&gt;<BR>
+     *        &lt;File  name="juas.jpg"&gt;<BR>
+     *            &lt;host&gt; ..... &lt;/host&gt;<BR>
+     *        &lt;/File&gt;<BR>
+     *     &lt;/ReqSecureFile&gt;<BR> 
      *   
-     * @param xml String que contiene el mensaje xml a parsear.  
+     * @param xml String que contiene el mensaje xml a parsear.
+     * @throws 
      */
     
     public static void parsea(String xml)
@@ -161,8 +162,8 @@ public class ParserXML
                 xpp.next();
                 host = xpp.getText();
 
-                xmlListaFicheros(host);
                 xmlListaHosts(host);
+                xmlListaFicheros(host);
                 Netfolder.addHost(host);
             }
 
@@ -318,6 +319,7 @@ public class ParserXML
      * Función que crea un documento xml que alerta al host "host" que nos 
      * conectamos.
      * @param host Host al que se le envia el xml.
+     * @throws
      */
     public static void xmlNuevaConexion(String host) throws IOException, Exception
     {  
@@ -336,6 +338,7 @@ public class ParserXML
     /**
      * Función que crea un documento xml con la lista de ficheros compartidos.
      * @param host Host al que se le envia el xml.
+     * @throws
      */
     public static void xmlListaFicheros(String host) throws IOException, Exception
     {
@@ -373,6 +376,7 @@ public class ParserXML
      * Función que crea un documento xml con las IPs de los hosts que conforman 
      * la red.
      * @param host Host al que se le envia el xml.
+     * @throws
      */
     public static void xmlListaHosts(String host) throws IOException, Exception
     {
@@ -404,6 +408,7 @@ public class ParserXML
      * @param fichero El nombre del fichero que se quiere descargar.
      * @param host Host al que se le envia el xml.
      * @param tamano Tamaño del fichero.
+     * @throws
      */
     public static void xmlReqFichero(String fichero, String host, long tamano)
        throws IOException, Exception
@@ -433,7 +438,7 @@ public class ParserXML
     * @param host Host al que se le envia el xml.
     * @param tamano Tamaño del fichero.
 	 */
-	public static void xmlReqSecureFichero(String fichero, String host, long
+    public static void xmlReqSecureFichero(String fichero, String host, long
          tamano) throws IOException, Exception
 	{
 		StringWriter documento = new StringWriter();

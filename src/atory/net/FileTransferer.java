@@ -88,16 +88,6 @@ public class FileTransferer extends Thread
 			fichero.delete();
 			//TODO: mandar sms a la ventana para quesuelte un mensaje
 		}
-		else
-		{
-			try
-			{
-				Disco.sync();
-			}
-			catch(Exception e)
-			{}
-		}
-		
 	}
 	
 	int isMine(InetAddress ip)

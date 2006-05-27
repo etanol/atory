@@ -8,6 +8,7 @@ package atory;
 import atory.xml.*;
 import atory.fs.*;
 import atory.gui.*;
+import atory.net.*;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -62,17 +63,18 @@ public class Storage {
     public static void addFichero (Fichero new_file) throws Exception
     {
         Fichero file;
+        Vector  fs = new Vector ();
 
         file = (Fichero) table.get (new_file.getNombre ());
         if (file == null) {
             table.put (new_file.getNombre (), new_file);
             MainWindow.anyadirFichero (new_file);
+            fs.addElement (new_file);
         } else {
-            MainWindow.eliminarFichero (file);
             file.merge (new_file);
-            MainWindow.anyadirFichero (file);
+            MainWindow.cambiarUbicacion (file);
+            fs.addElement (file);
         }
-
     }
 
     /**
@@ -93,16 +95,13 @@ public class Storage {
             if (file == null) {
                 // El fichero no estaba, lo insertamos
                 table.put (new_file.getNombre (), new_file);
-                added.addElement (new_file);
                 MainWindow.anyadirFichero (new_file);
+                added.addElement (new_file);
             } else {
-                try {
-                    // El fichero estaba, intentamos fusionar ambas versiones
-                    MainWindow.eliminarFichero (file);
-                    file.merge (new_file);
-                    MainWindow.anyadirFichero (file);
-                    added.addElement (file);
-                } catch (Exception ex) {}
+                // El fichero estaba, intentamos fusionar ambas versiones
+                file.merge (new_file);
+                MainWindow.cambiarUbicacion (file);
+                added.addElement (file);
             }
         }
         ParserXML.xmlAnadirFicheros (added);
@@ -123,6 +122,7 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file != null) {
             file.delHost (host);
+            MainWindow.cambiarUbicacion (file);
             if (!file.exists ()) {
                 table.remove (nombre);
                 MainWindow.eliminarFichero (file);
@@ -174,6 +174,7 @@ public class Storage {
         while (e.hasMoreElements ()) {
             file = (Fichero) e.nextElement ();
             file.delHost (host);
+            MainWindow.cambiarUbicacion (file);
             if (!file.exists ()) {
                 table.remove (file.getNombre ());
                 MainWindow.eliminarFichero (file);
@@ -241,5 +242,13 @@ public class Storage {
         return table.elements ();
     }
 
+    /**
+     * Desconectar.
+     */
+    public static void disconnect () throws Exception
+    {
+        ParserXML.xmlEliminarHost (Netfolder.whoAmI ());
+        MainWindow.eliminarTodos ();
+    }
 }
 

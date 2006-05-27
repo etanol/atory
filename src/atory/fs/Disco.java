@@ -155,6 +155,7 @@ public class Disco {
         Fichero f;
 
         f = new Fichero (fd.getName (), md5, fd.length (), fd.lastModified ());
+        f.setLocal (true);
         localFiles.put (f.getNombre (), f);
     }
 

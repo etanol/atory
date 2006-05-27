@@ -76,15 +76,25 @@ public class Netfolder
       listening = listen;
    }
    
-   /**
-    * Introduce el pathname de referencia para leer y dejar los ficheros.
-	*
-	* @param path Directorio de trabajo.
-	*/
-   public static void setPathname(String path)
+	/**
+	 * Introduce el pathname de referencia para leer y dejar los ficheros.
+	 *
+	 * @param path Directorio de trabajo.
+	 */
+	public static void setPathname(String path)
    {
 	  pathname=path;
    }
+
+	/**
+	 * Funcin encargada de resetear la lista de hosts.
+	 */
+	public static void reset()
+	{
+		hosts.removeAllElements();
+		hoststr.removeAllElements();
+
+	}
 
    /**
     * Función encargada de enviar documentos XML a través de la red.

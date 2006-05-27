@@ -446,12 +446,13 @@ public class Netfolder
    {
       int i;
       InetAddress ip = getIp(host);
-      for(i=0;i<hosts.size() && ip.equals(hosts.get(i)) ;i++);
+      for(i=0;i<hosts.size() && host.equals((String) hoststr.get(i)) ;i++);
       if(hosts.size()==i)
       {
          hosts.addElement(ip);
          hoststr.addElement(host);
       }
+      System.err.println("LISTA IP's: " + hoststr);
    }
 
    /**

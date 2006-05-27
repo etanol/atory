@@ -47,7 +47,7 @@ public class Storage {
     public static void listaVacia ()
     {
         table = new Hashtable ();
-        MainWindow.visualizarLista (new Vector ());
+        MainWindow.eliminarTodos ();
     }
 
     /**
@@ -122,8 +122,10 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file != null) {
             file.delHost (host);
-            if (!file.exists ())
+            if (!file.exists ()) {
                 table.remove (nombre);
+                MainWindow.eliminarFichero (file);
+            }
         }
     }
 
@@ -146,8 +148,10 @@ public class Storage {
                 // participación local.
                 file.setLocal (false);
                 // ¿Se ha eliminado de la red?
-                if (!file.exists ())
+                if (!file.exists ()) {
                     table.remove (file.getNombre ());
+                    MainWindow.eliminarFichero (file);
+                }
                 removed.addElement (file);
             }
         }
@@ -168,8 +172,10 @@ public class Storage {
         while (e.hasMoreElements ()) {
             file = (Fichero) e.nextElement ();
             file.delHost (host);
-            if (!file.exists ())
+            if (!file.exists ()) {
                 table.remove (file.getNombre ());
+                MainWindow.eliminarFichero (file);
+            }
         }
     }
 
@@ -208,7 +214,7 @@ public class Storage {
         file = (Fichero) table.get (nombre);
         if (file != null) {
             try {
-                md5 = MD5.fromFile (System.getProperty ("sharedir") + nombre);
+                md5 = MD5.fromFile (nombre);
                 return md5.equals (file.getMd5 ());
             } catch (Exception ex) {}
         }

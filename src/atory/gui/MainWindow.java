@@ -195,7 +195,36 @@ public class MainWindow {
           }
       });
    }
-   
+
+   /**
+    * Cambia la ubicación de un fichero en el gui. Establece el valor
+    * local o remoto según corresponda
+    * @param fich Fichero al que modificar el campo ubicación
+    */
+   public static void cambiarUbicacion(final Fichero fich)
+   {
+      final Fichero f = fich;
+      display.asyncExec (new Runnable () {
+         public void run ()
+         {
+            TableItem[] tis = tabla.getItems();
+            for(int i=0; i < tis.length; i++) 
+            {
+               if (tis[i].getText(0).equals(f.getNombre())) 
+               {
+                  TableItem ti = tis[i];
+                  if(f.isLocal())
+                     ti.setText(1, "Local");
+                  else 
+                     ti.setText(1, "Remoto");
+                     
+                  break;
+                   }   
+               }
+           }
+      });
+   }
+  
    /**
     * Comunica a la interfaz que se tiene que
     * visualizar la lista. Esta función llama a

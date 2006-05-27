@@ -8,6 +8,7 @@ package atory;
 import atory.xml.*;
 import atory.fs.*;
 import atory.gui.*;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Random;
@@ -206,16 +207,16 @@ public class Storage {
      * @param nombre El nombre del fichero en el directorio compartido.
      * @return true si el fichero es correcto, false sino.
      */
-    public static boolean checkIntegrity (String nombre)
+    public static boolean checkIntegrity (File fd)
     {
-        Fichero file;
+        Fichero fich;
         String md5;
 
-        file = (Fichero) table.get (nombre);
-        if (file != null) {
+        fich = (Fichero) table.get (fd.getName ());
+        if (fich != null) {
             try {
-                md5 = MD5.fromFile (nombre);
-                return md5.equals (file.getMd5 ());
+                md5 = MD5.fromFile (fd);
+                return md5.equals (fich.getMd5 ());
             } catch (Exception ex) {}
         }
         return false;

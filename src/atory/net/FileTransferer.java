@@ -82,7 +82,7 @@ public class FileTransferer extends Thread
 		catch(Exception e)
 		{;}
 		//TODO:comprobar MD5;
-		if(!Storage.checkIntegrity(name))
+		if(!Storage.checkIntegrity(fichero))
 		{
 			fichero.delete();
 			//TODO: mandar sms a la ventana para quesuelte un mensaje

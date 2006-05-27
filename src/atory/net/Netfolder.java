@@ -93,7 +93,6 @@ public class Netfolder
 	{
 		hosts.removeAllElements();
 		hoststr.removeAllElements();
-
 	}
 
    /**
@@ -279,7 +278,7 @@ public class Netfolder
 	 * @param ipdestino Dirección destino.
 	 * @param f Fichero a enviar.
 	 */
-	public static void getSecureFile(String host, String file) throws Exception
+	public static void getSecureFile(String file, String host, long size) throws Exception
 	{
 		System.err.println ("RUTA SEGURA: " +pathname+file);
      (new FileTransferer(secureserver, (pathname+file), getIp(host))).start();
@@ -342,7 +341,7 @@ public class Netfolder
 	* @param file Nombre del archivo a recibir.
 	* @param host Ip del cliente.
 	*/
-   public static void getFile(String file, String host) throws Exception
+   public static void getFile(String file, String host, long size) throws Exception
    {
       System.err.println ("RUTA: " +pathname+file);
      (new FileTransferer(dataserver, (pathname+file), getIp(host))).start();

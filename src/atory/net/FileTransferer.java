@@ -15,22 +15,24 @@ public class FileTransferer extends Thread
 	ServerSocket server = null;
 	static Vector paths = new Vector(10,5);
 	static Vector ips = new Vector(10,5);
+	static Vector sizes = new Vector(10,5); 
 	static boolean flag = false;
 	
-	public FileTransferer(ServerSocket server, String path, InetAddress ip)
+	public FileTransferer(ServerSocket server, String path, InetAddress ip, long size)
 	{
 	  super("FileTransferer");
 	  this.server = server;
-	  addList(path,ip);
+	  addList(path,ip,size);
 	}
 	
-	synchronized void addList(String path, InetAddress ip)
+	synchronized void addList(String path, InetAddress ip, long size)
 	{
 		while(flag)
 			try {wait();} catch(Exception e){;}
 		flag = true;
 		paths.add(path);
 		ips.add(ip);
+		sizes.add(size);
 		flag = false;
 		notify();
 	}
@@ -42,6 +44,7 @@ public class FileTransferer extends Thread
 		flag = true;
 		paths.remove(n);
 		ips.remove(n);
+		sizes.remove(n);
 		flag = false;
 		notify();
 	}
@@ -82,11 +85,10 @@ public class FileTransferer extends Thread
 		}
 		catch(Exception e)
 		{;}
-		//TODO:comprobar MD5;
+		
 		if(!Storage.checkIntegrity(fichero))
 		{
 			fichero.delete();
-			//TODO: mandar sms a la ventana para quesuelte un mensaje
 		}
 	}
 	
@@ -105,7 +107,7 @@ public class FileTransferer extends Thread
 			}
 		}
 		catch(Exception e)
-		{;}
+		{}
 		
 		return n;
 	}

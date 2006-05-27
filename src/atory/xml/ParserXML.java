@@ -132,7 +132,10 @@ public class ParserXML
             if(s.equals("NewConnection"))
                 parseaNuevaConexion(xpp);
             else if(s.equals("HostsList"))
+            {
                 parseaAnadirHosts(xpp);
+                xmlAnadirHost(Netfolder.whoAmI());
+            }
             else if(s.equals("FilesList")) {
                 Storage.listaVacia ();
                 parseaAnadirFicheros(xpp);
@@ -164,7 +167,7 @@ public class ParserXML
 
                 xmlListaHosts(host);
                 xmlListaFicheros(host);
-                Netfolder.addHost(host);
+                //Netfolder.addHost(host);
             }
 
     
@@ -437,6 +440,7 @@ public class ParserXML
     * @param fichero El nombre del fichero que se quiere descargar.
     * @param host Host al que se le envia el xml.
     * @param tamano Tamaño del fichero.
+    * @throws
 	 */
     public static void xmlReqSecureFichero(String fichero, String host, long
          tamano) throws IOException, Exception
@@ -462,7 +466,8 @@ public class ParserXML
     /**
      * Función que crea un documento xml con los nuevos ficheros que pasan a 
      * estar compartidos.
-     * @param ficheros Vector con objetos Fichero que pasan a estar compartidos.
+     * @param ficheros Vector con objetos Fichero que pasan a estar compartidos. 
+     * @throws
      */
     public static void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
     {
@@ -498,6 +503,7 @@ public class ParserXML
      * Función que crea un documento xml con los ficheros que dejan de estar 
      * compartidos.
      * @param ficheros Vector con objetos Fichero que dejan de estar compartidos.
+     * @throws
      */
     public static void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
     {
@@ -534,6 +540,7 @@ public class ParserXML
      * Función que crea un documento xml indicando el nuevo host "host" que 
      * entra a formar parte de la red.
      * @param host Host que se conecta a la red.
+     * @throws
      */
     public static void xmlAnadirHost(String host) throws IOException, Exception
     {
@@ -554,6 +561,7 @@ public class ParserXML
      * Función que crea un documento xml indicando el host "host" que ha caido 
      * de la red.
      * @param host Host que se desconecta a la red.
+     * @throws
      */
     public static void xmlEliminarHost(String host) throws IOException, Exception
     {

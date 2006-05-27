@@ -193,14 +193,18 @@ public class Storage {
     public static void reqFichero (String nombre) throws Exception
     {
         Fichero file;
+        Vector  fs = new Vector ();
 
         file = (Fichero) table.get (nombre);
         if (file == null)
             throw new Exception ("Fichero no encontrado");
-        if (!file.isLocal ())
+        if (!file.isLocal ()) {
             ParserXML.xmlReqFichero (file.getNombre (),
                                      file.getRandomHost (rand),
                                      file.getTamano ());
+            fs.addElement (file);
+            ParserXML.xmlAnadirFicheros (fs);
+        }
     }
 
     /**
@@ -249,6 +253,7 @@ public class Storage {
     {
         ParserXML.xmlEliminarHost (Netfolder.whoAmI ());
         MainWindow.eliminarTodos ();
+        Disco.merge ();
     }
 }
 

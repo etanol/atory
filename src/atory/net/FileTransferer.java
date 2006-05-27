@@ -4,6 +4,7 @@ package atory.net;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import atory.fs.*;
 import atory.*;
 
 /**
@@ -86,6 +87,15 @@ public class FileTransferer extends Thread
 		{
 			fichero.delete();
 			//TODO: mandar sms a la ventana para quesuelte un mensaje
+		}
+		else
+		{
+			try
+			{
+				Disco.sync();
+			}
+			catch(Exception e)
+			{}
 		}
 		
 	}

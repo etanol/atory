@@ -4,6 +4,7 @@ package atory.net;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import atory.*;
 
 /**
  * Clase encargada de tratar las conexiones al puerto de datos.
@@ -49,7 +50,8 @@ public class FileTransferer extends Thread
 		boolean b = true;
 		int n = 0;
 		int c = 0;
-		String name;
+		long filesize = 0;
+		String name = null;
 		Socket socket = null;
 		File fichero = null;
 		OutputStream out = null;
@@ -69,7 +71,10 @@ public class FileTransferer extends Thread
 			fichero.createNewFile();
 			out = new FileOutputStream(fichero);
         
-			while((c = in.read())!=-1) out.write(c);
+			while((c = in.read())!=-1)
+			{
+				out.write(c);
+			}
 
 			out.flush();
 			
@@ -77,6 +82,12 @@ public class FileTransferer extends Thread
 		catch(Exception e)
 		{;}
 		//TODO:comprobar MD5;
+		if(!Storage.checkIntegrity(name))
+		{
+			fichero.delete();
+			//TODO: mandar sms a la ventana para quesuelte un mensaje
+		}
+		
 	}
 	
 	int isMine(InetAddress ip)

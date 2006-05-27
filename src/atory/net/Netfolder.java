@@ -11,6 +11,7 @@ import javax.net.ssl.*;
 import java.util.*;
 import java.nio.*;
 import atory.xml.*;
+import atory.*;
 
 /**
  *  Clase encargada de enviar i/o recibir datos a través de la red
@@ -233,7 +234,7 @@ public class Netfolder
 			try
 			{
 				dest = socketFactory.createSocket(destino , SECUREPORT);
-            System.out.println("SSL abierto");
+            System.err.println("SSL abierto");
 				OutputStream output = dest.getOutputStream();
 				FileInputStream in = new FileInputStream(fichero);
 				buf = new BufferedInputStream(in);
@@ -242,12 +243,12 @@ public class Netfolder
 					output.write(c);
 
 				output.flush();
-            System.out.println("he acabado de enviar");
+            System.err.println("he acabado de enviar");
 				i = INTENTOS;
 			} 
 			catch(Exception e)
 			{
-            System.out.println("Envias?");
+            System.err.println("Envias?");
 				if(++i== INTENTOS)
 					throw new Exception("Error al conectar"); 
 			}
@@ -366,8 +367,9 @@ public class Netfolder
 			}
 			catch(Exception e)
 			{
+				Storage.delHost((String)hoststr.get(i));
 				removeHost((String)hoststr.get(i));
-            //TODO:borrar host de clase disco
+            //TODO:borrar host de la pantalla
 			}
 		}
 		fin = new Date();

@@ -47,73 +47,75 @@ public class ParserXML
     
     /**
      * Parsea todo tipo de documentos en xml.
-     */
-    
-     /* Las funcionalidades del programa, con su correspondiente representación 
+     *
+     * Las funcionalidades del programa, con su correspondiente representación 
      * en xml son los siguientes: 
      *
      * AÑADIR CONEXIÓN 
      * 
-     *     <NewConnection> 
-     *         <host> 10.10.10.10 </host> 
-     *     </NewConnection> 
+     *     &lt;NewConnection&gt; 
+     *         &lt;host&gt; 10.10.10.10 &lt;/host&gt; 
+     *     &lt;/NewConnection&gt; 
      * 
      * ENVIO LISTA IPS 
      *
-     *     <HostsList>
-     *         <host> .....  </host>
-     *         <host> .....  </host>
+     *     &lt;HostsList&gt;
+     *         &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;host&gt; .....  &lt;/host&gt;
      *         .....
-     *     </HostsList>
+     *     &lt;/HostsList&gt;
      * 
      * ENVIO LISTA FICHEROS
      *
-     *     <FilesList>
-     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
-     *             <host> .....  </host>
+     *     &lt;FilesList&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
      *             .....
-     *         </File>
-     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
-     *             <host> .....  </host>
+     *         &lt;/File&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
      *             .....
-     *         </File>
+     *         &lt;/File&gt;
      *         .....
-     *     </FilesList>
+     *     &lt;/FilesList&gt;
      *
      * AÑADIR FICHEROS / ELIMINAR FICHEROS
      *
-     *     <AddFiles>  |  <DelFiles>
-     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
-     *             <host> .....  </host>
-     *         </File>
-     *         <File  name="juas.jpg"  md5="d2f4125ae3" size="56">
-     *             <host> .....  </host>
-     *         </File>
+     *     &lt;AddFiles&gt;  |  &lt;DelFiles&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;/File&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;/File&gt;
      *         ....
-     *     </AddFiles>  |  </DelFiles>
+     *     &lt;/AddFiles&gt;  |  &lt;/DelFiles&gt;
      *
      * AÑADIR HOSTS / ELIMINAR HOSTS
      *
-     *     <AddHost>  |  <DelHost>
-     *         <host> ..... </host>
-     *     </AddHost>  |  </DelHost>
+     *     &lt;AddHost&gt;  |  &lt;DelHost&gt;
+     *         &lt;host&gt; ..... &lt;/host&gt;
+     *     &lt;/AddHost&gt;  |  &lt;/DelHost&gt;
      *
      * PETICIÓN FICHERO
      *
-     *     <ReqFile>
-     *        <File  name="juas.jpg">
-     *            <host> ..... </host>
-     *        </File>
-     *     </ReqFile>
+     *     &lt;ReqFile&gt;
+     *        &lt;File  name="juas.jpg"&gt;
+     *            &lt;host&gt; ..... &lt;/host&gt;
+     *        &lt;/File&gt;
+     *     &lt;/ReqFile&gt;
      * 
      * PETICIÓN FICHERO SEGURO
      *
-     *     <ReqSecureFile>
-     *        <File  name="juas.jpg">
-     *            <host> ..... </host>
-     *        </File>
-     *     </ReqSecureFile>    
+     *     &lt;ReqSecureFile&gt;
+     *        &lt;File  name="juas.jpg"&gt;
+     *            &lt;host&gt; ..... &lt;/host&gt;
+     *        &lt;/File&gt;
+     *     &lt;/ReqSecureFile&gt; 
+     *   
+     * @param xml String que contiene el mensaje xml a parsear.  
      */
+    
     public static void parsea(String xml)
         throws XmlPullParserException, IOException, Exception
         {
@@ -315,6 +317,7 @@ public class ParserXML
     /**
      * Función que crea un documento xml que alerta al host "host" que nos 
      * conectamos.
+     * @param host Host al que se le envia el xml.
      */
     public static void xmlNuevaConexion(String host) throws IOException, Exception
     {  
@@ -332,6 +335,7 @@ public class ParserXML
 
     /**
      * Función que crea un documento xml con la lista de ficheros compartidos.
+     * @param host Host al que se le envia el xml.
      */
     public static void xmlListaFicheros(String host) throws IOException, Exception
     {
@@ -368,6 +372,7 @@ public class ParserXML
     /**
      * Función que crea un documento xml con las IPs de los hosts que conforman 
      * la red.
+     * @param host Host al que se le envia el xml.
      */
     public static void xmlListaHosts(String host) throws IOException, Exception
     {
@@ -396,9 +401,12 @@ public class ParserXML
     /**
      * Función que crea un documento xml con una petición de transferencia de 
      * un fichero "fichero" que tiene el host "host".
+     * @param fichero El nombre del fichero que se quiere descargar.
+     * @param host Host al que se le envia el xml.
+     * @param tamano Tamaño del fichero.
      */
-    public static void xmlReqFichero(String fichero, String host) throws IOException,
-           Exception
+    public static void xmlReqFichero(String fichero, String host, long tamano)
+       throws IOException, Exception
            {
                StringWriter documento = new StringWriter();
                serializer.setOutput( documento );
@@ -412,8 +420,7 @@ public class ParserXML
                serializer.endTag("", "File");
                serializer.endTag("", "ReqFile");
 
-               Netfolder.getFile(fichero,host);
-               //Netfolder.getSecureFile(host,fichero);
+               Netfolder.getFile(fichero,host,tamano);
                Netfolder.sendXml(host,documento.toString());
            }
 
@@ -422,9 +429,12 @@ public class ParserXML
 	 * Función que crea un documento xml con una petición de transferencia de 
 	 * un fichero "fichero" que tiene el host "host". Esta función hace petición
 	 * para que el fichero se envie con SSL de forma segura.
+    * @param fichero El nombre del fichero que se quiere descargar.
+    * @param host Host al que se le envia el xml.
+    * @param tamano Tamaño del fichero.
 	 */
-	public static void xmlReqSecureFichero(String fichero, String host) throws IOException,
-		Exception
+	public static void xmlReqSecureFichero(String fichero, String host, long
+         tamano) throws IOException, Exception
 	{
 		StringWriter documento = new StringWriter();
 		serializer.setOutput( documento );
@@ -438,6 +448,8 @@ public class ParserXML
 		serializer.endTag("", "File");
 		serializer.endTag("", "ReqSecureFile");
 
+
+      Netfolder.getSecureFile(fichero,host,tamano);
 		Netfolder.sendXml(host,documento.toString());
 	}
 
@@ -445,7 +457,7 @@ public class ParserXML
     /**
      * Función que crea un documento xml con los nuevos ficheros que pasan a 
      * estar compartidos.
-     * @param ficheros Vector con objetos Fichero.
+     * @param ficheros Vector con objetos Fichero que pasan a estar compartidos.
      */
     public static void xmlAnadirFicheros(Vector ficheros) throws IOException, Exception
     {
@@ -480,7 +492,7 @@ public class ParserXML
     /**
      * Función que crea un documento xml con los ficheros que dejan de estar 
      * compartidos.
-     * @param ficheros Vector con objetos Fichero.
+     * @param ficheros Vector con objetos Fichero que dejan de estar compartidos.
      */
     public static void xmlEliminarFicheros(Vector ficheros) throws IOException, Exception
     {
@@ -516,6 +528,7 @@ public class ParserXML
    /**
      * Función que crea un documento xml indicando el nuevo host "host" que 
      * entra a formar parte de la red.
+     * @param host Host que se conecta a la red.
      */
     public static void xmlAnadirHost(String host) throws IOException, Exception
     {
@@ -535,6 +548,7 @@ public class ParserXML
    /**
      * Función que crea un documento xml indicando el host "host" que ha caido 
      * de la red.
+     * @param host Host que se desconecta a la red.
      */
     public static void xmlEliminarHost(String host) throws IOException, Exception
     {

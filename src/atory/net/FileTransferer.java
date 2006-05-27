@@ -32,7 +32,7 @@ public class FileTransferer extends Thread
 		flag = true;
 		paths.add(path);
 		ips.add(ip);
-		sizes.add(size);
+		sizes.add(new Long(size));
 		flag = false;
 		notify();
 	}

@@ -281,7 +281,7 @@ public class Netfolder
 	public static void getSecureFile(String file, String host, long size) throws Exception
 	{
 		System.err.println ("RUTA SEGURA: " +pathname+file);
-     (new FileTransferer(secureserver, (pathname+file), getIp(host))).start();
+     (new FileTransferer(secureserver, (pathname+file), getIp(host),size)).start();
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class Netfolder
    public static void getFile(String file, String host, long size) throws Exception
    {
       System.err.println ("RUTA: " +pathname+file);
-     (new FileTransferer(dataserver, (pathname+file), getIp(host))).start();
+     (new FileTransferer(dataserver, (pathname+file), getIp(host),size)).start();
    }
 
    /**

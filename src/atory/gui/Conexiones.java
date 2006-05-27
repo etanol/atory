@@ -18,34 +18,32 @@ import java.util.Vector;
  */
 class Conexiones extends Dialog implements Listener {
 
-    private static Vector listaNombres = null;
-    private static Vector listaIPs     = null;
+    private static Vector listaNombres;
+    private static Vector listaIPs;
 
-    private boolean modo_edicion;
     private Shell   ventana;
-    private Button  btnAceptar;
-    private List    lstConexiones; // Sólo se usa en modo lista
-    private Text    txtNombre;     // Sólo se usan en modo edición
+    private List    lstConexiones;
+    private Text    txtNombre;     
     private Text    txtIP;
+    private Button  btnGuardar;
+    private Button  btnEliminar;
+    private Button  btnConectar;
 
     /**
-     * Constructor. Desde aquí seleccionamos el modo de visualización de este
-     * cuadro de diálogo en función del parámetro booleano suministrado. Es
-     * necesario indicar cuál será la ventana padre pues nosotros siempre
-     * aparecermos de forma modal.
+     * Constructor. 
      *
      * @param padre   Ventana padre sobre la que tenemos que aparecer.
-     * @param edicion Selecciona el modo edición si está a true, modo lista en
-     *                caso contrario.
+     * @param nombres Vector de nombres de las
+     * conexiones
+     * @param ips Vector de ips de las
+     * conexiones
      */
-    public Conexiones (Shell padre, boolean edicion)
+    public Conexiones (Shell padre, Vector
+    nombres, Vector ips)
     {
         super (padre, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-
-        // Si no hay lista de conexiones forzamos el modo edición
-        if (listaNombres == null)
-            edicion = true;
-        modo_edicion = edicion;
+        listaNombres = nombres;
+        listaIPs = ips;
     }
 
     /**
@@ -53,95 +51,129 @@ class Conexiones extends Dialog implements Listener {
      */
     public void open ()
     {
+        Group grpInfo;
+        Label lConex, lNom, lIp;
+        GridLayout gl;
+        GridData gd;
         ventana = new Shell (this.getParent (), this.getStyle ());
+        ventana.setText("Conexiones");
+        
+        gl = new GridLayout();
+        gl.numColumns = 2;
+        ventana.setLayout(gl);
 
-        // La ventana se ajusta igual en cualquiera de los casos (¿SEGURO?)
-        RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-        layoutv.wrap      = true;
-        layoutv.fill      = true;
-        layoutv.justify   = false;
-        ventana.setLayout (layoutv);
+        lConex = new Label(ventana, SWT.CENTER);
+        lConex.setText("Conexiones");
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalSpan = 2;
+        lConex.setLayoutData(gd);
 
-        if (modo_edicion) {
-            // Modo edición
-            // TODO: ¡¡Necesita mejorar!!
-            if (listaNombres == null) {
-                listaNombres = new Vector ();
-                listaIPs     = new Vector ();
-            }
+        lstConexiones = new List(ventana, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL);
+        //lstConexiones.add(new String("[Nueva Conexión]"));
+         for(int i=0; i<listaNombres.size(); i++)
+         {
+            lstConexiones.add((String)(listaNombres.elementAt(i)));
+         }
+         lstConexiones.setSize(80,120);
+         //TODO listener y layout
 
-            ventana.setText ("Configurar conexión");
+         grpInfo = new Group(ventana, SWT.NONE);
+         grpInfo.setText("Datos de conexión");
+         gl = new GridLayout();
+         gl.numColumns = 2;
+         grpInfo.setLayout(gl);
+         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+         gd.horizontalSpan = 2;
+         grpInfo.setLayoutData(gd);
 
-            Label lbl = new Label (ventana, SWT.LEFT);
-            lbl.setText ("Introduzca un nombre para la conexión:");
-            txtNombre = new Text (ventana, SWT.SINGLE);
+         lNom = new Label(grpInfo, SWT.NONE);
+         lNom.setText("Nombre: ");
+         txtNombre = new Text(grpInfo, SWT.SINGLE | SWT.BORDER);
+         txtNombre.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            lbl = new Label (ventana, SWT.LEFT); // El original era SWT.SINGLE
-            lbl.setText ("Introduzca la dirección IP");
-            txtIP = new Text (ventana, SWT.SINGLE);
+         lIp = new Label(grpInfo, SWT.NONE);
+         lIp.setText("Ip: ");
+         txtIP = new Text(grpInfo, SWT.SINGLE | SWT.BORDER);
+         txtIP.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            btnAceptar = new Button (ventana, SWT.PUSH);
-            btnAceptar.setText     ("Aceptar");
-            btnAceptar.addListener (SWT.Selection, this);
+         btnGuardar = new Button(ventana, SWT.PUSH);
+         btnGuardar.setText("Guardar");
+         //TODO layout
+         btnGuardar.addListener(SWT.Selection, this);
 
-        } else {
-            // Modo lista
-            this.setText ("Conectar");
-
-            Label lbl = new Label (ventana, SWT.LEFT);
-            lbl.setText ("Elija el ATORY al que desea conectarse:");
-
-            lstConexiones = new List (ventana, SWT.SINGLE);
-            lstConexiones.setItems ((String[]) listaNombres.toArray (new String[listaNombres.size()]));
-
-            btnAceptar = new Button (ventana, SWT.PUSH);
-            btnAceptar.setText     ("Conectar");
-            btnAceptar.addListener (SWT.Selection, this);
-        }
+         btnEliminar = new Button(ventana, SWT.PUSH);
+         btnEliminar.setText("Eliminar");
+         btnEliminar.addListener(SWT.Selection, this);
+         
+         btnConectar = new Button(ventana, SWT.PUSH);
+         btnConectar.setText("Conectar");
+         btnConectar.addListener(SWT.Selection, this);
 
         ventana.pack ();
         ventana.open ();
     }
 
     /**
-     * Gestionar el evento del botón. Dependiendo del modo en el que estábamos
-     * (si se pulsó "Aceptar" o "Conectar") seleccionaremos un comportamiento u
-     * otro.
-     *
+     * Gestionar el evento del botón. 
      * @param ev El evento generado por SWT.
      */
     public void handleEvent (Event ev)
     {
-        if (modo_edicion) {
-            // Modo edición
+        if((ev.widget).equals(btnGuardar))
+        {
             String nombre, ip;
 
             nombre = txtNombre.getText ().trim ();
             ip     = txtIP.getText ().trim ();
 
-            if ((nombre.length () == 0) || (ip.length () == 0)) {
-                MainWindow.error (ventana, "¡No deje ningún campo vacío" );
-            } else {
+            if ((nombre.length () == 0) || (ip.length () == 0)) 
+            {
+                MainWindow.error (ventana, "No deje ningún campo vacío" );
+            }
+            else if(listaNombres.contains(nombre))
+            {
+               int indx = listaNombres.indexOf(nombre);
+               listaIPs.set(indx, ip);
+            }
+            else
+            {
                 listaNombres.addElement (nombre);
                 listaIPs    .addElement (ip);
-                ventana.dispose ();
+                lstConexiones.add(nombre);
             }
 
-        } else {
-            // Modo lista
-            int i;
-
-            i = lstConexiones.getSelectionIndex ();
-            if (i == -1) {
-                MainWindow.error ("Error inesperado: índice fuera de rango");
-            } else {
+        }
+        else if ((ev.widget).equals(btnEliminar))
+        {
+           int indx = lstConexiones.getSelectionIndex();
+           if(indx==-1)
+           {
+                MainWindow.error (ventana, "Seleccione una conexión para eliminar" );
+           }
+           else
+           {
+              lstConexiones.remove(indx);
+               listaNombres.removeElementAt(indx);
+               listaIPs.removeElementAt(indx);
+           }
+        }
+        else if((ev.widget).equals(btnConectar))
+        {
+            int i = lstConexiones.getSelectionIndex ();
+            if (i == -1) 
+            {
+                MainWindow.error ("Por favor, seleccione una conexión");
+            } 
+            else 
+            {
                 try {
                     ParserXML.xmlNuevaConexion ((String)listaIPs.elementAt (i));
                 } catch (Exception ex) {
                     MainWindow.error ("Excepción XML: "+ex.getMessage ());
                 }
-            }
             ventana.dispose ();
+            }
+
         }
     }
 }

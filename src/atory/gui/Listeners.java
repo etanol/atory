@@ -24,12 +24,14 @@ import org.eclipse.swt.graphics.*;
  */
 
 /* CONECTAR */
-class ConectarListener implements Listener {
+class ConexionesListener implements Listener {
     public void handleEvent (Event ev)
     {
         // La visibilidad de los campos en MainWindow es "package" así que
         // podemos utilizarlos aquí.
-        Conexiones con = new Conexiones (MainWindow.shell, false);
+        Conexiones con = new Conexiones
+        (MainWindow.shell, MainWindow.Nombres,
+        MainWindow.IPs);
         con.open ();
     }
 }
@@ -42,14 +44,14 @@ class DesconectarListener implements Listener {
     }
 }
 
-/* CONFIGURAR CONEXIÓN */
+/* CONFIGURAR CONEXIÓN 
 class ConfigurarListener implements Listener {
     public void handleEvent (Event ev)
     {
         Conexiones con = new Conexiones (MainWindow.shell, true);
         con.open ();
     }
-}
+}*/
 
 /* SINCRONIZAR */
 class SincronizarListener implements Listener {

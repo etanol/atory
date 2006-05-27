@@ -19,7 +19,8 @@ public class MainWindow {
     static Shell   shell;
     static Table tabla;
     static Conexion con;
-    static Vector conexion;
+    static Vector Nombres; 
+    static Vector IPs;     
 
     /**
      * Función principal. Utilizamos main con un doble propósito: poder arrancar
@@ -34,8 +35,10 @@ public class MainWindow {
         display = new Display ();
         shell   = new Shell(display);
         shell.setText("ATORY");
-
-        conexion = new Vector();
+        Image ish = new Image (display, MainWindow.class.getResourceAsStream("images/ninjahiro.png"));
+        shell.setImage(ish);
+        Nombres = new Vector();
+        IPs = new Vector();
 
         // Barra de menú, elementos principales.
         Menu menuBar     = new Menu (shell, SWT.BAR);
@@ -51,11 +54,11 @@ public class MainWindow {
 
         // Barra de menú, submenú Archivo
 
-        // Conectar
+        // Conexiones
         MenuItem item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("C&onectar\tCtrl+O");
+        item.setText        ("C&onexiones...\tCtrl+O");
         item.setAccelerator (SWT.MOD1 + 'O');
-        item.addListener    (SWT.Selection, new ConectarListener ()); 
+        item.addListener    (SWT.Selection, new ConexionesListener ()); 
 
         // Desconectar
         item = new MenuItem (subArchivo, SWT.PUSH);
@@ -63,11 +66,11 @@ public class MainWindow {
         item.setAccelerator (SWT.MOD1 + 'D');
         item.addListener    (SWT.Selection, new DesconectarListener ());
 
-        // Configurar conexión
+        /*/ Configurar conexión
         item = new MenuItem (subArchivo, SWT.PUSH);
         item.setText        ("Con&figurar conexión\tCtrl+F");
         item.setAccelerator (SWT.MOD1 + 'F');
-        item.addListener    (SWT.Selection, new ConfigurarListener ());
+        item.addListener    (SWT.Selection, new ConfigurarListener ());*/
 
         // Sincronizar
         item = new MenuItem (subArchivo, SWT.PUSH);
@@ -178,6 +181,19 @@ public class MainWindow {
          if (!display.readAndDispatch ()) display.sleep ();
       }
       display.dispose ();
+   }
+   
+   /**
+    * Elimina todos los items de la tabla.
+    */
+   public static void eliminarTodos()
+   {
+      display.asyncExec (new Runnable () {
+          public void run ()
+          {
+            tabla.removeAll();
+          }
+      });
    }
    
    /**

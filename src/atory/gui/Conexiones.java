@@ -10,6 +10,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.*;
 import java.util.Vector;
 
 /**
@@ -21,13 +22,13 @@ class Conexiones extends Dialog implements Listener {
     private static Vector listaNombres;
     private static Vector listaIPs;
 
-    private Shell   ventana;
-    private List    lstConexiones;
-    private Text    txtNombre;     
-    private Text    txtIP;
-    private Button  btnGuardar;
-    private Button  btnEliminar;
-    private Button  btnConectar;
+    private static Shell   ventana;
+    private static List    lstConexiones;
+    private static Text    txtNombre;     
+    private static Text    txtIP;
+    private static Button  btnGuardar;
+    private static Button  btnEliminar;
+    private static Button  btnConectar;
 
     /**
      * Constructor. 
@@ -59,28 +60,20 @@ class Conexiones extends Dialog implements Listener {
         ventana.setText("Conexiones");
         
         gl = new GridLayout();
-        gl.numColumns = 5;
+        gl.numColumns = 4;
         ventana.setLayout(gl);
+
+        Label a = new Label(ventana, SWT.CENTER);
+        a.setText("");
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.horizontalSpan = 2;
+        a.setLayoutData(gd);
 
         lConex = new Label(ventana, SWT.CENTER);
         lConex.setText("Conexiones");
-        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalSpan = 5;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+        gd.horizontalSpan = 2;
         lConex.setLayoutData(gd);
-
-        lstConexiones = new List(ventana, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL);
-        //lstConexiones.add(new String("[Nueva Conexión]"));
-         for(int i=0; i<listaNombres.size(); i++)
-         {
-            lstConexiones.add((String)(listaNombres.elementAt(i)));
-         }
-         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
-         GridData.VERTICAL_ALIGN_FILL);
-         gd.widthHint = 80;
-         gd.heightHint = 120;
-         gd.verticalSpan = 3;
-         lstConexiones.setLayoutData(gd);
-         //TODO listener y layout
 
          grpInfo = new Group(ventana, SWT.NONE);
          grpInfo.setText("Datos de conexión");
@@ -89,6 +82,8 @@ class Conexiones extends Dialog implements Listener {
          grpInfo.setLayout(gl);
          gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
          gd.horizontalSpan = 2;
+         gd.verticalSpan = 2;
+         gd.widthHint = 200;
          grpInfo.setLayoutData(gd);
 
          lNom = new Label(grpInfo, SWT.NONE);
@@ -99,11 +94,37 @@ class Conexiones extends Dialog implements Listener {
          lIp = new Label(grpInfo, SWT.NONE);
          lIp.setText("Ip: ");
          txtIP = new Text(grpInfo, SWT.SINGLE | SWT.BORDER);
-         txtIP.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        txtIP.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+ 
+        lstConexiones = new List(ventana, SWT.SINGLE | SWT.BORDER |
+        SWT.V_SCROLL | SWT.H_SCROLL);
+         for(int i=0; i<listaNombres.size(); i++)
+         {
+            lstConexiones.add((String)(listaNombres.elementAt(i)));
+         }
+         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
+         GridData.VERTICAL_ALIGN_FILL);
+         gd.widthHint = 80;
+         gd.heightHint = 120;
+         gd.horizontalSpan = 2;
+         gd.verticalSpan = 2;
+         lstConexiones.setLayoutData(gd);
+         lstConexiones.addSelectionListener(new SelectionAdapter(){
+               public void widgetSelected(SelectionEvent e){
+                  int indx = lstConexiones.getSelectionIndex();
+                  String nom, i;
+                  nom = (String) listaNombres.elementAt(indx);
+                  i = (String) listaIPs.elementAt(indx);
+                  txtNombre.setText(nom);
+                  txtIP.setText(i);
+               }
+            });
 
+         gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
+         gd.horizontalSpan = 2;
          btnGuardar = new Button(ventana, SWT.PUSH);
          btnGuardar.setText("Guardar");
-         //TODO layout
+         btnGuardar.setLayoutData(gd);
          btnGuardar.addListener(SWT.Selection, this);
 
          btnEliminar = new Button(ventana, SWT.PUSH);

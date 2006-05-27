@@ -20,7 +20,11 @@ public class MainWindow {
     static Table tabla;
     static Conexion con;
     static Vector Nombres; 
-    static Vector IPs;     
+    static Vector IPs;
+    static MenuItem menuTSeg;
+    static ToolItem coneItem;
+    static ToolItem descItem;
+    static ToolItem tsegItem;
 
     /**
      * Función principal. Utilizamos main con un doble propósito: poder arrancar
@@ -56,25 +60,28 @@ public class MainWindow {
 
         // Conexiones
         MenuItem item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("C&onexiones...\tCtrl+O");
+        item.setText        ("Conexiones...\tCtrl+O");
         item.setAccelerator (SWT.MOD1 + 'O');
         item.addListener    (SWT.Selection, new ConexionesListener ()); 
 
         // Desconectar
         item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("&Desconectar\tCtrl+D");
+        item.setText        ("Desconectar\tCtrl+D");
         item.setAccelerator (SWT.MOD1 + 'D');
         item.addListener    (SWT.Selection, new DesconectarListener ());
-
-        /*/ Configurar conexión
-        item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("Con&figurar conexión\tCtrl+F");
-        item.setAccelerator (SWT.MOD1 + 'F');
-        item.addListener    (SWT.Selection, new ConfigurarListener ());*/
-
+        
+        // Transmisión segura
+        menuTSeg = new MenuItem (subArchivo, SWT.CHECK);
+        menuTSeg.setText        ("Transmisión segura\tCtrl+S");
+        menuTSeg.setAccelerator (SWT.MOD1 + 'D');
+        menuTSeg.addListener    (SWT.Selection, new
+        TSegura1Listener ());
+         
+         item = new MenuItem (subArchivo, SWT.SEPARATOR);
+         
         // Sincronizar
         item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("&Sincronizar\tCtrl+N");
+        item.setText        ("Sincronizar\tCtrl+N");
         item.setAccelerator (SWT.MOD1 + 'N');
         item.addListener    (SWT.Selection, new SincronizarListener ());
 
@@ -84,14 +91,16 @@ public class MainWindow {
         item.setAccelerator (SWT.MOD1 + 'L');
         item.addListener    (SWT.Selection, new DescargarListener ());
 
+         item = new MenuItem (subArchivo, SWT.SEPARATOR);
+
         // Cerrar (Salir)
         item = new MenuItem (subArchivo, SWT.PUSH);
-        item.setText        ("&Cerrar\tCtrl+C");
+        item.setText        ("Cerrar\tCtrl+C");
         item.setAccelerator (SWT.MOD1 + 'C');
         item.addListener    (SWT.Selection, new Listener () {
             public void handleEvent (Event e)
             {
-                shell.setVisible (false);
+                shell.dispose ();
             }
         });
 
@@ -110,22 +119,41 @@ public class MainWindow {
         layoutv.verticalSpacing = 3;
         shell.setLayout (layoutv);
         GridData gdata; // Ajustes para cada widget
-
-        Image imaged = new Image (display, MainWindow.class.getResourceAsStream("images/stock_down.png"));
-        Image images = new Image (display, MainWindow.class.getResourceAsStream("images/sync.png"));
-        ToolBar toolBar = new ToolBar (shell, SWT.FLAT|SWT.BORDER);
+         
+        //imagenes de la toolbar
+        Image imageCon = new Image (display, MainWindow.class.getResourceAsStream("images/connect.png"));
+        Image imageDes = new Image (display, MainWindow.class.getResourceAsStream("images/desconec.png"));
+        Image imageSec = new Image (display, MainWindow.class.getResourceAsStream("images/lock.png"));
+        Image imageDow = new Image (display, MainWindow.class.getResourceAsStream("images/stock_down.png"));
+        Image imageSyn = new Image (display, MainWindow.class.getResourceAsStream("images/sync.png"));
+        
+        ToolBar toolBar = new ToolBar (shell, SWT.FLAT | SWT.BORDER);
 
         // La barra de herramientas NO se expande verticalmente
         gdata = new GridData (GridData.FILL_BOTH);
         gdata.grabExcessVerticalSpace = false;
         toolBar.setLayoutData (gdata);
 
+        coneItem = new ToolItem (toolBar, SWT.PUSH);
+        descItem = new ToolItem (toolBar, SWT.PUSH);
+        tsegItem = new ToolItem (toolBar, SWT.CHECK);
+        new ToolItem (toolBar, SWT.SEPARATOR);
         ToolItem downItem = new ToolItem (toolBar, SWT.PUSH);
         ToolItem syncItem = new ToolItem (toolBar, SWT.PUSH);
-        downItem.setImage (imaged);
-        syncItem.setImage (images);
+        coneItem.setImage (imageCon);
+        descItem.setImage (imageDes);
+        tsegItem.setImage (imageSec);
+        downItem.setImage (imageDow);
+        syncItem.setImage (imageSyn);
+        coneItem.setToolTipText ("Conectar");
+        descItem.setToolTipText ("Desconectar");
+        tsegItem.setToolTipText ("Transmisión segura");
         downItem.setToolTipText ("Descargar");
         syncItem.setToolTipText ("Sincronizar");
+        descItem.setEnabled(false);
+        coneItem.addListener (SWT.Selection, new ConexionesListener());
+        descItem.addListener (SWT.Selection, new DesconectarListener());
+        tsegItem.addListener (SWT.Selection, new TSegura2Listener());
         downItem.addListener (SWT.Selection, new DescargarListener());
         syncItem.addListener (SWT.Selection, new SincronizarListener());
         toolBar.pack ();

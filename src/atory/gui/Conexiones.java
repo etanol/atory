@@ -194,6 +194,8 @@ class Conexiones extends Dialog implements Listener {
             {
                 try {
                     ParserXML.xmlNuevaConexion ((String)listaIPs.elementAt (i));
+                    MainWindow.coneItem.setEnabled(false);
+                    MainWindow.descItem.setEnabled(true);
                 } catch (Exception ex) {
                     MainWindow.error ("Excepción XML: "+ex.getMessage ());
                 }

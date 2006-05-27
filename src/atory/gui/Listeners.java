@@ -41,17 +41,44 @@ class DesconectarListener implements Listener {
     public void handleEvent (Event ev)
     {
         // TODO: enviar petición de desconexión
+        MainWindow.coneItem.setEnabled(true);
+        MainWindow.descItem.setEnabled(false);
     }
 }
 
-/* CONFIGURAR CONEXIÓN 
-class ConfigurarListener implements Listener {
+/* TRANSMISIÓN SEGURA */
+class TSegura1Listener implements Listener {
     public void handleEvent (Event ev)
     {
-        Conexiones con = new Conexiones (MainWindow.shell, true);
-        con.open ();
+       if (MainWindow.menuTSeg.getSelection())
+       {
+          MainWindow.tsegItem.setSelection(true);
+        //TODO: empezar conexion segura
+       }
+       else
+       {
+          MainWindow.tsegItem.setSelection(false);
+        //TODO: acabar conexion segura
+       }
+       
     }
-}*/
+}
+
+class TSegura2Listener implements Listener {
+    public void handleEvent (Event ev)
+    {       
+       if (MainWindow.tsegItem.getSelection())
+       {
+          MainWindow.menuTSeg.setSelection(true);
+        //TODO: empezar conexion segura
+       }
+       else
+       {
+          MainWindow.menuTSeg.setSelection(false);
+        //TODO: acabar conexion segura
+       }
+    }
+}
 
 /* SINCRONIZAR */
 class SincronizarListener implements Listener {

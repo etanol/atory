@@ -40,7 +40,7 @@ public class ParserXML
        factory = XmlPullParserFactory.newInstance(
                System.getProperty(XmlPullParserFactory.PROPERTY_NAME), null);
 
-       factory.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+       //factory.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
        serializer = factory.newSerializer();      
     }
 

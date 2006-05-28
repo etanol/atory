@@ -201,16 +201,18 @@ class AcercaDeListener implements Listener {
     {
         final Shell dialogoAD = new Shell (MainWindow.shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialogoAD.setText("Acerca de ATORY");
-        RowLayout layoutv = new RowLayout(SWT.VERTICAL);
-        layoutv.wrap = true;
-        layoutv.fill = false;
-        layoutv.justify = false;
-        dialogoAD.setLayout(layoutv);
+        GridLayout gl = new GridLayout();
+        gl.numColumns = 1;
+        dialogoAD.setLayout(gl);
         Label txt = new Label (dialogoAD, SWT.CENTER);
         txt.setText("Another direcTORY\nV 1.0\nProjecte de Xarxes de Computadors\n");
-        Button b = new Button(dialogoAD, SWT.PUSH | SWT.CENTER);
+        GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL);
+        txt.setLayoutData(gd);
+        Button b = new Button(dialogoAD, SWT.PUSH);
         b.setText("Aceptar");
-	//TODO layout
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+        b.setLayoutData(gd);
+        
         b.addListener (SWT.Selection, new Listener () {
             public void handleEvent (Event eb) {
                 dialogoAD.dispose();

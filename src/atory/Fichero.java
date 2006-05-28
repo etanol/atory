@@ -78,21 +78,23 @@ public class Fichero
      * son compatibles (es decir, coinciden en nombre y MD5) se van insertando
      * los nombres de host nuevos en nuestra lista.
      *
-     * @param  file      El fichero con el que nos queremos fusionar.
-     * @throws Exception Si los ficheros no son compatibles.
+     * @param  file El fichero con el que nos queremos fusionar.
      */
-    public void merge (Fichero file) throws Exception
+    public void merge (Fichero file)
     {
         Enumeration e;
 
-        if (!this.nombre.equals (file.nombre))
-            throw new Exception ("Los nombres no coinciden");
-        if (!this.md5.equals (file.md5))
-            throw new Exception ("Los ficheros no son iguales");
-        // Aquí ya es seguro que son iguales
-        e = file.hosts.elements ();
-        while (e.hasMoreElements ())
-            this.addHost ((String) e.nextElement ());
+        if (this.nombre.equals (file.nombre) && this.md5.equals (file.md5)) {
+            e = file.hosts.elements ();
+            while (e.hasMoreElements ())
+                this.addHost ((String) e.nextElement ());
+        } else {
+            System.err.println ("Fichero.merge(): Error al fusionar ficheros:");
+            System.err.println ("Fichero.merge(): this -> " + this.nombre +
+                                ", " + this.md5);
+            System.err.println ("Fichero.merge(): file -> " + file.nombre +
+                                ", " + file.md5);
+        }
     }
 
     /**

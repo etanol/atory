@@ -104,6 +104,7 @@ public class Storage {
                 added.addElement (file);
             }
         }
+        System.out.println ("XML ADD FICHEROS: " + added);
         ParserXML.xmlAnadirFicheros (added);
     }
 
@@ -230,8 +231,11 @@ public class Storage {
                     Disco.updateDownloaded (fd, md5);
                     MainWindow.cambiarUbicacion (fich);
                     return true;
-                }
-            } catch (Exception ex) {}
+                } 
+            } catch (Exception ex) {
+                System.err.print   ("Storage.checkIntegrity(): ");
+                System.err.println ("Excepción: " + ex.getMessage ());
+            }
         }
         return false;
     }
@@ -252,7 +256,8 @@ public class Storage {
     public static void disconnect () throws Exception
     {
         ParserXML.xmlEliminarHost (Netfolder.whoAmI ());
-        MainWindow.eliminarTodos ();
+        Netfolder.reset ();
+        listaVacia ();
         Disco.merge ();
     }
 }

@@ -4,9 +4,9 @@ package atory.net;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import atory.fs.*;
 import atory.*;
-
+import atory.fs.*;
+import atory.gui.*;
 /**
  * Clase encargada de tratar las conexiones al puerto de datos.
  */
@@ -93,6 +93,7 @@ public class FileTransferer extends Thread
 		
 		if(!Storage.checkIntegrity(fichero))
 		{
+			MainWindow.error("El fichero "+ getName() +" est corrupto");
 			fichero.delete();
 		}
 	}

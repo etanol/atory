@@ -27,6 +27,7 @@ public class MainWindow {
     static ToolItem coneItem;
     static ToolItem descItem;
     static ToolItem tsegItem;
+    static boolean tSegura;
 
     /**
      * Función principal. Utilizamos main con un doble propósito: poder arrancar

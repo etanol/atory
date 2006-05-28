@@ -188,9 +188,11 @@ public class Storage {
      * pues ya lo tenemos.
      *
      * @param  nombre    El nombre del fichero a transferir.
+     * @param  secu      Si true indica que se utilice un canal cifrado de datos
+     *                   para la transmisión.
      * @throws Exception Si el fichero con dicho nombre no está en la lista.
      */
-    public static void reqFichero (String nombre) throws Exception
+    public static void reqFichero (String nombre, boolean secu) throws Exception
     {
         Fichero file;
         Vector  fs = new Vector ();
@@ -199,9 +201,14 @@ public class Storage {
         if (file == null)
             throw new Exception ("Fichero no encontrado");
         if (!file.isLocal ()) {
-            ParserXML.xmlReqFichero (file.getNombre (),
-                                     file.getRandomHost (rand),
-                                     file.getTamano ());
+            if (secu)
+                ParserXML.xmlReqSecureFichero (file.getNombre (),
+                                               file.getRandomHost (rand),
+                                               file.getTamano ());
+            else
+                ParserXML.xmlReqFichero (file.getNombre (),
+                                         file.getRandomHost (rand),
+                                         file.getTamano ());
             fs.addElement (file);
             ParserXML.xmlAnadirFicheros (fs);
         }

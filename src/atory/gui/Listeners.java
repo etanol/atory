@@ -6,6 +6,8 @@
 package atory.gui;
 
 import atory.*;
+import atory.net.*;
+import atory.xml.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
@@ -57,12 +59,12 @@ class TSegura1Listener implements Listener {
        if (MainWindow.menuTSeg.getSelection())
        {
           MainWindow.tsegItem.setSelection(true);
-        //TODO: empezar conexion segura
+          MainWindow.tSegura = true;
        }
        else
        {
           MainWindow.tsegItem.setSelection(false);
-        //TODO: acabar conexion segura
+          MainWindow.tSegura = false;
        }
        
     }
@@ -74,12 +76,12 @@ class TSegura2Listener implements Listener {
        if (MainWindow.tsegItem.getSelection())
        {
           MainWindow.menuTSeg.setSelection(true);
-        //TODO: empezar conexion segura
+          MainWindow.tSegura = true;
        }
        else
        {
           MainWindow.menuTSeg.setSelection(false);
-        //TODO: acabar conexion segura
+          MainWindow.tSegura = false;
        }
     }
 }
@@ -104,7 +106,7 @@ class DescargarListener implements Listener {
            TableItem[] t_select = (MainWindow.tabla).getSelection();
            for(int i=0; i<t_select.length; i++)
            {
-              atory.Storage.reqFichero (t_select[0].getText(0));  
+              atory.Storage.reqFichero (t_select[0].getText(0), MainWindow.tSegura);  
             }
         } catch (Exception e) {
            MainWindow.error (MainWindow.shell, e.getMessage() );
@@ -153,8 +155,14 @@ class OcultarListener implements Listener {
 			 abrir.dispose();
 			 salir.dispose();
 			 mTray.dispose();
+       try {
+          ParserXML.xmlEliminarHost (Netfolder.whoAmI());
+          Netfolder.finish();
 			 MainWindow.shell.dispose();
-		       }
+		   } catch (Exception ex) {
+            MainWindow.error("Error: " + ex.getMessage());
+         }
+         }
 		    });
 		    
 		    abrir.setText("Abrir");

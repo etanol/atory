@@ -169,9 +169,7 @@ public class Netfolder
      String cadena = null;
      boolean b = false;
      try{
-	  System.out.println("xml a convertir: " + data+ " IP "+ ip);
 	  data = data.replaceAll(whoAmI(),ip);
-	  System.out.println("xml reconvertido: " + data);
      return data;
      }
      catch(Exception e)
@@ -248,8 +246,6 @@ public class Netfolder
 		Socket dest = null; 
 		InetAddress destino;
 		BufferedInputStream buf = null;
-		//TODO: quitar chivato
-		System.err.println ("RUTA SSl: "+ pathname+f);
 		File fichero = new File((pathname+f));
 		try
 		{
@@ -265,7 +261,6 @@ public class Netfolder
 			try
 			{
 				dest = socketFactory.createSocket(destino , SECUREPORT);
-            System.err.println("SSL abierto");
 				OutputStream output = dest.getOutputStream();
 				FileInputStream in = new FileInputStream(fichero);
 				buf = new BufferedInputStream(in);
@@ -274,12 +269,10 @@ public class Netfolder
 					output.write(c);
 
 				output.flush();
-            System.err.println("he acabado de enviar");
 				i = INTENTOS;
 			} 
 			catch(Exception e)
 			{
-            System.err.println("Envias?");
 				if(++i== INTENTOS)
 					throw new Exception("Error al conectar"); 
 			}
@@ -316,7 +309,6 @@ public class Netfolder
 	public static void getFile(String file) throws Exception
 	{
       int c;
-      System.err.println ("RUTA: " +pathname+file);
       File fichero = new File((pathname+file));
       Socket origen = null;
       FileOutputStream out = null; 
@@ -406,7 +398,7 @@ public class Netfolder
 		fin = new Date();
       
       long ttotal=fin.getTime()-inicio.getTime();//milisegundos
-      System.out.println(ttotal);
+      Errlog.println(ttotal+"");
       
    }
    

@@ -53,9 +53,7 @@ public class xmlThread extends Thread
      String cadena = null;
      boolean b = false;
      try{
-	  System.out.println("xml a convertir: " + data+ " IP "+ ip);
 	  data = data.replaceAll(ip, Netfolder.whoAmI());
-	  System.out.println("xml reconvertido: " + data);
      return data;
      }
      catch(Exception e)

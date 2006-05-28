@@ -20,7 +20,6 @@ public class MainWindow {
     static Display display;
     static Shell   shell;
     static Table tabla;
-    static Conexion con;
     static Vector Nombres; 
     static Vector IPs;
     static MenuItem menuTSeg;

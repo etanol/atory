@@ -57,5 +57,19 @@ public class Errlog {
     {
         logger.println (s);
     }
+
+    /**
+     * Imprime una excepción de una forma uniforme. Básicamente es añadir la
+     * traza de la excepción para saber más concretamente dónde se originó.
+     *
+     * @param s  Mensaje a escribir antes de la traza.
+     * @param ex Excepción para obtener el mensaje y la traza.
+     */
+    public static void printex (String s, Exception ex)
+    {
+        logger.println (s + ": Excepción capturada: " + ex.getMessage());
+        logger.println (s + ": Trazado de pila:");
+        ex.printStackTrace (logger);
+    }
 }
 

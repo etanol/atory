@@ -107,8 +107,7 @@ public class Storage {
         try {
             ParserXML.xmlAnadirFicheros (added);
         } catch (Exception ex) {
-            Errlog.print   ("Storage.addFicheros(): ");
-            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+            Errlog.printex ("Storage.addFicheros()", ex);
         }
     }
 
@@ -165,8 +164,7 @@ public class Storage {
         try {
             ParserXML.xmlEliminarFicheros (removed);
         } catch (Exception ex) {
-            Errlog.print   ("Storage.delFicheros(): ");
-            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+            Errlog.printex ("Storage.delFicheros()", ex);
         }
     }
 
@@ -249,8 +247,7 @@ public class Storage {
                     return true;
                 } 
             } catch (Exception ex) {
-                Errlog.print   ("Storage.checkIntegrity(): ");
-                Errlog.println ("Excepción: " + ex.getMessage ());
+                Errlog.printex ("Storage.checkIntegrity()", ex);
             }
         }
         return false;

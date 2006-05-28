@@ -55,8 +55,7 @@ public class Disco {
                     localFiles.put (f.getNombre (), f);
                 }
         } catch (Exception ex) {
-            Errlog.print   ("Disco.init(): ");
-            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+            Errlog.printex ("Disco.init()", ex);
         }
     }
 
@@ -75,8 +74,7 @@ public class Disco {
         try {
             Storage.addFicheros (localFiles.elements ());
         } catch (Exception ex) {
-            Errlog.print   ("Disco.merge(): ");
-            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+            Errlog.printex ("Disco.merge()", ex);
         }
     }
 
@@ -153,8 +151,7 @@ public class Disco {
             Storage.addFicheros (added.elements ());
 
         } catch (Exception ex) {
-            Errlog.print   ("Disco.sync(): ");
-            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+            Errlog.printex ("Disco.sync()", ex);
         }
     }
 

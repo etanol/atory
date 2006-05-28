@@ -30,10 +30,11 @@ public class MD5 {
      * Computa el hash MD5 de un fichero. El fichero debe estar disponible dado
      * que es necesario leer su contenido.
      *
-     * @param filename Nombre del fichero a procesar. Aplican las mismas reglas
-     *                 que en el constructor de FileInputStream
-     * @return         Representación hexadecimal de los 128 bits (16 bytes) que
-     *                 componen el hash MD5.
+     * @param filename   Nombre del fichero a procesar. Aplican las mismas
+     *                   reglas que en el constructor de FileInputStream
+     * @return           Representación hexadecimal de los 128 bits (16 bytes)
+     *                   que componen el hash MD5.
+     * @throws Exception En caso de error de cálculo o de entrada salida.
      */
     public static String fromFile (String filename) throws Exception
     {
@@ -47,10 +48,11 @@ public class MD5 {
      * Computa el hash MD5 de un fichero. El fichero debe estar disponible dado
      * que es necesario leer su contenido.
      *
-     * @param file Representación abstracta de un fichero. Aplican las mismas
-     *             reglas que en el constructor de FileInputStream
-     * @return     Representación hexadecimal de los 128 bits (16 bytes) que
-     *             componen el hash MD5.
+     * @param file       Representación abstracta de un fichero. Aplican las
+     *                   mismas reglas que en el constructor de FileInputStream
+     * @return           Representación hexadecimal de los 128 bits (16 bytes)
+     *                   que componen el hash MD5.
+     * @throws Exception En caso de error de cálculo o de entrada salida.
      */
     public static String fromFile (File file) throws Exception
     {
@@ -63,10 +65,11 @@ public class MD5 {
     /**
      * Computa el digest. Esta es la función que realmente hace todo el trabajo.
      *
-     * @param fd Stream a través del cual se puede leer el contenido de un
-     *           fichero.
-     * @return   Representación hexadecimal de los 128 bits (16 bytes) que
-     *           componen el hash MD5.
+     * @param fd         Stream a través del cual se puede leer el contenido de
+     *                   un fichero.
+     * @return           Representación hexadecimal de los 128 bits (16 bytes)
+     *                   que componen el hash MD5.
+     * @throws Exception En caso de error de cálculo o de entrada salida.
      */
     private static String computeDigest (FileInputStream fd) throws Exception
     {

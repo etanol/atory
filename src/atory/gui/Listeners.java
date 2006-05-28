@@ -5,6 +5,7 @@
  */
 package atory.gui;
 
+import atory.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
@@ -41,9 +42,11 @@ class ConexionesListener implements Listener {
 class DesconectarListener implements Listener {
     public void handleEvent (Event ev)
     {
-        // TODO: enviar petición de desconexión
-        MainWindow.coneItem.setEnabled(true);
-        MainWindow.descItem.setEnabled(false);
+       try {
+         Storage.disconnect();
+       } catch (Exception e) {
+         MainWindow.error(e.getMessage());
+       }
     }
 }
 

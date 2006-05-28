@@ -158,7 +158,6 @@ public class MainWindow {
         tsegItem.setToolTipText ("Transmisión segura");
         downItem.setToolTipText ("Descargar");
         syncItem.setToolTipText ("Sincronizar");
-        descItem.setEnabled(false);
         coneItem.addListener (SWT.Selection, new ConexionesListener());
         descItem.addListener (SWT.Selection, new DesconectarListener());
         tsegItem.addListener (SWT.Selection, new TSegura2Listener());

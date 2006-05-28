@@ -13,10 +13,10 @@ import java.io.*;
  */
 public class Errlog {
 
-    private static final String ERRLOG_FILE = "error_log.txt"
+    private static final String ERRLOG_FILE = "error_log.txt";
 
-    private FileOutputStream file;
-    private PrintWriter      logger;
+    private static FileOutputStream file;
+    private static PrintWriter      logger;
 
     /**
      * Constructor. Ignorado
@@ -29,8 +29,13 @@ public class Errlog {
      */
     public static void init ()
     {
-        file   = new FileOutputStream (ERRLOG_FILE);
-        logger = new PrintWriter (file, true);
+        try {
+            file   = new FileOutputStream (ERRLOG_FILE, false);
+            logger = new PrintWriter (file, true);
+        } catch (Exception ex) {
+            System.err.println ("ERROR FATAL: No puedo crear '" + ERRLOG_FILE + "'");
+            System.exit (0);
+        }
     }
 
     /**

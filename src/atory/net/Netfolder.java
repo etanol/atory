@@ -23,6 +23,7 @@ public class Netfolder
 	static final int SECUREPORT = 9003;
    static final int INTENTOS = 3;
    static final int TIME_WAIT = 30000;
+	static final int BUFFSIZE = 4096;
    static boolean ipcalc = false;
    static String myip;
    static Vector hosts = new Vector(10,5);
@@ -189,11 +190,13 @@ public class Netfolder
 			{
 				dest = new Socket(destino , DATAPORT);
 				OutputStream output = dest.getOutputStream();
+				byte[] bin = new byte[BUFFSIZE];
+				//BufferedOutputStream out = new BufferedOutputStream(output);
 				FileInputStream in = new FileInputStream(fichero);
 				buf = new BufferedInputStream(in);
 				// Lectura y envío del archivo
-				while((c = buf.read())!=-1)
-					output.write(c);
+				while((c = buf.read(bin))!=-1)
+					output.write(bin,0,c);
 
 				output.flush();
 				i = INTENTOS;

@@ -13,6 +13,7 @@ import atory.*;
 public class FileTransferer extends Thread
 {
 	ServerSocket server = null;
+	static final int BUFFSIZE = 4096;
 	static Vector paths = new Vector(10,5);
 	static Vector ips = new Vector(10,5);
 	static Vector sizes = new Vector(10,5); 
@@ -69,20 +70,22 @@ public class FileTransferer extends Thread
 				if((n = isMine(client)) == -1) b = true;
 			}
 			name = (String) paths.get(n);
-		    removeList(n);
+		   removeList(n);
 			fichero = new File(name);
 			InputStream in = socket.getInputStream();
+		   byte[] bin = new byte[BUFFSIZE];
+			//BufferedInputStream inb = new BufferedInputStream(in);
 			fichero.createNewFile();
 			out = new FileOutputStream(fichero);
-        
-			while((c = in.read())!=-1)
+         //BufferedOutputStream outb= new BufferedOutputStream( out );
+			while((c = in.read(bin))!=-1)
 			{
-				out.write(c);
+				out.write(bin,0,c);
 			}
 
-			out.flush();
-            out.close();
-            socket.close();
+			//out.flush();
+         out.close();
+         socket.close();
 			
 		}
 		catch(Exception e)

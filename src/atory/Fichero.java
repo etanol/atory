@@ -89,11 +89,11 @@ public class Fichero
             while (e.hasMoreElements ())
                 this.addHost ((String) e.nextElement ());
         } else {
-            System.err.println ("Fichero.merge(): Error al fusionar ficheros:");
-            System.err.println ("Fichero.merge(): this -> " + this.nombre +
-                                ", " + this.md5);
-            System.err.println ("Fichero.merge(): file -> " + file.nombre +
-                                ", " + file.md5);
+            Errlog.println ("Fichero.merge(): Error al fusionar ficheros:");
+            Errlog.println ("Fichero.merge(): this -> " + this.nombre + ", "
+                            + this.md5);
+            Errlog.println ("Fichero.merge(): file -> " + file.nombre + ", "
+                            + file.md5);
         }
     }
 

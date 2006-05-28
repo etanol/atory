@@ -104,7 +104,6 @@ public class Storage {
                 added.addElement (file);
             }
         }
-        System.out.println ("XML ADD FICHEROS: " + added);
         ParserXML.xmlAnadirFicheros (added);
     }
 
@@ -233,8 +232,8 @@ public class Storage {
                     return true;
                 } 
             } catch (Exception ex) {
-                System.err.print   ("Storage.checkIntegrity(): ");
-                System.err.println ("Excepción: " + ex.getMessage ());
+                Errlog.print   ("Storage.checkIntegrity(): ");
+                Errlog.println ("Excepción: " + ex.getMessage ());
             }
         }
         return false;

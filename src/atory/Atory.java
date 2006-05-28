@@ -35,6 +35,7 @@ public class Atory {
     {
         NET n = new NET ();
 
+        Errlog.init ();
         Storage.init ();
         Netfolder.init ();
         ParserXML.init ();

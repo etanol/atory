@@ -385,13 +385,16 @@ public class ParserXML
     {
         int n;
         Vector v = Netfolder.getListaHosts();
-		  v.addElement(Netfolder.whoAmI());
 
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
         serializer.startTag("", "HostsList");
 
+        serializer.startTag("", "host")
+                .text(Netfolder.whoAmI())
+                .endTag("", "host");
+ 
         n = v.size();
         for(int i=0;i<n;i++)
         {

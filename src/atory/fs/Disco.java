@@ -33,29 +33,31 @@ public class Disco {
      * compartido para tener una lista inicial con la que trabajar. Nótese que
      * únicamente se genera esa lista, NO se fusiona con el directorio
      * compartido (clase Storage).
-     *
-     * @throws Exception cuando ha habido algún problema con la entrada/salida
-     *                   de disco.
      */
-    public static void init () throws Exception
+    public static void init ()
     {
         int i;
         File lista[];
         Fichero f;
 
-        dirComp    = new File (System.getProperty ("sharedir"));
-        localFiles = new Hashtable ();
+        try { 
+            dirComp    = new File (System.getProperty ("sharedir"));
+            localFiles = new Hashtable ();
 
-        lista = dirComp.listFiles ();
-        for (i = 0; i < lista.length; i++)
-            if (lista[i].isFile ()) {
-                f = new Fichero (lista[i].getName (),
-                                 MD5.fromFile (lista[i]),
-                                 lista[i].length (),
-                                 lista[i].lastModified ());
-                f.setLocal (true);
-                localFiles.put (f.getNombre (), f);
-            }
+            lista = dirComp.listFiles ();
+            for (i = 0; i < lista.length; i++)
+                if (lista[i].isFile ()) {
+                    f = new Fichero (lista[i].getName (),
+                                     MD5.fromFile (lista[i]),
+                                     lista[i].length (),
+                                     lista[i].lastModified ());
+                    f.setLocal (true);
+                    localFiles.put (f.getNombre (), f);
+                }
+        } catch (Exception ex) {
+            Errlog.print   ("Disco.init(): ");
+            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+        }
     }
 
     /**
@@ -67,23 +69,23 @@ public class Disco {
      * la lista de ficheros compartidos que viene de fuera y, posteriormente, se
      * añadan los ficheros locales para que se generen los mensajes de
      * notificación al resto de los hosts.
-     *
-     * @throws Exception simplemente propagada desde abajo.
      */
-    public static void merge () throws Exception
+    public static void merge ()
     {
-        Storage.addFicheros (localFiles.elements ());
+        try {
+            Storage.addFicheros (localFiles.elements ());
+        } catch (Exception ex) {
+            Errlog.print   ("Disco.merge(): ");
+            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+        }
     }
 
     /**
      * Escanea el directorio compartido en busca de cambios. Método invocado
      * periódicamente o bajo petición del usuario. Si ha habido cambios se
      * notifica a la clase Storage automáticamente.
-     *
-     * @throws Exception cuando ha habido algún problema con la entrada/salida
-     *                   de disco.
      */
-    public static void sync () throws Exception
+    public static void sync ()
     {
         int i;
         File lista[];
@@ -93,35 +95,23 @@ public class Disco {
         Enumeration e;
         String md5;
 
-        actual    = new Hashtable ();
-        removed   = new Vector ();
-        added     = new Vector ();
+        try {
 
-        // Construímos la lista de ficheros locales (sí, lo sé, esto es muy
-        // lento)
-        actual = (Hashtable) localFiles.clone ();
+            actual    = new Hashtable ();
+            removed   = new Vector ();
+            added     = new Vector ();
 
-        // Recorrer el directorio compartido en busca de cambios
-        lista = dirComp.listFiles ();
-        for (i = 0; i < lista.length; i++)
-            if (lista[i].isFile ()) {
-                f = (Fichero) actual.remove (lista[i].getName ());
-                if (f == null) {
-                    // Nuevo fichero local
-                    f = new Fichero (lista[i].getName (),
-                                     MD5.fromFile (lista[i]),
-                                     lista[i].length(),
-                                     lista[i].lastModified ());
-                    f.setLocal (true);
-                    added.addElement (f);
-                    localFiles.put (f.getNombre (), f);
-                } else {
-                    if (f.getFecha () < lista[i].lastModified ()) {
-                        // Fichero local modificado. Esto implica eliminación y
-                        // adición
-                        removed.addElement (f);
-                        localFiles.remove (f.getNombre ());
+            // Construímos la lista de ficheros locales (sí, lo sé, esto es muy
+            // lento)
+            actual = (Hashtable) localFiles.clone ();
 
+            // Recorrer el directorio compartido en busca de cambios
+            lista = dirComp.listFiles ();
+            for (i = 0; i < lista.length; i++)
+                if (lista[i].isFile ()) {
+                    f = (Fichero) actual.remove (lista[i].getName ());
+                    if (f == null) {
+                        // Nuevo fichero local
                         f = new Fichero (lista[i].getName (),
                                          MD5.fromFile (lista[i]),
                                          lista[i].length(),
@@ -129,9 +119,23 @@ public class Disco {
                         f.setLocal (true);
                         added.addElement (f);
                         localFiles.put (f.getNombre (), f);
-                    } 
+                    } else {
+                        if (f.getFecha () < lista[i].lastModified ()) {
+                            // Fichero local modificado. Esto implica
+                            // eliminación y adición
+                            removed.addElement (f);
+                            localFiles.remove (f.getNombre ());
+
+                            f = new Fichero (lista[i].getName (),
+                                             MD5.fromFile (lista[i]),
+                                             lista[i].length(),
+                                             lista[i].lastModified ());
+                            f.setLocal (true);
+                            added.addElement (f);
+                            localFiles.put (f.getNombre (), f);
+                        } 
+                    }
                 }
-            }
 
         // Si todavía quedan elementos en 'actual' es que han sido borrados del
         // directorio local.
@@ -147,6 +151,11 @@ public class Disco {
             Storage.delFicheros (removed.elements ());
         if (added.size () > 0)
             Storage.addFicheros (added.elements ());
+
+        } catch (Exception ex) {
+            Errlog.print   ("Disco.sync(): ");
+            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+        }
     }
 
 

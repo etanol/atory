@@ -58,9 +58,8 @@ public class Storage {
      *
      * @param  new_file  Objeto Fichero que será insertado o cuya información se
      *                   utilizará para actualizar el existente.
-     * @throws Exception Cuando no se pueden unir los ficheros.
      */
-    public static void addFichero (Fichero new_file) throws Exception
+    public static void addFichero (Fichero new_file)
     {
         Fichero file;
         Vector  fs = new Vector ();
@@ -84,7 +83,7 @@ public class Storage {
      *
      * @param lista Iterador de objetos Fichero en el directorio local.
      */
-    public static void addFicheros (Enumeration lista) throws Exception
+    public static void addFicheros (Enumeration lista)
     {
         Fichero file, new_file;
         Vector added = new Vector();
@@ -104,7 +103,13 @@ public class Storage {
                 added.addElement (file);
             }
         }
-        ParserXML.xmlAnadirFicheros (added);
+
+        try {
+            ParserXML.xmlAnadirFicheros (added);
+        } catch (Exception ex) {
+            Errlog.print   ("Storage.addFicheros(): ");
+            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+        }
     }
 
     /**
@@ -136,10 +141,10 @@ public class Storage {
      *
      * @param lista Iterador de objetos Fichero que ya no existen localmente.
      */
-    public static void delFicheros (Enumeration lista) throws Exception
+    public static void delFicheros (Enumeration lista)
     {
         Fichero old_file, file;
-        Vector removed = new Vector();
+        Vector removed = new Vector ();
 
         while (lista.hasMoreElements ()) {
             old_file = (Fichero) lista.nextElement ();
@@ -157,7 +162,12 @@ public class Storage {
                 removed.addElement (file);
             }
         }
-        ParserXML.xmlEliminarFicheros (removed);
+        try {
+            ParserXML.xmlEliminarFicheros (removed);
+        } catch (Exception ex) {
+            Errlog.print   ("Storage.delFicheros(): ");
+            Errlog.println ("Excepción capturada: " + ex.getMessage ());
+        }
     }
 
     /**

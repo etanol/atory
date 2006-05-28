@@ -76,7 +76,21 @@ public class Netfolder
    {
       listening = listen;
    }
-   
+
+	/**
+	 * Cierra los puertos de servicio.
+	 */
+	public static finish()
+	{
+		if(controlserver != null)
+			controlserver.close();
+		listening = false;
+		
+		if(secureserver != null )
+			secureserver.close();
+	}
+
+
 	/**
 	 * Introduce el pathname de referencia para leer y dejar los ficheros.
 	 *

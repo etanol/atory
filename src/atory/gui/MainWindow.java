@@ -2,6 +2,7 @@ package atory.gui;
 
 import atory.*;
 import atory.xml.*;
+import atory.net.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
@@ -108,7 +109,13 @@ public class MainWindow {
         item.addListener    (SWT.Selection, new Listener () {
             public void handleEvent (Event e)
             {
-                shell.dispose ();
+               try {
+                  ParserXML.xmlEliminarHost (Netfolder.whoAmI());
+                  Netfolder.finish();
+                  shell.dispose ();
+               } catch (Exception ex) {
+                  error("Error: " + ex.getMessage());
+               }
             }
         });
 

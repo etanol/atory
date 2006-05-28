@@ -80,14 +80,19 @@ public class Netfolder
 	/**
 	 * Cierra los puertos de servicio.
 	 */
-	public static finish()
+	public static void finish()
 	{
-		if(controlserver != null)
-			controlserver.close();
-		listening = false;
-		
-		if(secureserver != null )
-			secureserver.close();
+		try
+		{
+			if(controlserver != null)
+				controlserver.close();
+			listening = false;
+
+			if(secureserver != null )
+				secureserver.close();
+		}
+		catch(Exception e)
+		{}
 	}
 
 

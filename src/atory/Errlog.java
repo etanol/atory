@@ -19,12 +19,12 @@ public class Errlog {
     private static PrintWriter      logger;
 
     /**
-     * Constructor. Ignorado
+     * Constructor (ignorado).
      */
     public Errlog () {}
 
     /**
-     * Inicializadora de la clase. Abre el fichero necesario para escribir los
+     * Inicializador de la clase. Abre el fichero necesario para escribir los
      * mensajes de error.
      */
     public static void init ()

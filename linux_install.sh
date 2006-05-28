@@ -17,7 +17,7 @@ Encoding=UTF-8
 Type=Application
 Name=Atory
 Path=$thisdir
-Exec=java -cp atory.jar:swt.jar:xpp3-1.1.3_7.jar -Djava.library.path='.' -Dsharedir='$sharedir' -Drcfile='$rcfile' atory.Atory
+Exec=java -cp atory.jar:swt.jar:xpp3-1.1.3_7.jar -Djava.library.path=. -Dsharedir='$sharedir' -Drcfile='$rcfile' -Djavax.net.ssl.keyStore=keystore -Djavax.net.ssl.keyStorePassword=shishimaru -Djavax.net.ssl.trustStore=c-cacerts.jks -Djavax.net.ssl.trustStorePassword=shishimaru atory.Atory 
 Icon=$thisdir/shishimaru.png
 Comment=Another direcTORY
 EOD

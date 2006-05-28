@@ -21,6 +21,8 @@ else
     key=$1
 fi
 
+ssl_files='c-cacerts.jks keystore'
+
 case "$key" in
     linux) # Entorno para Linux
         package_dir='linux_package'
@@ -36,7 +38,7 @@ case "$key" in
         # Entorno para Hasefroch
         package_dir='win_package'
         package_name='atory_win'
-        inst_script='win_install.vbs'
+        inst_script='*.vbs'
         swt_jar='swt_win32.jar'
         sysdeps='javaw.exe.manifest swt-awt-win32-3139.dll swt-gdip-win32-3139.dll swt-win32-3139.dll'
         ;;
@@ -73,6 +75,9 @@ for i in $sysdeps; do
     cp -vu $SYSDEPS_DIR/$i $dir
 done
 
+for i in $ssl_files; do
+    cp -vu $SCRIPTS_DIR/$i $dir
+done
 
 #
 # Hacer el .ZIP

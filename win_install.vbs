@@ -9,13 +9,8 @@ desk      = shell.SpecialFolders ("Desktop")
 mydocs    = shell.SpecialFolders ("MyDocuments")
 
 ' Crear el acceso directo
-Set lnk   = shell.CreateShortcut (desk & "\Atory.lnk")
-lnk.TargetPath = "javaw"
-lnk.Arguments  = "-cp atory.jar;swt.jar;xpp3-1.1.3_7.jar" & _
-                 " -Djava.library.path=" & chr(34) & "." & chr(34) & _
-                 " -Dsharedir=" & chr(34) & mydocs & "\Atory_Shared\\" & _
-                 chr(34) & " -Drcfile=" & chr(34) & "%USERPROFILE%\atoryrc" & _
-                 chr(34) & " atory.Atory"
+Set lnk = shell.CreateShortcut (desk & "\Atory.lnk")
+lnk.TargetPath       = shell.CurrentDirectory & "\launch_atory.vbs"
 lnk.WorkingDirectory = shell.CurrentDirectory
 lnk.IconLocation     = "%SYSTEMROOT%\system32\shell32.dll,43"
 lnk.Save

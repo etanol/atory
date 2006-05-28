@@ -329,11 +329,11 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento ); 
 
-        serializer.startTag("","NewConnection");
-        serializer.startTag("", "host")
+        serializer.startTag(null,"NewConnection");
+        serializer.startTag(null, "host")
             .text(Netfolder.whoAmI())
-            .endTag("", "host");
-        serializer.endTag("", "NewConnection");
+            .endTag(null, "host");
+        serializer.endTag(null, "NewConnection");
         Netfolder.sendXml(host,documento.toString());
 
     }
@@ -351,26 +351,26 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "FilesList");
+        serializer.startTag(null, "FilesList");
 
 
         for(Enumeration lista = Storage.getListaFicheros(); lista.hasMoreElements();)
         {
             f = (Fichero)lista.nextElement();
-            serializer.startTag("", "File")
-                .attribute("","name",f.getNombre())
-                .attribute("","md5",f.getMd5())
-                .attribute("","size",java.lang.String.valueOf(f.getTamano()));
+            serializer.startTag(null, "File")
+                .attribute(null,"name",f.getNombre())
+                .attribute(null,"md5",f.getMd5())
+                .attribute(null,"size",java.lang.String.valueOf(f.getTamano()));
             e = f.getHosts();
             while(e.hasMoreElements())
             {
-                serializer.startTag("","host")
+                serializer.startTag(null,"host")
                     .text((String)e.nextElement())
-                    .endTag("","host");
+                    .endTag(null,"host");
             }
-            serializer.endTag("", "File");
+            serializer.endTag(null, "File");
         }
-        serializer.endTag("", "FilesList");
+        serializer.endTag(null, "FilesList");
         Netfolder.sendXml(host,documento.toString());
 
     }
@@ -389,20 +389,20 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "HostsList");
+        serializer.startTag(null, "HostsList");
 
-        serializer.startTag("", "host")
+        serializer.startTag(null, "host")
                 .text(Netfolder.whoAmI())
-                .endTag("", "host");
+                .endTag(null, "host");
  
         n = v.size();
         for(int i=0;i<n;i++)
         {
-            serializer.startTag("", "host")
+            serializer.startTag(null, "host")
                 .text((String)v.elementAt(i))
-                .endTag("", "host");
+                .endTag(null, "host");
         }
-        serializer.endTag("", "HostsList");
+        serializer.endTag(null, "HostsList");
 		  System.out.println("parserxml: " + documento.toString());
         Netfolder.sendXml(host,documento.toString());
     }
@@ -422,14 +422,14 @@ public class ParserXML
                StringWriter documento = new StringWriter();
                serializer.setOutput( documento );
 
-               serializer.startTag("", "ReqFile");
-               serializer.startTag("", "File")
-                   .attribute("","name",fichero);
-               serializer.startTag("", "host")
+               serializer.startTag(null, "ReqFile");
+               serializer.startTag(null, "File")
+                   .attribute(null,"name",fichero);
+               serializer.startTag(null, "host")
                    .text(Netfolder.whoAmI())
-                   .endTag("", "host");
-               serializer.endTag("", "File");
-               serializer.endTag("", "ReqFile");
+                   .endTag(null, "host");
+               serializer.endTag(null, "File");
+               serializer.endTag(null, "ReqFile");
 
                Netfolder.getFile(fichero,host,tamano);
                Netfolder.sendXml(host,documento.toString());
@@ -451,14 +451,14 @@ public class ParserXML
 		StringWriter documento = new StringWriter();
 		serializer.setOutput( documento );
 
-		serializer.startTag("", "ReqSecureFile");
-		serializer.startTag("", "File")
-			.attribute("","name",fichero);
-		serializer.startTag("", "host")
+		serializer.startTag(null, "ReqSecureFile");
+		serializer.startTag(null, "File")
+			.attribute(null,"name",fichero);
+		serializer.startTag(null, "host")
 			.text(Netfolder.whoAmI())
-			.endTag("", "host");
-		serializer.endTag("", "File");
-		serializer.endTag("", "ReqSecureFile");
+			.endTag(null, "host");
+		serializer.endTag(null, "File");
+		serializer.endTag(null, "ReqSecureFile");
 
 
       Netfolder.getSecureFile(fichero,host,tamano);
@@ -481,7 +481,7 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "AddFiles");
+        serializer.startTag(null, "AddFiles");
 
         n = ficheros.size();
         ip_local = Netfolder.whoAmI();
@@ -489,16 +489,16 @@ public class ParserXML
         for(int i=0;i<n;i++)
         {
             f = (Fichero)ficheros.elementAt(i);
-            serializer.startTag("", "File")
-                .attribute("","name",f.getNombre())
-                .attribute("","md5",f.getMd5())
-                .attribute("","size",java.lang.String.valueOf(f.getTamano()));
-            serializer.startTag("", "host")
+            serializer.startTag(null, "File")
+                .attribute(null,"name",f.getNombre())
+                .attribute(null,"md5",f.getMd5())
+                .attribute(null,"size",java.lang.String.valueOf(f.getTamano()));
+            serializer.startTag(null, "host")
                 .text(ip_local)
-                .endTag("", "host");
-            serializer.endTag("", "File");
+                .endTag(null, "host");
+            serializer.endTag(null, "File");
         }
-        serializer.endTag("", "AddFiles");
+        serializer.endTag(null, "AddFiles");
         Netfolder.sendMessage(documento.toString());
     }
 
@@ -517,7 +517,7 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "DelFiles");
+        serializer.startTag(null, "DelFiles");
 
         n = ficheros.size();
         ip_local = Netfolder.whoAmI();
@@ -525,16 +525,16 @@ public class ParserXML
         for(int i=0;i<n;i++)
         {
             f = (Fichero)ficheros.elementAt(i);
-            serializer.startTag("", "File")
-                .attribute("","name",f.getNombre())
-                .attribute("","md5",f.getMd5())
-                .attribute("","size",java.lang.String.valueOf(f.getTamano()));
-            serializer.startTag("", "host")
+            serializer.startTag(null, "File")
+                .attribute(null,"name",f.getNombre())
+                .attribute(null,"md5",f.getMd5())
+                .attribute(null,"size",java.lang.String.valueOf(f.getTamano()));
+            serializer.startTag(null, "host")
                 .text(ip_local)
-                .endTag("", "host");
-            serializer.endTag("", "File");
+                .endTag(null, "host");
+            serializer.endTag(null, "File");
         }
-        serializer.endTag("", "DelFiles");
+        serializer.endTag(null, "DelFiles");
         Netfolder.sendMessage(documento.toString());
     }
 
@@ -551,11 +551,11 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "AddHost");
-        serializer.startTag("", "host")
+        serializer.startTag(null, "AddHost");
+        serializer.startTag(null, "host")
             .text(host)
-            .endTag("","host");
-        serializer.endTag("", "AddHost");
+            .endTag(null,"host");
+        serializer.endTag(null, "AddHost");
 
         Netfolder.sendMessage(documento.toString());
     }
@@ -571,11 +571,11 @@ public class ParserXML
         StringWriter documento = new StringWriter();
         serializer.setOutput( documento );
 
-        serializer.startTag("", "DelHost");
-        serializer.startTag("", "host")
+        serializer.startTag(null, "DelHost");
+        serializer.startTag(null, "host")
             .text(host)
-            .endTag("","host");
-        serializer.endTag("", "DelHost");
+            .endTag(null,"host");
+        serializer.endTag(null, "DelHost");
 
         Netfolder.sendMessage(documento.toString());
     }

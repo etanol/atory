@@ -6,6 +6,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.*;
 import java.util.Vector;
 import java.text.NumberFormat;
 
@@ -43,8 +44,9 @@ public class MainWindow {
         shell.setImage(ish);
         Nombres = new Vector();
         IPs = new Vector();
-
-        // Barra de menú, elementos principales.
+   try {
+	shell.addListener(SWT.Close, new OcultarListener());
+	// Barra de menú, elementos principales.
         Menu menuBar     = new Menu (shell, SWT.BAR);
         Menu subArchivo  = new Menu (menuBar);
         Menu subAyuda    = new Menu (menuBar);
@@ -92,6 +94,12 @@ public class MainWindow {
         item.addListener    (SWT.Selection, new DescargarListener ());
 
          item = new MenuItem (subArchivo, SWT.SEPARATOR);
+	
+	 // Ocultar 
+        item = new MenuItem (subArchivo, SWT.PUSH);
+        item.setText        ("Ocultar\tCtrl+X");
+        item.setAccelerator (SWT.MOD1 + 'X');
+        item.addListener    (SWT.Selection, new OcultarListener());
 
         // Cerrar (Salir)
         item = new MenuItem (subArchivo, SWT.PUSH);
@@ -182,19 +190,12 @@ public class MainWindow {
         column2.setResizable(false);
         tabla.pack();
         
-      //System Tray
-      Tray tray = display.getSystemTray();
-      if(tray != null) {
-      Image trayImage = new Image(display, (new
-      ImageData(MainWindow.class.getResourceAsStream("images/ninjahiro.png"))).scaledTo(25,25));
-         TrayItem trayItem = new TrayItem(tray, SWT.NONE);
-         trayItem.setImage(trayImage);
-      }
-
       visualizarLista (new Vector ());
       try {
           atory.fs.Disco.merge ();
-      } catch (Exception ex) {}
+      } catch (Exception ex) { 
+         error("Error: "+ex.getMessage());
+      }
 
       //fin
       shell.setSize (350, 420);
@@ -209,6 +210,9 @@ public class MainWindow {
          if (!display.readAndDispatch ()) display.sleep ();
       }
       display.dispose ();
+   } catch (Exception ex) {
+      error("Error: "+ex.getMessage());
+   }
    }
    
    /**
@@ -376,6 +380,6 @@ public class MainWindow {
    {
        error (shell, msg);
    }
-
+   
 }
 

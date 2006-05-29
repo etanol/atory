@@ -27,6 +27,11 @@ public class MD5 {
     private static byte buffer[];
 
     /**
+     * Constructor (ignorado).
+     */
+    public MD5 () {}
+
+    /**
      * Computa el hash MD5 de un fichero. El fichero debe estar disponible dado
      * que es necesario leer su contenido.
      *
@@ -90,6 +95,7 @@ public class MD5 {
             md.update (buffer, 0, i);
             i = fd.read (buffer);
         }
+        fd.close ();
         digest = md.digest ();
 
         // Codificar a hexadecimal en un String

@@ -82,6 +82,6 @@ done
 #
 # Hacer el .ZIP
 #
-#cd $package_dir
-#zip -r9 $package_name.zip atory
+cd $package_dir
+zip -r9 $package_name.zip atory
 

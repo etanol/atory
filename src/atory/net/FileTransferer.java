@@ -1,5 +1,9 @@
+/*
+ * FileTransferer.java
+ *
+ * $Revision$
+ */
 package atory.net;
-
 
 import java.net.*;
 import java.io.*;

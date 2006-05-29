@@ -16,9 +16,12 @@ win_package:
 linux_package:
 	@./pack linux
 
-.PHONY: pclean help
+.PHONY: pclean help javadoc
 pclean:
-	@-rm -rfv linux_package win_package
+	@-rm -rfv linux_package win_package javadoc
+
+javadoc:
+	javadoc -classpath .:../lib/swt.jar:../lib/xpp3-1.1.3_7.jar -charset UTF-8 -d $@ atory atory.gui atory.net atory.xml atory.fs
 
 help:
 	@echo 'Reglas genéricas:';\
@@ -28,7 +31,8 @@ help:
 	echo '';\
 	echo 'Reglas para el directorio raíz:';\
 	echo '   package  Crea los paquetes con los binarios para su distribución.';\
-	echo '   pclean   Limpia los paquetes.';\
+	echo '   pclean   Limpia los paquetes y los documentos javadoc.';\
+	echo '   javadoc  Genera los ficheros HTML con javadoc.';\
 	echo '   help     Esta ayuda.';\
 	echo '';\
 	echo 'La acción por defecto es "files". Si el Makefile define subdirectorios,';\

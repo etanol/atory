@@ -21,7 +21,6 @@ import java.util.Vector;
  */
 public class Storage {
 
-    private static boolean   iniciado = false;
     private static Hashtable table;
     private static Random    rand; // Para pedir hosts aleatorios.
 
@@ -35,9 +34,6 @@ public class Storage {
      */
     public static void init ()
     {
-        if (iniciado) return;
-
-        iniciado = true;
         table    = new Hashtable ();
         rand     = new Random ();
     }
@@ -228,7 +224,7 @@ public class Storage {
      * actualiza la lista de ficheros locales para poder refrescar la interfaz
      * más rápidamente.
      *
-     * @param nombre El nombre del fichero en el directorio compartido.
+     * @param  fd   El fichero a verificar.
      * @return true si el fichero es correcto, false sino.
      */
     public static boolean checkIntegrity (File fd)

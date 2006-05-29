@@ -1,8 +1,9 @@
-package atory.net;
-/**
- * Netfolder - Clase encargada de enviar i/o recibir datos a través de la red
+/*
+ * Netfolder.java
+ *
  * $Revision$
  */
+package atory.net;
 
 import java.io.*;
 import java.net.*;
@@ -42,8 +43,9 @@ public class Netfolder
 
    /**
     * Inicializadora de la clase. Se encarga de inicializar los puertos de datos
-    * y de control. Si están ocupados (cualquiera de los dos) se lanza una
-    * excepción.
+    * y de control.
+    *
+    * @throws Excption Si los puertos están ocupados (cualquiera de los dos).
 	*/
    public static void init () throws Exception
    {
@@ -107,7 +109,7 @@ public class Netfolder
    }
 
 	/**
-	 * Funcin encargada de resetear la lista de hosts.
+	 * Función encargada de resetear la lista de hosts.
 	 */
 	public static void reset()
 	{
@@ -118,8 +120,9 @@ public class Netfolder
    /**
     * Función encargada de enviar documentos XML a través de la red.
     *
-    * @param ipdestino Dirección destino.
-    * @param data Documento XML a enviar.
+    * @param  ipdestino Dirección destino.
+    * @param  data      Documento XML a enviar.
+    * @throws Exception Ante algún error de red.
     */
    public static void sendXml(String ipdestino, String data) throws Exception
    {
@@ -181,8 +184,9 @@ public class Netfolder
    /**
     * Función encargada de enviar ficheros a través de la red.
     * 
-    * @param ipdestino Dirección destino.
-    * @param f Fichero a enviar.
+    * @param  ipdestino Dirección destino.
+    * @param  f         Fichero a enviar.
+    * @throws Exception Ante algún error de red.
     */
 	public static void sendFile(String ipdestino, String f) throws Exception
 	{
@@ -236,8 +240,9 @@ public class Netfolder
 	/**
 	 * Función encargada de enviar ficheros a través de la red de forma segura.
 	 * 
-	 * @param ipdestino Dirección destino.
-	 * @param f Fichero a enviar.
+	 * @param  ipdestino Dirección destino.
+	 * @param  f         Fichero a enviar.
+     * @throws Exception Ante algún error de red.
 	 */
 	public static void sendSecureFile(String ipdestino, String f) throws Exception
 	{
@@ -288,72 +293,27 @@ public class Netfolder
 
 
 	/**
-	 * Función encargada de recibir ficheros a través de la red de forma segura.
+     * Función encargada de recibir ficheros a través de la red de forma segura.
+     * Se lanza un hilo que atienda al puerto de datos para recibir el contenido
+     * del fichero solicitado.
 	 * 
-	 * @param ipdestino Dirección destino.
-	 * @param f Fichero a enviar.
+	 * @param  host      Dirección destino.
+	 * @param  file      Fichero a enviar.
+     * @throws Exception Si el hilo no se puede crear.
 	 */
 	public static void getSecureFile(String file, String host, long size) throws Exception
 	{
 		System.err.println ("RUTA SEGURA: " +pathname+file);
      (new FileTransferer(secureserver, (pathname+file), getIp(host),size)).start();
 	}
-
-	/**
-	 * Función encargada de recibir un archivo y escribirlo en disco.
-	 *
-	 * @param file Nombre del archivo.
-	 * @deprecated El nuevo método getFile soporta múltiples conexiones al mismo puerto.
-	 */
-
-	public static void getFile(String file) throws Exception
-	{
-      int c;
-      File fichero = new File((pathname+file));
-      Socket origen = null;
-      FileOutputStream out = null; 
-      try
-      {
-	     
-         // tiempo de espera de conexión.
-         dataserver.setSoTimeout(TIME_WAIT);
-         try
-         {
-            origen = dataserver.accept();
-         }
-         catch(InterruptedIOException e ) 
-         {
-            throw new Exception("Time out!");
-         }
-         InputStream in = origen.getInputStream();
-         fichero.createNewFile();
-         out = new FileOutputStream(fichero);
-         while((c = in.read())!=-1)
-            out.write(c);
-
-         out.flush();
-
-      }
-      catch(Exception e)
-      {
-         throw new Exception("Error en la conexión");
-      }
-      finally
-      {
-         if(origen!=null)
-            origen.close();
-         if(out!=null)
-            out.close();
-      }
-         
-   }
    
    /**
     * Método para obtener ficheros. Cuando es invocado crea un thread a la espera
 	* de la conexión indicada.
 	*
-	* @param file Nombre del archivo a recibir.
-	* @param host Ip del cliente.
+	* @param  file      Nombre del archivo a recibir.
+	* @param  host      Ip del cliente.
+    * @throws Exception Si el hilo no se puede crear.
 	*/
    public static void getFile(String file, String host, long size) throws Exception
    {
@@ -363,6 +323,8 @@ public class Netfolder
 
    /**
     * Recibe documentos XML. Función bloqueante.
+    *
+    * @throws Exception Ante algún error de parsing.
     */
    public static void getXml() throws Exception
    {

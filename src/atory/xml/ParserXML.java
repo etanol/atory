@@ -1,7 +1,6 @@
 /*
  * ParserXML.java
- * Clase encargada de parsear, interpretar y serializar los comandos que 
- * se envian por la red.
+ *
  * $Revision$
  */
 package atory.xml;
@@ -21,6 +20,10 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.StringWriter;
 import java.util.Enumeration;
 
+/**
+ * Clase encargada de parsear, interpretar y serializar los comandos que se
+ * envian por la red.
+ */
 public class ParserXML
 {
     private static XmlPullParserFactory factory;
@@ -51,67 +54,81 @@ public class ParserXML
      * Las funcionalidades del programa, con su correspondiente representación 
      * en xml son los siguientes: 
      *
-     * <P>AÑADIR CONEXIÓN<BR> 
+     * <P>AÑADIR CONEXIÓN 
      * 
-     *     &lt;NewConnection&gt;<BR>
-     *         &lt;host&gt; 10.10.10.10 &lt;/host&gt; <BR>
-     *     &lt;/NewConnection&gt; <BR>
+     * <pre>
+     *     &lt;NewConnection&gt;
+     *         &lt;host&gt; 10.10.10.10 &lt;/host&gt; 
+     *     &lt;/NewConnection&gt; 
+     * </pre>
      * 
-     * <P>ENVIO LISTA IPS<BR> 
+     * <P>ENVIO LISTA IPS 
      *
-     *     &lt;HostsList&gt;<BR>
-     *         &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *         &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *         .....<BR>
-     *     &lt;/HostsList&gt;<BR>
+     * <pre>
+     *     &lt;HostsList&gt;
+     *         &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;host&gt; .....  &lt;/host&gt;
+     *         .....
+     *     &lt;/HostsList&gt;
+     * </pre>
      * 
-     * <P>ENVIO LISTA FICHEROS<BR>
+     * <P>ENVIO LISTA FICHEROS
      *
-     *     &lt;FilesList&gt;<BR>
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
-     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *             .....<BR>
-     *         &lt;/File&gt;<BR>
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
-     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *             .....<BR>
-     *         &lt;/File&gt;<BR>
-     *         .....<BR>
-     *     &lt;/FilesList&gt;<BR>
+     * <pre>
+     *     &lt;FilesList&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *             .....
+     *         &lt;/File&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *             .....
+     *         &lt;/File&gt;
+     *         .....
+     *     &lt;/FilesList&gt;
+     * </pre>
      *
-     * <P>AÑADIR FICHEROS / ELIMINAR FICHEROS<BR>
+     * <P>AÑADIR FICHEROS / ELIMINAR FICHEROS
      *
-     *     &lt;AddFiles&gt;  |  &lt;DelFiles&gt;<BR>
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
-     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *         &lt;/File&gt;<BR>
-     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;<BR>
-     *             &lt;host&gt; .....  &lt;/host&gt;<BR>
-     *         &lt;/File&gt;<BR>
-     *         ....<BR>
-     *     &lt;/AddFiles&gt;  |  &lt;/DelFiles&gt;<BR>
+     * <pre>
+     *     &lt;AddFiles&gt;  |  &lt;DelFiles&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;/File&gt;
+     *         &lt;File  name="juas.jpg"  md5="d2f4125ae3" size="56"&gt;
+     *             &lt;host&gt; .....  &lt;/host&gt;
+     *         &lt;/File&gt;
+     *         ....
+     *     &lt;/AddFiles&gt;  |  &lt;/DelFiles&gt;
+     * </pre>
      *
-     * <P>AÑADIR HOSTS / ELIMINAR HOSTS<BR>
+     * <P>AÑADIR HOSTS / ELIMINAR HOSTS
      *
-     *     &lt;AddHost&gt;  |  &lt;DelHost&gt;<BR>
-     *         &lt;host&gt; ..... &lt;/host&gt;<BR>
-     *     &lt;/AddHost&gt;  |  &lt;/DelHost&gt;<BR>
+     * <pre>
+     *     &lt;AddHost&gt;  |  &lt;DelHost&gt;
+     *         &lt;host&gt; ..... &lt;/host&gt;
+     *     &lt;/AddHost&gt;  |  &lt;/DelHost&gt;
+     * </pre>
      *
-     * <P>PETICIÓN FICHERO<BR>
+     * <P>PETICIÓN FICHERO
      *
-     *     &lt;ReqFile&gt;<BR>
-     *        &lt;File  name="juas.jpg"&gt;<BR>
-     *            &lt;host&gt; ..... &lt;/host&gt;<BR>
-     *        &lt;/File&gt;<BR>
-     *     &lt;/ReqFile&gt;<BR>
+     * <pre>
+     *     &lt;ReqFile&gt;
+     *        &lt;File  name="juas.jpg"&gt;
+     *            &lt;host&gt; ..... &lt;/host&gt;
+     *        &lt;/File&gt;
+     *     &lt;/ReqFile&gt;
+     * </pre>
      * 
-     * <P>PETICIÓN FICHERO SEGURO<BR>
+     * <P>PETICIÓN FICHERO SEGURO
      *
-     *     &lt;ReqSecureFile&gt;<BR>
-     *        &lt;File  name="juas.jpg"&gt;<BR>
-     *            &lt;host&gt; ..... &lt;/host&gt;<BR>
-     *        &lt;/File&gt;<BR>
-     *     &lt;/ReqSecureFile&gt;<BR> 
+     * <pre>
+     *     &lt;ReqSecureFile&gt;
+     *        &lt;File  name="juas.jpg"&gt;
+     *            &lt;host&gt; ..... &lt;/host&gt;
+     *        &lt;/File&gt;
+     *     &lt;/ReqSecureFile&gt;
+     * </pre>
      *   
      * @param xml String que contiene el mensaje xml a parsear.
      * @throws 

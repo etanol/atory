@@ -1,3 +1,8 @@
+/*
+ * MainWindow.java
+ *
+ * $Revision$
+ */
 package atory.gui;
 
 import atory.*;

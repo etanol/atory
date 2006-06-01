@@ -420,7 +420,6 @@ public class ParserXML
                 .endTag(null, "host");
         }
         serializer.endTag(null, "HostsList");
-		  System.out.println("parserxml: " + documento.toString());
         Netfolder.sendXml(host,documento.toString());
     }
 

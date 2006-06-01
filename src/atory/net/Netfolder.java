@@ -132,7 +132,6 @@ public class Netfolder
       DataOutputStream flujo = null; 
       try
       {
-         System.out.println ("sendXML: ip (" + ipdestino + "), data (" + data + ")");
          destino = getIp(ipdestino);
       }
       catch(UnknownHostException e)
@@ -195,7 +194,6 @@ public class Netfolder
 		Socket dest = null; 
 		InetAddress destino;
 		BufferedInputStream buf = null;
-		System.err.println ("RUTA: "+ pathname+f);
 		File fichero = new File((pathname+f));
 		try
 		{
@@ -303,7 +301,6 @@ public class Netfolder
 	 */
 	public static void getSecureFile(String file, String host, long size) throws Exception
 	{
-		System.err.println ("RUTA SEGURA: " +pathname+file);
      (new FileTransferer(secureserver, (pathname+file), getIp(host),size)).start();
 	}
    
@@ -317,7 +314,6 @@ public class Netfolder
 	*/
    public static void getFile(String file, String host, long size) throws Exception
    {
-      System.err.println ("RUTA: " +pathname+file);
      (new FileTransferer(dataserver, (pathname+file), getIp(host),size)).start();
    }
 
@@ -428,7 +424,6 @@ public class Netfolder
          hosts.addElement(ip);
          hoststr.addElement(host);
       }
-      System.err.println("LISTA IP's: " + hoststr);
    }
 
    /**

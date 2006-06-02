@@ -3084,6 +3084,740 @@ Mejoras en la interfaz gráfica.
 Scripts de instalación automática.
 \end_layout
 
+\begin_layout Chapter
+\start_of_appendix
+Resultados de las pruebas
+\end_layout
+
+\begin_layout Standard
+En base al diseño de las pruebas del capítulo sexto se han optenido una
+ serie de resultados que se comentarán a continuación.
+\end_layout
+
+\begin_layout Section
+Pruebas básicas
+\end_layout
+
+\begin_layout Subsection
+Transferencia de información
+\end_layout
+
+\begin_layout Standard
+Como se pudo ver en la demostración del programa realizada, los peers son
+ capaces de conectarse satisfactoriamente al peer que elijan como servidor
+ de conexión.
+\end_layout
+
+\begin_layout Standard
+Los cambios que también se pudieron ver en la demo en relación al directorio
+ compartido, fueron:
+\end_layout
+
+\begin_layout Itemize
+Al añadir o borrar ficheros en la carpeta compartida local y sincronizar,
+ los hosts de la red ven los cambios.
+\end_layout
+
+\begin_layout Itemize
+Al conectarse o desconectarse un host se verán los cambios pertinentes,
+ es decir, la incorporación de nuevos ficheros o su disminución.
+\end_layout
+
+\begin_layout Itemize
+Al descargarse un fichero un host, lo verá transformarse de remoto a local.
+\end_layout
+
+\begin_layout Subsection
+Transferencia de ficheros
+\end_layout
+
+\begin_layout Standard
+Para verificar que la transferencia de un archivo ha sido correcta se tendrá
+ que comprobar que el fichero transferido satisface el MD5 checksum, lo
+ cual es comprobado automáticamente por el programa.
+\end_layout
+
+\begin_layout Standard
+También se han realizado las pruebas que verifican el envío y recepción
+ concurrentes.
+ Esto se realizó enviando y recibiendo dos archivos de gran tamaño (un archivo
+ de 67 MB y otro de 4 MB) entre dos máquinas.
+\end_layout
+
+\begin_layout Standard
+El último test de este apartado repetir los pasos anteriores pero esta vez
+ enviando los dos archivos desde máquinas diferentes.
+\end_layout
+
+\begin_layout Section
+Pruebas de escalabilidad
+\end_layout
+
+\begin_layout Standard
+Los resultados obtenidos no han sido los que esperábamos en un principio.
+ Se ha probado la escalabilidad del programa en un aula del LCFIB con 13
+ pc's a las 23 horas para evitar tráfico ajeno.
+\end_layout
+
+\begin_layout Standard
+La primera de las pruebas (figura 
+\begin_inset LatexCommand \ref{fig:escalabilidad1}
+
+\end_inset
+
+) se ha realizado con tres archivos para toda la red que sólo tenía un host,
+ el cual se iba conectando y desconectando a una red cuyo número de nodos
+ se iba incrementando.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename grafesc1.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:escalabilidad1}
+
+\end_inset
+
+Gráfico de escalabilidad con pocos ficheros.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La segunda gráfica (figura 
+\begin_inset LatexCommand \ref{fig:escalabilidad2}
+
+\end_inset
+
+) representa exactamente la misma prueba anterior pero con la diferencia
+ de que esta vez la lista de archivos que se envía por la red tiene un tamaño
+ mayor (concretamente 100 archivos).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename grafesc2.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:escalabilidad2}
+
+\end_inset
+
+Gráfico de escalabilidad con muchos ficheros.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Conclusiones:
+\end_layout
+
+\begin_layout Itemize
+El número de máquinas utilizadas no ha sido suficiente.
+\end_layout
+
+\begin_layout Itemize
+La red, que era una fast ethernet, no se prestaba a este tipo de estudios
+ por su baja latencia de transmisión en comparación con el tráfico generado.
+\end_layout
+
+\begin_layout Itemize
+Al ser un programa que corre sobre la máquina virtual de Java es difícil
+ controlar cómo y cuándo realiza los accesos al sistema operativo para realizar
+ la E/S, y así obtener unos resultados fiables.
+ Esto se debe a que el SO puede hacer buffering en la E/S, así como la propia
+ JVM (aunque esto último es poco probable).
+\end_layout
+
+\begin_layout Chapter
+Protocolo Atory
+\end_layout
+
+\begin_layout Standard
+A continuación mostramos los mensajes XML que se transfieren por el canal
+ de control:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Descripción:
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+ Inicia el proceso de conexión de un nuevo peer.
+ Lo envia el peer que se une a la red a un peer determinado ya conectado.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<NewConnection>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</NewConnection>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Lista hosts:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia al host que ha iniciado un proceso de conexión pasándole el listado
+ de todas las IPs conectadas a la red.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<HostsList>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</HostsList>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Lista ficheros:
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+ Se envia al host que ha iniciado un proceso de conexión pasándole el listado
+ de los ficheros compartidos.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<FilesList>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+juas.jpg
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+d2f4125\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+56
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+memuero.txt
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+ca2345\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+28
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</FilesList>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Añadir host:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+El host que ha iniciado un proceso de conexión envia a cada peer su IP.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<AddHost>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</AddHost>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Eliminar host:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Cuando un host se desconecta, envia este mensaje a cada peer para indicar
+ que ha abandonado la red.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<DelHost>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</DelHost>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Añadir ficheros:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Cuando un host se conecta, o añade un nuevo fichero a su carpeta local,
+ se manda este mensaje a cada uno de los peers indicando los nuevos ficheros
+ que pasan a compartirse.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<AddFiles>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+jander.mp3
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+33ddf190\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+1123
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</AddFiles>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Eliminar ficheros:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia a cada peer cuando un host elimina un fichero de su carpeta local.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<DelFiles>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+jander.mp3
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+33ddf190\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+1123
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</DelFiles>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+\emph on
+Request
+\emph default
+ fichero:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia a un peer determinado cuando se requiere un fichero suyo.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<ReqFile>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+ewane.mpg
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+</ReqFile>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+\emph on
+Request secure
+\emph default
+ fichero:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Igual que el anterior però la transferencia se realiza encriptada.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<ReqSecureFile>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+ewane.mpg
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+</ReqSecureFile>
+\end_layout
+
+\end_deeper
+\begin_layout Chapter
+Horas de trabajo
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename horas.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Horas de trabajo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset LatexCommand \bibtex[bibtotoc,plain]{atory}
 

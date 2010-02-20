@@ -4,15 +4,15 @@
 # $Revision$
 #
 
-PDF_DOCS := # Poner aquí los ficheros PDF a generar
+PDF_DOCS := propuesta.pdf # Poner aquí los ficheros PDF a generar
 
 all: pdf
 
 pdf: $(PDF_DOCS)
 
 .SUFFIXES:
-.SUFFIXES: .tex .dvi .ps .pdf
-.PRECIOUS: %.dvi %.ps
+.SUFFIXES: .tex .dvi .ps .pdf .png .eps
+.PRECIOUS: %.dvi %.ps %.eps
 
 .ps.pdf:
 	@echo "PS2PDF  $<" && ps2pdf $<
@@ -25,12 +25,16 @@ pdf: $(PDF_DOCS)
 		latex -interaction=batchmode $< >/dev/null; \
 	done
 
+.png.eps:
+	@echo "CONVERT $<" && convert $< $@
+
+
 .PHONY: clean dclean help
 clean:
-	@-rm -fv *.dvi *.ps *.toc *.log *.aux
+	@-rm -fv *.dvi *.ps *.toc *.lof *.lot *.log *.aux
 
 dclean: clean
-	@-rm  -fv *.pdf
+	@-rm  -fv *.pdf *.eps
 
 help:
 	@echo 'Reglas disponibles, los nombres enre [] son los ficheros generados:';\

@@ -1,0 +1,3830 @@
+#LyX 1.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 245
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\lhead{\textsl{\leftmark}}
+\rfoot{\textbf{\thepage}}
+\cfoot{}
+\rhead{}
+\end_preamble
+\language spanish
+\inputencoding auto
+\fontscheme times
+\graphics default
+\paperfontsize 11
+\spacing single
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Memoria PXC
+\newline
+Another direcTORY
+\end_layout
+
+\begin_layout Author
+Proyecto 23_01:
+\newline
+Daniel Cabrera Benítez
+\newline
+Sergi Gómez Martí
+\newline
+Cecilia González Álvarez
+\newline
+Is
+aac Jurado Peinado
+\newline
+Ivan Mingueza Pladevall
+\end_layout
+
+\begin_layout Abstract
+El proyecto que hemos desarrollado y que presentamos a continuación se engloba
+ dentro del marco de la asignatura de Proyecto de Redes de Computadores
+ de la Facultat d'Informàtica de Barcelona.
+ A este proyecto lo hemos llamado Another direcTORY (ATORY), porque está
+ basado en la idea de compartir un directorio en una red.
+\end_layout
+
+\begin_layout Abstract
+Actualmente existen multitud de aplicaciones de compartición de ficheros
+ a través de la red.
+ Aplicaciones Peer-2-Peer como eMule o eDonkey son utilizadas por millones
+ de personas hoy en día.
+ Por otro lado, hay aplicaciones desconocidas por la mayoría de usuarios
+ que facilitan el trabajo en grupo, como el programa iFolder.
+\end_layout
+
+\begin_layout Abstract
+Con Atory queremos aportar nuestro grano de arena a este conjunto de aplicacione
+s, en la medida del tiempo y de los recursos de los que hemos dispuesto.
+ Se trata de un programa que, una vez instalado en los ordenadores de una
+ red, permite a los usuarios compartir los ficheros que ellos deseen con
+ la finalidad de facilitar el trabajo cooperativo.
+ Es un programa multiplataforma (se puede ejecutar tanto en Linux, Windows,
+ o MacOS X), y además no depende de ningún servidor centralizado; con esto
+ eliminamos cualquier jerarquía de máquinas, muy común en la mayoría de
+ redes.
+ Notemos que si a una máquina de la red le sucede algo y resulta que es
+ el servidor, la red se resiente.
+ En una red sin servidor centralizado, si a una máquina le sucede algo,
+ ésta no será imprescindible y la red no se resentirá.
+ 
+\end_layout
+
+\begin_layout Abstract
+De aquí en adelante vamos a desarrollar esta y otras ideas, mostrando primero
+ una visión de las aplicaciones y sistemas que existen actualmente y entrando
+ luego de lleno en cómo es y funciona nuestra aplicación.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\begin_inset FloatList table
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Introducción
+\end_layout
+
+\begin_layout Standard
+El imparable crecimiento de Internet en los últimos años ha propiciado la
+ aparición de nuevos entornos de comunicación.
+ Tal es el caso de las redes Peer-to-Peer (P2P), sistemas distribuidos que
+ se alejan de los esquemas típicos de topología y organización de una red,
+ los cuales han resultado cada vez más sofisticados al no basarse en esquemas
+ centralizados ni estar sometidos a un control estrictamente jerárquico.
+ 
+\end_layout
+
+\begin_layout Standard
+Los sistemas P2P se organizan en 
+\emph on
+peers
+\emph default
+ (nodos que se comportan como clientes y servidores), creando redes sobre
+ el Internet Protocol (IP).
+ El propósito principal de este tipo de redes es la compartición de todo
+ tipo de ficheros, aunque también existen otras aplicaciones muy demandadas
+ como la telefonía por Internet (VOIP).
+ Las redes P2P ofrecen una serie de características que las hacen aún más
+ atractivas, como la búsqueda y localización eficientes de datos, la alta
+ disponibilidad de los elementos (proporcionada por la redundancia de datos),
+ la tolerancia a fallos y la alta escalabilidad.
+ 
+\end_layout
+
+\begin_layout Standard
+Debido a que la capacidad de las redes se ha ido ampliando considerablemente,
+ que la exigencia de los usuarios ha aumentado y que la calidad de las conexione
+s no crece al mismo ritmo que las necesidades, ha sido indispensable el
+ desarrollo de algoritmos que faciliten la resolución de estos problemas.
+ La complejidad de dichos algoritmos se ha incrementado a medida que surgían
+ nuevos sistemas.
+ De hecho, nos podemos encontrar con el sencillo esquema de servidor centralizad
+o que realiza las búsquedas de archivos (Napster), frente a sistemas más
+ complicados en los que no se conoce la ubicación del objeto, sino que la
+ topología es un indicador de la posición, a la cual se accede mediante
+ una clave (sistemas basados en Distributed Hash Table, DHT).
+\end_layout
+
+\begin_layout Section
+Objetivos
+\end_layout
+
+\begin_layout Standard
+El objetivo de este proyecto se centra en la construcción de un sistema
+ ligero de P2P en un tiempo limitado.
+\end_layout
+
+\begin_layout Standard
+Nuestro sistema se plantea con un enfoque descentralizado, puesto que las
+ limitaciones de la red que se pretende construir no permiten el mantenimiento
+ de un servidor central tolerante a fallos.
+ La robustez debía ser proporcionada entonces por la descentralización de
+ los nodos.
+\end_layout
+
+\begin_layout Standard
+En el planteamiento del proyecto también primaba el hecho de que se debían
+ utilizar tecnologías vistas en la asignatura.
+ Por ello se decidió que el eje central del proyecto sería la transmisión
+ de mensajes codificados en XML.
+ Para ello se ha tenido que definir un protocolo de comunicación basado
+ en paso de mensajes en multicast.
+\end_layout
+
+\begin_layout Standard
+El resultado que se desea obtener tras la implementación del sistema es
+ que éste funcione correctamente en pequeñas redes LAN heterogéneas, ejecutándos
+e sobre diferentes sistemas operativos en máquinas dispares.
+ Para garantizar esta multiplataformidad se ha apostado por la tecnología
+ Java.
+\end_layout
+
+\begin_layout Standard
+Los objetivos derivados del proceso de desarrollo son:
+\end_layout
+
+\begin_layout Itemize
+Planificación del trabajo a realizar.
+ Se definen una serie de paquetes de trabajo que deben ser repartidos entre
+ los miembros del grupo.
+ Periódicamente se debe hacer revisión de la planificación y adaptación
+ a las circunstancias.
+\end_layout
+
+\begin_layout Itemize
+Documentación del proyecto, búsqueda de información relacionada con las
+ tareas que se realizarán por cada miembro del grupo y puesta en común.
+\end_layout
+
+\begin_layout Itemize
+Disposición de un sistema de control de versiones (CVS).
+\end_layout
+
+\begin_layout Itemize
+Desarrollo de las principales partes del sistema para hacer una versión
+ funcional mínima.
+\end_layout
+
+\begin_layout Itemize
+Refinamiento de la aplicación.
+\end_layout
+
+\begin_layout Itemize
+Diseño de tests que pongan a prueba características importantes del sistema,
+ como la escalabilidad y la tolerancia a fallos.
+\end_layout
+
+\begin_layout Section
+Motivación
+\end_layout
+
+\begin_layout Standard
+El impacto de los sistemas P2P en la sociedad telemática actual ha generado
+ la necesidad de compartir todo lo que tenemos, extendiendo las redes más
+ allá de las fronteras geográficas.
+ Internet tiene que sufrir un proceso de humanización que sólo será posible
+ mediante la integración de las aplicaciones en red en la cotidianeidad
+ del ser humano.
+ Dentro de esta línea podemos idear gran multitud de herramientas en las
+ que los sistemas P2P tienen un papel relevante, desde las que se centran
+ meramente en el ámbito del ocio, hasta las que se han concebido para un
+ entorno profesional.
+ 
+\end_layout
+
+\begin_layout Standard
+En cuanto a estas últimas, la sincronización de archivos en grupos de trabajo
+ es una de las aplicaciones estrella.
+ Una de las más conocidas, iFolder, comercializada por Novell, ha sido la
+ que ha inspirado este proyecto.
+ IFolder se compone de un servidor y varios clientes, que interaccionan
+ para compartir y sincronizar ficheros en una o varias redes de trabajo.
+\end_layout
+
+\begin_layout Standard
+Sin embargo, el enfoque que pretendíamos aplicarle a nuestro proyecto se
+ basaba en la descentralización de los clientes y con un alcance más reducido
+ en términos de escalabilidad.
+ Nuestro objetivo era, por tanto, mucho menos ambicioso que iFolder (el
+ dead-line de entrega del proyecto así lo exigía), pero la idea de compartir
+ ficheros en grupos de trabajo continuaba inamovible.
+\end_layout
+
+\begin_layout Standard
+Hubo otro punto que ayudó en la decisión de implementar un proyecto de este
+ tipo: la necesidad de una herramienta de sincronización en nuestro propio
+ ambiente de trabajo.
+ Como no pertenecemos a ninguna organización en la que tengamos que compartir
+ a gran escala, la opción de sacrificar la alta escalabilidad a cambio del
+ enfoque descentralizado continuaba siendo la mejor elección.
+\end_layout
+
+\begin_layout Standard
+De esta manera, el proyecto fue tomando forma: nuestra aplicación nos permitiría
+ organizar rápidamente una red de intercambio descentralizada con una pequeña
+ cantidad de nodos no permanentes.
+\end_layout
+
+\begin_layout Section
+Entorno de desarrollo
+\end_layout
+
+\begin_layout Standard
+A continuación vamos a describir las diferentes herramientas utilizadas
+ para desarrollar nuestra aplicación, así como el entorno de trabajo.
+\end_layout
+
+\begin_layout Subsection
+Sistemas operativos
+\end_layout
+
+\begin_layout Standard
+Los sistemas operativos sobre los que se ha desarrollado el proyecto y sobre
+ los cuales se han realizado las pruebas son:
+\end_layout
+
+\begin_layout Itemize
+GNU/Linux 2.6
+\end_layout
+
+\begin_layout Itemize
+MacOS X (10.3.9 o superior)
+\end_layout
+
+\begin_layout Itemize
+Windows XP
+\end_layout
+
+\begin_layout Standard
+Por lo tanto, es a esta serie de versiones de los sistemas operativos a
+ los que se les da soporte, aunque es probable que en otras versiones también
+ funcione con normalidad.
+\end_layout
+
+\begin_layout Subsection
+Lenguaje de programación
+\end_layout
+
+\begin_layout Standard
+En la planificación del proyecto, la elección del lenguaje de programación
+ a utilizar estuvo cargado de controversia.
+ Estábamos de acuerdo en que nuestra aplicación debía ser multiplataforma,
+ debido a la heterogeneidad de los sistemas con los que trabajábamos.
+\end_layout
+
+\begin_layout Standard
+La decisión se basaba tanto en el lenguaje como en las librerías gráficas
+ en las que se desarrollaría.
+ Después de barajar diversas opciones, nos decantamos por Java, en su versión
+ 1.4.
+\end_layout
+
+\begin_layout Subsection
+Librerías
+\end_layout
+
+\begin_layout Subsubsection*
+Interfaz gráfica
+\end_layout
+
+\begin_layout Standard
+Después de la elección de Java, el siguiente paso era buscar una librería
+ gráfica que se ajustara a nuestras necesidades.
+ Dentro del abanico de opciones que se ofrecen, nos decidimos por la Standard
+ Widget Toolkit (SWT) de IBM, que normalmente se distribuye junto con el
+ IDE Eclipse, pero que también se puede descargar separadamente y utilizarla
+ de manera independiente.
+\end_layout
+
+\begin_layout Subsubsection*
+Parser XML
+\end_layout
+
+\begin_layout Standard
+Uno de los puntos esenciales del protocolo de comunicación que se desarrollaría
+ era la transferencia de mensajes en formato XML.
+ Por ello era indispensable una herramienta de parsing XML.
+ El mercado ofrecía diversas opciones, como las archiconocidas SAX y DOM,
+ sin embargo, nos decantamos por la librería XMLPull.
+ Las razones se explicarán con detalle en el capítulo correspondiente.
+\end_layout
+
+\begin_layout Subsection
+Control de versiones
+\end_layout
+
+\begin_layout Standard
+Otro punto importante en el entorno de desarrollo es tener un repositorio
+ para que todos los integrantes del grupo podamos trabajar cómodamente con
+ los archivos fuente.
+ Para esto usamos un sistema de control de versiones, CVS, organizado de
+ manera centralizada.
+ No elegimos un repositorio distribuído
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Como 
+\emph on
+Mercurial
+\emph default
+, 
+\emph on
+SVK
+\emph default
+ o 
+\emph on
+Git
+\emph default
+.
+\end_layout
+
+\end_inset
+
+ porque disponíamos de una máquina que podía estar siempre conectada y,
+ además, los paquetes de trabajo de cada miembro del grupo estaban muy diferenci
+ados entre sí.
+ Con CVS nos bastaba para integrar los paquetes manteniendo al día las versiones
+ de cada uno.
+\end_layout
+
+\begin_layout Subsection
+Edición y compilación
+\end_layout
+
+\begin_layout Standard
+Hemos evitado atarnos a un IDE concreto para disfrutar de libertad pudiendo
+ usar cada uno nuestro editor favorito (Vim, XCode...).
+ La única regla impuesta fue la codificación en UTF-8, para evitar así problemas
+ de compatibilidades.
+\end_layout
+
+\begin_layout Standard
+El compilador que se ha usado es el de Sun para la versión 1.4 de Java, el
+ J2SDK 1.4.2.
+ Para compilar se han elaborado una serie de makefiles que estaban formados
+ por un conjunto de reglas genéricas para poder construir desde un directorio
+ hacia abajo en el árbol recursivamente.
+\end_layout
+
+\begin_layout Section
+Organización de esta memoria
+\end_layout
+
+\begin_layout Standard
+La memoria está estructurada de la siguiente manera.
+ Primero de todo, dedicamos un capítulo a explicar las aplicaciones y sistemas
+ sobre la red que existen actualmente y se relacionan con el ámbito de este
+ proyecto.
+\end_layout
+
+\begin_layout Standard
+En segundo lugar veremos cómo es el diseño y cómo funciona nuestra aplicación.
+ A continuación entraremos en el análisis de los diferentes parsers de XML
+ existentes, viendo sus características y comparando sus prestaciones, para
+ finalmente escoger justificadamente la mejor opción.
+ Más adelante explicaremos los detalles más relevantes o interesantes de
+ la implementación del programa.
+\end_layout
+
+\begin_layout Standard
+Finalmente, mostraremos cuál ha sido la estructuración de nuestra carga
+ de trabajo, ayudándonos de diagramas de Gantt, al realizar nuestro proyecto.
+\end_layout
+
+\begin_layout Chapter
+Soluciones actuales
+\end_layout
+
+\begin_layout Standard
+El presente capítulo presentará, a vista de pájaro, diferentes enfoques
+ de soluciones Peer-to-Peer que se utilizan en la actualidad, o bien han
+ tenido un impacto considerable en el pasado.
+ El objetivo de esta recopilación es situar al lector en el contexto por
+ el cual nos moveremos a partir de ahora, describir los sistemas que han
+ resultado más influyentes en nuestro proyecto, así como las opciones que
+ podrían haber sido adoptadas como modelo base, pero que por algún motivo
+ fueron rechazadas.
+\end_layout
+
+\begin_layout Standard
+En primer lugar, consideraremos un modelo de sistema con servidor centralizado,
+ en el cual las máquinas clientes dependen exclusivamente de un servidor.
+ Para ello, describiremos el ejemplo más claro de este tipo de P2P, Napster,
+ cuyo papel para la expansión de las redes de compartición de ficheros fue
+ clave.
+ También se hablará de un sistema más actual, iFolder, cuya filosofía nos
+ resulta muy atractiva.
+\end_layout
+
+\begin_layout Standard
+Después de esto, llegará el momento de analizar los sistemas descentralizados
+ que más nos han llamado la atención.
+ El recorrido a lo largo de esta sección comenzará por los sistemas P2P
+ estructurados para desembocar en los desestructurados.
+\end_layout
+
+\begin_layout Standard
+Finalmente, podremos adentrarnos en los protocolos de comunicación que se
+ han considerado, tales como la comunicación en unicast, multicast...
+ y sistemas como Spread.
+\end_layout
+
+\begin_layout Section
+Sistemas centralizados
+\end_layout
+
+\begin_layout Standard
+La meta de un sistema centralizado es aligerar la carga de trabajo de los
+ peers, dando mayor esfuerzo al servidor central.
+ Este tipo de esquema permite mayor coherencia de datos debido a que los
+ clientes sólo se tienen que referir al servidor central para buscar la
+ información precisa.
+ Sin embargo, el servidor supone un objetivo claro de ataque para tirar
+ la red, ya que si este cae, todos lo clientes también caen.
+\end_layout
+
+\begin_layout Subsection
+Napster
+\end_layout
+
+\begin_layout Standard
+Napster es el más claro ejemplo de P2P centralizado, pero su fama se debe
+ principalmente a que fue el pionero en la idea de sistema P2P para compartir
+ ficheros, basándose en una búsqueda centralizada.
+ Fue el primero en hacer que las peticiones de contenido muy demandado no
+ se tuvieran que enviar a un servidor central, sino que pudieran ser tratadas
+ por varios peers que tuvieran dicho contenido.
+\end_layout
+
+\begin_layout Standard
+Este tipo de sistemas favorecía la escalabilidad, ya que el hecho de que
+ se añadieran nuevos nodos no limitaba el sistema cargando al servidor central
+ de todo el trabajo, sino que el ancho de banda de los peers se acumula
+ al total existente.
+ Esto se conseguía utilizando una búsqueda centralizada que se basaba en
+ las listas de ficheros que le enviaba cada peer.
+\end_layout
+
+\begin_layout Standard
+Sin duda, Napster se convirtió en una aplicación revolucionaria, que marcaría
+ un antes y un después en los sistemas de compartición de ficheros, haciendo
+ del P2P el candidato para la explosión de Internet del siglo XXI.
+\end_layout
+
+\begin_layout Standard
+No obstante, la búsqueda centralizada y el hecho de que las listas de ficheros
+ las manejara el servidor de forma exclusiva, hacían que existiera un único
+ punto en el que el sistema no resultaba tolerante a fallos.
+\end_layout
+
+\begin_layout Subsection
+iFolder
+\end_layout
+
+\begin_layout Standard
+La aplicación open source iFolder 
+\begin_inset LatexCommand \citep{entry-0}
+
+\end_inset
+
+, desarrollada bajo el sello de Novell, fue diseñada para la compartición
+ de archivos multiplataforma, aspecto que hace de ella una opción muy atractiva,
+ pudiendo ser utilizada por usuarios de Linux, Mac y Windows, gracias a
+ estar implementada con el framework Mono.
+\end_layout
+
+\begin_layout Standard
+iFolder se basa en el concepto de carpetas compartidas.
+ Cuando una carpeta se marca como compartida, su contenido es sincronizado
+ con el resto de ordenadores de la red, pudiendo trabajar como un Peer-to-Peer
+ o mediante un servidor.
+ De esta manera, se permite tanto el que un solo usuario pueda sincronizar
+ sus archivos entre varios de sus ordenadores, o bien que varios usuarios
+ compartan entre ellos.
+ 
+\end_layout
+
+\begin_layout Standard
+Estos dos modos de funcionamiento del cliente de iFolder se denominan 
+\begin_inset Quotes sld
+\end_inset
+
+enterprise
+\begin_inset Quotes srd
+\end_inset
+
+ y 
+\begin_inset Quotes sld
+\end_inset
+
+workgroup
+\begin_inset Quotes srd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+En el modo 
+\begin_inset Quotes sld
+\end_inset
+
+enterprise
+\begin_inset Quotes srd
+\end_inset
+
+, utilizando un servidor, el cliente iFolder sincroniza sus archivos con
+ el servidor, el cual los replica a otros ordenadores.
+ Disponer de un servidor significa poder configurar un sistema de back-up,
+ además de ofrecer el acceso a ficheros mediante un navegador web.
+\end_layout
+
+\begin_layout Standard
+En el modo 
+\begin_inset Quotes sld
+\end_inset
+
+workgroup
+\begin_inset Quotes srd
+\end_inset
+
+ sin servidor, se sincronizan los archivos mediante módulos adicionales
+ que actualmente están siendo desarrollados por la comunidad open source,
+ los cuales se añaden a programas como Gaim.
+\end_layout
+
+\begin_layout Standard
+A continuación enumeramos ciertas características que nos resultan atractivas
+ de este proyecto:
+\end_layout
+
+\begin_layout Itemize
+Su core, llamado Simias, está totalmente separado de la parte gráfica del
+ cliente, tanto la versión para escritorio como la de web.
+\end_layout
+
+\begin_layout Itemize
+El modo sin servidor puede ser tremendamente eficaz, aunque todavía está
+ en fase de desarrollo.
+\end_layout
+
+\begin_layout Itemize
+Detrás de la sencillez de su idea se esconde una aplicación muy útil para
+ grupos de desarrollo.
+\end_layout
+
+\begin_layout Standard
+Cabe señalar que iFolder fue el sistema que inspiró nuestro proyecto.
+ Sin embargo, no queríamos una solución centralizada como la que se ofrece
+ actualmente, sino la que se basa en un P2P, pero que aún está en desarrollo,
+ ¡y ya llevan dos años! Estaba claro que no podríamos calcar iFolder para
+ nuestro proyecto, teníamos el obstáculo del tiempo de desarrollo, y además
+ podríamos haber ofendido nuestra creatividad.
+ Aún así, estaba bien tener en cuenta sus aspectos principales a la hora
+ del braimstorming.
+\end_layout
+
+\begin_layout Section
+Sistemas descentralizados
+\end_layout
+
+\begin_layout Standard
+El motivo de tratar ahora con los sistemas descentralizados radica en la
+ búsqueda que hemos hecho para inspirarnos en aplicaciones que no dependieran
+ de un servidor, en las cuales los peers funcionan de manera autónoma y
+ cooperativa.
+ 
+\end_layout
+
+\begin_layout Standard
+En primer lugar, hablaremos de sistemas estructurados, que tienen la virtud
+ de encontrar elementos poco demandados en las redes P2P.
+\end_layout
+
+\begin_layout Standard
+Contrastando esta primera visión, se describirán a continuación los P2P
+ desestructurados que más nos han llamado la atención.
+\end_layout
+
+\begin_layout Subsection
+Redes P2P estructuradas
+\end_layout
+
+\begin_layout Standard
+Los P2P estructurados se expanden sobre redes en las que se asignan claves
+ a los elementos de datos.
+ Sus peers están organizados en un grafo que mapea cada clave a un peer.
+ Este tipo de esquema permite encontrar eficientemente los elementos, pero
+ en su forma más simple no soporta consultas complejas.
+\end_layout
+
+\begin_layout Subsubsection*
+Distributed Hash Tables 
+\end_layout
+
+\begin_layout Standard
+Las DHTs son un tipo de sistemas distribuidos y descentralizados.
+ Como se ha comentado con anterioridad, un conjunto de claves son asignadas
+ a los nodos que componen la red, pudiéndose encaminar mensajes al único
+ dueño de una clave dada.
+ 
+\end_layout
+
+\begin_layout Standard
+Normalmente, se han diseñado para favorecer la escalabilidad de un gran
+ número de nodos y gestionar la tolerancia a fallos de forma segura, por
+ lo que resultan sistemas muy fiables.
+ Además, su carácter descentralizado es un punto a favor por no necesitar
+ un coordinador central.
+ De este modo, las DHTs se suelen utilizar para construir servicios más
+ complejos, como sistemas de ficheros distribuidos, propagación de eventos
+ o mensajes en una red, P2P o almacenamiento cooperativo en Web (por ejemplo
+ OceanStore).
+\end_layout
+
+\begin_layout Standard
+En la figura 
+\begin_inset LatexCommand \ref{fig:dht}
+
+\end_inset
+
+ se muestra una imagen que ayuda a entender cómo funciona un sistema basado
+ en DHTs.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename dht.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:dht}
+
+\end_inset
+
+Esquema de red basada en DHT.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+El nodo que realiza la búsqueda tendrá que esperar a que el mensaje dé como
+ mucho log(N) saltos en la red, siendo N el total de nodos del sistema hasta
+ encontrar el elemento asociado a la clave (en la figura con el valor 54).
+\end_layout
+
+\begin_layout Standard
+El principal problema que presentan este tipo de redes es que su overhead
+ resulta bastante significativo en comparación con las redes desestructuradas,
+ más populares, de las cuales se hablará en la próxima sección.
+\end_layout
+
+\begin_layout Subsubsection*
+Algunos sistemas basados en DHTs
+\end_layout
+
+\begin_layout Standard
+Existe una amplia gama de sistemas que tienen como base una DHT.
+ De entre los más conocidos, podemos destacar CAN (Content Addressable Network),
+ el cual usa un espacio en 2-d para asignar claves según la topología.
+\end_layout
+
+\begin_layout Standard
+Otro sistema interesante, que intenta mejorar el sistema de búsquedas original
+ de las DHTs es Pastry.
+ Se puede encontrar más información en 
+\begin_inset LatexCommand \citep{AR}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Redes P2P desestructuradas
+\end_layout
+
+\begin_layout Standard
+Los P2P desestructurados, al contrario que los estructurados, se distribuyen
+ en un grafo que se organiza de manera aleatoria, o bien de forma en la
+ cual hay peers que tienen más importancia que otros.
+ Este tipo de esquema resulta muy ineficiente a la hora de realizar búsquedas,
+ porque no hay una relación directa entre un dato y la topología de la red.
+ Estos algoritmos de búsqueda se basan, principalmente, en enviar mensajes
+ a otros peers en busca del dato necesitado.
+ Es por esto que en este tipo de redes, cuantas más réplicas de un dato,
+ más fácil será encontrarlo.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Gnutella
+\end_layout
+
+\begin_layout Standard
+Gnutella es un ejemplo claro de red P2P desestructurada, puesto que las
+ búsquedas se realizan mediante un algoritmo de flooding que no sigue unas
+ rutas predefenidas.
+\end_layout
+
+\begin_layout Standard
+El peer nuevo que se conecta a la red realiza una búsqueda de otros peers
+ en broadcast con un mensaje del estilo 
+\emph on
+ping - pong
+\emph default
+.
+ De esta forma, un peer conoce a sus vecinos más próximos.
+ Cuando el nuevo peer realiza una búsqueda, el mensaje se propaga entre
+ vecinos hasta que se encuentra el elemento buscado o el TTL del mensaje
+ se agota y éste es descartado.
+ Llegados a este punto, el host que contiene la información que se ha pedido
+ se comunica con el host que realizaba la búsqueda para transmitir dicha
+ información.
+ Más información en 
+\begin_inset LatexCommand \citep{GT}
+
+\end_inset
+
+ y 
+\begin_inset LatexCommand \citep{EKL05}
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+La figura 
+\begin_inset LatexCommand \ref{fig:gnutella}
+
+\end_inset
+
+ muestra el mecanismo de comunicación de Gnutella de manera más clara.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename gnutella.png
+	lyxscale 40
+	width 70line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:gnutella}
+
+\end_inset
+
+Esquema de red en Gnutella.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Este mecanismo es muy cómodo de programar, pero tiene varios problemas de
+ búsqueda.
+ El más evidente es que puede existir el elemento en la red, pero bien porque
+ el elemento está poco replicado, o bien porque el peer que contiene el
+ elemento está muy lejano, puede ser que nunca lo encontremos porque se
+ nos caduque la TTL.
+ Una posible solución a esto, sería incrementar el TTL, pero esta solución
+ provocaría una sobrecarga de los peers de la red.
+\end_layout
+
+\begin_layout Section
+Protocolos de comunicación
+\end_layout
+
+\begin_layout Standard
+En un sistema distribuido como el que vamos a implementar, uno de los factores
+ a tener en cuenta es el tipo de comunicación que utilizarán las diversas
+ máquinas que lo forman.
+ Ya sea según la topología de la red, la distancia entre los diferentes
+ nodos o la cantidad de nodos que contenga, debemos escoger una u otra forma
+ de pasar mensajes entre estos.
+\end_layout
+
+\begin_layout Subsection
+Mensajes de tipo unicast
+\end_layout
+
+\begin_layout Standard
+Unicast es la forma tradicional de envío de datos entre máquinas, donde
+ solamente existe un emisor y un único receptor de datos.
+ Este tipo de comunicación es ideal con un solo receptor puesto que la red
+ se ocupa el tiempo necesario y los datos sólo se envían una vez (a no ser
+ que existan fallos en la recepción de algún dato).
+ Sin embargo, como se puede intuir, este modelo no es el mejor cuando queremos
+ enviar a varias máquinas una misma información, ya que, como mínimo, el
+ emisor deberá repetir n veces la información (siendo n el número de receptores)
+ para que todos obtengan los datos enviados.
+\end_layout
+
+\begin_layout Subsubsection*
+RMI (Java Remote Method Invocation)
+\end_layout
+
+\begin_layout Standard
+Un mecanismo elegante para las comunicaciones entre dos máquinas es a través
+ de RMI.
+ Este método (descendiente de los RPC) intenta hacer totalmente transparente
+ la comunicación entre nodos, dando la sensación al programador de que está
+ utilizando un simple método más de un objeto de su código.
+ Para poder conseguir esta transparencia el desarrollador debe crear el
+ código en la parte del servidor y una interfaz en el cliente, para que
+ éste pueda invocar esos métodos.
+\end_layout
+
+\begin_layout Standard
+Esta forma de comunicación tiene varios puntos débiles.
+ El primero es evidente, este protocolo sólo está soportado en Java y eso
+ implica que todo cliente - servidor debe estar implementado en ese lenguaje.
+ Otro punto débil es el rendimiento, ya que como observamos en la siguiente
+ figura (que originariamente describía una RPC pero puede ser aplicada en
+ este contexto), cuando un cliente realiza una RMI se bloquea hasta que
+ el servidor realiza la RMI y le envía una respuesta, este tiempo dependerá
+ de la implementación en el servidor.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename rmi_little.png
+	lyxscale 50
+	width 70line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:rmi}
+
+\end_inset
+
+Ejemplo de comunicación con RMI.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para más información se debe consultar el capítulo 2 (
+\begin_inset Quotes eld
+\end_inset
+
+Comunication
+\begin_inset Quotes erd
+\end_inset
+
+) de 
+\begin_inset LatexCommand \citep{BOOK}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+SOAP (Simple Object Access Protocol)
+\end_layout
+
+\begin_layout Standard
+SOAP es otra forma de realizar llamadas a procedimientos remotos usando
+ XML y el protocolo http.
+ A diferencia de RMI este tipo de llamadas no dependen de Java y , además,
+ como funciona a través de mensajes http, no tendremos problemas con firewalls
+ y/o routers que puedan descartar nuestros mensajes.
+\end_layout
+
+\begin_layout Standard
+Un punto a tener en cuenta, es que los mensajes se envían codificados en
+ XML y eso a priori puede parecer bueno, puesto que son mensajes fáciles
+ de codificar e inteligibles para el ser humano.
+ Sin embargo, a su vez esto puede afectar mucho al rendimiento de la aplicación,
+ ya que el parser empleará una gran parte de tiempo interpretando estos
+ mensajes.
+ Concretamente según la referencia 
+\begin_inset LatexCommand \citep{entry-0b}
+
+\end_inset
+
+ es 10 veces más lento que RMI.
+ 
+\end_layout
+
+\begin_layout Subsection
+Mensajes de tipo multicast/broadcast
+\end_layout
+
+\begin_layout Standard
+Hemos visto hasta el momento formas de comunicación donde un host se comunica
+ directamente con otro, pero también existe otro modelo de comunicación
+ donde un host realiza un solo envío y varios hosts leen esa información.
+ Este tipo de comunicación se denomina multicast en el caso en que los receptore
+s sean algunos hosts de una red, o broadcast en el caso en que los receptores
+ sean todos los hosts de la red.
+\end_layout
+
+\begin_layout Standard
+En el API de Java, este tipo de conexiones están implementadas sobre conexiones
+ UDP, las cuales no nos aseguran la entrega de mensajes.
+ Esto es un gran problema, puesto que no podríamos verificar la entrega
+ de datos y podríamos crear inconsistencia de éstos entre los diferentes
+ clientes.
+\end_layout
+
+\begin_layout Standard
+Otra forma de comunicación realacionada con envíos fiables y en multicast
+ son los protocolos basados en Digital Fountain 
+\begin_inset LatexCommand \citep{JWB}
+
+\end_inset
+
+, pero de este tipo de protocolos no vamos a entrar en detalle, puesto que
+ son complejos y estan basados para comunicación en streaming.
+\end_layout
+
+\begin_layout Subsubsection*
+Spread
+\end_layout
+
+\begin_layout Standard
+Spread 
+\begin_inset LatexCommand \citep{entry-1}
+
+\end_inset
+
+ es un conjunto de herramientas para poder enviar mensajes en multicast.
+ Esta herramienta da soporte a C, C++, Java y Python.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename spread.png
+	lyxscale 70
+	width 100line%
+	keepAspectRatio
+	rotateOrigin center
+	subcaptionText "Topología de una red con Spread"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:spread}
+
+\end_inset
+
+Topología de una red con Spread.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Como observamos en la figura 
+\begin_inset LatexCommand \ref{fig:spread}
+
+\end_inset
+
+, la topología que usa spread se basa en pequeñas redes, las cuales contienen
+ una máquina que corre el daemon de spread; éste está conectado a otros
+ daemons de redes diferentes a la suya.
+ Por otro lado, tenemos diversas aplicaciones que se conectan al daemon
+ de su red interna y que forman parte de un grupo (que puede ser de otra
+ red).
+\end_layout
+
+\begin_layout Standard
+La principal ventaja de spread es que nos asegura la transmisión de datos
+ a todo el grupo.
+ Otro punto a su favor es que se pueden configurar los demonios para asegurar
+ algunos modelos de consistencia centrados en los datos.
+ Concretamente podemos garantizar orden FIFO (según el emisor), orden causal
+ (mediante relojes de Lamport 
+\begin_inset LatexCommand \citep{MR95}
+
+\end_inset
+
+) u orden total (los mensajes deben llegar para todos en el mismo orden
+ en el cual han sido enviados).
+ Más información en 
+\begin_inset LatexCommand \citep{JRS02}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Spread tiene también una gran escalabilidad.
+ Esto es un detalle a tener poco en cuenta en nuestro proyecto, ya que en
+ el escenario donde pretendemos que funcione nuestra aplicación hay pocas
+ máquinas.
+\end_layout
+
+\begin_layout Standard
+Su principal desventaja es que en cada subred debe existir un host que haga
+ de servidor y eso crea una centralización (a baja escala) de la red.
+\end_layout
+
+\begin_layout Chapter
+Diseño
+\end_layout
+
+\begin_layout Standard
+Dedicaremos este capítulo a hablar de Atory, la aplicación que hemos desarrollad
+o.
+\end_layout
+
+\begin_layout Standard
+En base a las ideas que giran entorno a aplicaciones ya existentes sobre
+ redes P2P, sobre la esencia del iFolder y de los demás sistemas analizados
+ en el capítulo anterior, hemos desarrollado nuestro proyecto desde cero.
+ Esto nos ha supuesto emprender un cierto riesgo.
+ Nunca sabes los problemas que puede conllevar un proyecto del cual debes
+ marcar las pautas, por ejemplo diseñar un protocolo de comunicación implica
+ rectificarlo continuamente hasta encontrar un sistema válido.
+ 
+\end_layout
+
+\begin_layout Standard
+Así pues, Atory lo clasificaríamos dentro de este paquete de aplicaciones
+ diseñadas para permitir la compartición de archivos en red.
+ Como hemos dicho en la introducción, si tuviéramos que definir el rasgo
+ que diferencia esta aplicación de la mayoría sería su alto grado de 
+\emph on
+libertad
+\emph default
+.
+ La red que conecta los peers no está supeditada a un servidor central que
+ lo controle todo.
+ Se ha buscado que sea una red 
+\begin_inset Quotes eld
+\end_inset
+
+viva
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Si un peer cae, el resto de la red sigue funcionando.
+ Si dependes de un servidor y éste cae, toda la red cae.
+ Con esta característica hacemos que la red sea dinámica y dotamos a los
+ peers de la máxima 
+\emph on
+autonomía
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+A continuación vamos a ver los diseños preliminares y cual es el diseño
+ final de la aplicación.
+\end_layout
+
+\begin_layout Section
+Diseños preliminares
+\end_layout
+
+\begin_layout Standard
+En primera instancia, la idea era que los peers se comunicaran mediante
+ mensajes broadcast.
+ Era una forma sencilla, eficiente y clara para conseguir la consistencia
+ de la red.
+ Si por ejemplo un peer se conectaba, enviaba el correspondiente mensaje
+ broadcast a todos los demás advirtiendo del hecho.
+ Si un peer pasaba a compartir un nuevo archivo, mensaje broadcast a todos
+ los que estaban conectados.
+\end_layout
+
+\begin_layout Standard
+Desafortunadamente, las pruebas las queríamos hacer en los aularios del
+ LCFIB, y los mensajes broadcast están deshabilitados por motivos de seguridad.
+ Además, Java implementa broadcast sobre UDP, y es obvio que este protocolo
+ no nos sirve, ya que es necesario tener la certeza que la información se
+ transmite correctamente.
+ De esta manera, decidimos dejar de lado esta opción y decantarnos por otra
+ más compatible.
+\end_layout
+
+\begin_layout Standard
+Si pensamos un poco, para enviar mensajes broadcast no es requisito indispensabl
+e que se sepan que hosts están conectados, simplemente tienes la certeza
+ que les llegará la información.
+ Pero al no poder utilizar broadcast, la aplicación ha de controlar que
+ llegue el mensaje host por host.
+ Esto es, tiene que enviar a una dirección IP conocida, por lo que se tiene
+ que idear un sistema de control de las IPs conectadas en ese momento.
+\end_layout
+
+\begin_layout Standard
+En primera instancia se había pensado en utilizar un servidor que hiciera
+ tan solo de 
+\begin_inset Quotes eld
+\end_inset
+
+tracker
+\begin_inset Quotes erd
+\end_inset
+
+, es decir, tener un servidor únicamente que mantuviera un listado consistente
+ de los hosts conectados.
+ Esto es, si por ejemplo un peer se conecta, sabiendo la dirección IP del
+ tracker, éste ya se encarga que este host pase a formar parte de la red.
+\end_layout
+
+\begin_layout Standard
+Por otro lado, vimos que nuestro diseño se iba acercando al sistema de RMIs,
+ por lo que podíamos haberlo aplicado, pero fue rechazado al estar, como
+ se ha dicho en el capítulo anterior, solo soportado en Java y esto implica
+ que todo cliente - servidor debe estar implementado en este lenguaje.
+\end_layout
+
+\begin_layout Standard
+También se barajo la idea explicada anteriormente de Spread, pero al estar
+ supeditada al hecho de tener unos servidores, también la descartamos.
+\end_layout
+
+\begin_layout Standard
+Así mismo en el capítulo anterior hicimos referencia a Gnutella, porque
+ es un referente de una red desestructurada (no sigue ninguna forma jerárquica)
+ y descentralizada, que justamente es la característica principal de Atory.
+\end_layout
+
+\begin_layout Standard
+Otro apartado es el que hace referencia al uso de xml y el diseño del protocolo
+ en las comunicaciones entre peers.
+ Se barajaron las posibilidades del SAX i del DOM vistas en la asignatura,
+ pero finalmente se optó por la API XMLPULL.
+ Este punto se explica en detalle más adelante.
+\end_layout
+
+\begin_layout Standard
+Por lo que hace al protocolo pensamos cuales eran las mejores opciones de
+ cara a la mayor eficiencia.
+ Por ejemplo, una de las posibilidades barajadas era que los mensajes xml
+ se propagaran por la red por inundación.
+ De esta manera, adjuntábamos una 
+\begin_inset Quotes eld
+\end_inset
+
+lista de distribución de hosts
+\begin_inset Quotes erd
+\end_inset
+
+ al principio del mensaje xml, y cada host eliminaba su IP a medida que
+ iba pasando por ellos.
+\end_layout
+
+\begin_layout Section
+Diseño definitivo
+\end_layout
+
+\begin_layout Standard
+Pero la idea del tracker, aunque mantiene el espíritu de que todo se hace
+ entre los peers menos la conexión, te ata a que si el tracker cae, cae
+ también la red.
+ Entonces finalmente se decidió integrar esta función en cada uno de los
+ peers.
+\end_layout
+
+\begin_layout Standard
+Así pues, tenemos que con Atory cada peer hace a la vez las funciones de
+ cliente y servidor.
+ Con esto obtenemos lo que buscábamos.
+ Aunque un peer deje de funcionar, sea quien sea, la red sigue en pie.
+ A continuación, vamos a ver cómo es el funcionamiento de Atory a nivel
+ externo, sin entrar en la implementación.
+\end_layout
+
+\begin_layout Standard
+Partimos de la idea en que los peers tienen una carpeta compartida de trabajo
+ en su disco local.
+ Cualquier fichero de la carpeta será accesible por cualquier peer de la
+ red.
+ La unión de los ficheros de estas carpetas da lugar a una carpeta común
+ compartida a nivel de red.
+\end_layout
+
+\begin_layout Standard
+Así si un peer necesita un fichero en un momento dado, sólo tiene que mandar
+ una petición a algún peer que posea tal fichero, para que sea transferido
+ a su disco local.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename casobasico.png
+	width 85line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Esquema ilustrativo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para entender el funcionamiento de la aplicación, situémonos en un entorno
+ donde ya hay una red con un conjunto de peers utilizando atory.
+ Pongamos que se conecta un nuevo peer.
+ La tabla 
+\begin_inset LatexCommand \ref{tab:Flujo-de-secuencia}
+
+\end_inset
+
+ muestra el flujo de secuencia correspondiente al caso de uso de esta nueva
+ conexión.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features>
+<column alignment="left" valignment="middle" leftline="true" width="50line%">
+<column alignment="left" valignment="middle" leftline="true" rightline="true" width="48line%">
+<row topline="true" bottomline="true">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\series bold
+Nuevo peer
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\series bold
+Peer en funciones de servidor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1.
+ Dispone de la IP de uno de los peers ya conectados.
+ Envía un mensaje a esta IP advirtiendo que se trata de una nueva conexión.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1.
+ Recibe el mensaje.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+2.
+ Envía al nuevo peer un listado con las IPs de los peers de la red.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+3.
+ Envía la lista de los ficheross compartidos.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+4.
+ Recibe el listado de hosts y de los ficheros compartidos, a los que añade
+ sus propios ficheros compartidos.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+5.
+ Comunica a todos los hosts su propis ficheros compartidos.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{tab:Flujo-de-secuencia}
+
+\end_inset
+
+Flujo de secuencia de una nueva conexión.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bien, en este punto, la red cuenta con un nuevo host y está actualizada.
+ Pongamos que un peer añade un nuevo fichero a compartir; entonces enviará
+ un aviso al resto comunicando este hecho.
+ Lo mismo en el caso de modificarlo o dejarlo de compartir.
+\end_layout
+
+\begin_layout Standard
+Imaginemos ahora que se desconecta un peer.
+ Éste enviará un aviso al resto comunicando el hecho, y así cada peer será
+ consciente de que los archivos que poseía dicho host dejan de estar disponibles.
+\end_layout
+
+\begin_layout Standard
+En este punto se pensará que si el peer se desconecta porque cae la aplicación
+ o el host en su totalidad, no enviará ningún mensaje.
+ Esto se soluciona mediante un sistema de comprobación que cada cierto intervalo
+ corto de tiempo testea que hosts están conectados.
+\end_layout
+
+\begin_layout Subsection
+Conexión Segura: SSL
+\end_layout
+
+\begin_layout Standard
+Todas las comunicaciones explicadas anteriormente se realizan mediante conexione
+s no seguras.
+ En la mayoría de casos es despreciable el riesgo de poder interceptar los
+ datos de la red y en cambio se premia la velocidad y la eficiencia.
+ Si encriptáramos los datos, el proceso de transmisión se ralentizaría.
+\end_layout
+
+\begin_layout Standard
+Pero para dar la opción de poder enviar ciertos datos en modo seguro, en
+ Atory hemos habilitado la opción de poder utilizar Secure Socket Layer
+ (SSL) para realizar estas transmisiones.
+\end_layout
+
+\begin_layout Subsection
+Interfaz Gráfica
+\end_layout
+
+\begin_layout Standard
+Como se ha dicho en la introducción, para construir la interfaz gráfica
+ hemos utilizado las librerías de SWT.
+ La Standard Widget Toolkit (SWT, de IBM) es una librería gráfica de código
+ abierto para Java.
+ Normalmente se distribuye junto con el IDE Eclipse, pero también se puede
+ descargar separadamente y utilizarla de manera independiente.
+\end_layout
+
+\begin_layout Standard
+Como Atory está implementado en Java, la solución más directa para el entorno
+ gráfico era utilizar la librería swing de la API de JAVA.
+ Pero no nos acaba de convencer su diseño y su eficiencia.
+ En cambio SWT permite adaptar la apariencia de las ventanas a la apariencia
+ nativa de cada entorno gráfico.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename fusio_ja.png
+	lyxscale 50
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Captura programa en windows y gtk.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Parser XML
+\end_layout
+
+\begin_layout Standard
+En este capítulo vamos a comentar todas las posibilidades planteadas a la
+ hora de desarrollar la gestión de la información en el programa.
+ 
+\end_layout
+
+\begin_layout Standard
+La idea es hacerlo en XML por las facilidades que conlleva, igualmente incluimos
+ un apartado con la justificación de su elección.
+ Una vez visto esto, el problema es escoger entre las diferentes APIs que
+ hay ahora mismo implementadas.
+ Todo ello bajo el punto de vista de lo que ofrecen y de cómo lo podemos
+ adaptar a nuestras necesidades.
+\end_layout
+
+\begin_layout Standard
+La estructura que se va a seguir en este capítulo, es la de comentar la
+ diversidad que se nos ofrece.
+ Seguidamente una comparativa de las diversas APIs.
+ Finalmente, conclusiones sobre éste estudio especificando cómo solucionamos
+ nuestro problema.
+\end_layout
+
+\begin_layout Section
+Justificación del uso de XML
+\end_layout
+
+\begin_layout Standard
+En principio, el problema que se nos plantea, es la manera de enviar información
+ a otros hosts para que sean conscientes de los cambios producidos en otros
+ hosts remotos.
+ Esta necesidad nos surge al intentar conseguir un sincronismo de contenidos
+ entre todos los usuarios del programa en una red.
+ Ésto conlleva un envío de información y la necesidad de hacer llamadas
+ remotas.
+\end_layout
+
+\begin_layout Standard
+Nos planteamos directamente XML por ser una tecnología novedosa y en pleno
+ auge.
+ Veremos a continuación una serie de funcionalidades que se permiten con
+ el uso de este estándar.
+ Concretamente las que están relacionadas con el uso que le queremos dar
+ en este programa.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+\emph on
+Comunicación:
+\series default
+\emph default
+ Nos permite enviarnos información entre aplicaciones, sin que el formato
+ esté ligado a ninguna presentación.
+ Tampoco nos liga a ningún lenguaje ni nada, ya que el parser en XML se
+ pueden realizar en diversos lenguajes.
+ Lo único que se tendría que saber es como tratar la información que se
+ envía.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+\emph on
+Interacción:
+\series default
+\emph default
+ XML nos permite hacer llamadas remotas en otro host a partir del envío
+ de algún documento.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+\emph on
+Configuración:
+\series default
+\emph default
+ Nos permite guardar de forma estructurada datos en disco, de manera que
+ a través de parsers luego es más fácil obtener la información.
+ Si fuera un fichero normal, siempre el parser es más complejo ya que no
+ hay APIs especializadas como en XML.
+\end_layout
+
+\begin_layout Standard
+El mecanismo que se sigue es el que se muestra en la figura 
+\begin_inset LatexCommand \ref{fig:transXML}
+
+\end_inset
+
+ que aparece a continuación (extraída de 
+\begin_inset LatexCommand \cite{PXC}
+
+\end_inset
+
+), justamente para llevar a cabo las funcionalidades que acabamos de especificar
+:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename transmision_xml.png
+	lyxscale 40
+	width 70line%
+	keepAspectRatio
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:transXML}
+
+\end_inset
+
+Transmisión de datos en XML entre aplicaciones en diferentes hosts.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Como vemos en la figura, es el sistema que se usa para llevar a cabo cualquiera
+ de las funcionalidades.
+ Primero de todo a partir de una información o unos datos, se construye
+ el documento XML, que es el que se envía a la otra aplicación.
+ Una vez llega al destinatario, se hace el tratamiento del documento en
+ XML.
+ 
+\end_layout
+
+\begin_layout Standard
+Separemos ahora por un momento las tareas de host emisor y el host receptor
+ del mensaje en XML.
+ 
+\end_layout
+
+\begin_layout Standard
+El emisor es quién dispone de la información que se quiere enviar a otra
+ aplicación.
+ Por tanto se necesita un paso de esa información a un mensaje XML.
+ A este paso lo llamamos 
+\series bold
+\emph on
+Serialización.
+
+\series default
+\emph default
+ El paso contrario es el que hace el receptor del mensaje en XML, ya que
+ tiene que obtener información enviada por el emisor.
+ Lo llamamos 
+\series bold
+\emph on
+Deserialización
+\series default
+\emph default
+ o 
+\series bold
+\emph on
+Parse
+\series default
+\shape italic
+\emph default
+r
+\shape default
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename seralizacion_deserializacion.png
+	lyxscale 40
+	width 50line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Ilustración de Serialización y Deserialización.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+El proceso sería el mismo si usáramos otros métodos.
+ Una alternativa a la que acabamos de proponer, vendría a ser, enviar un
+ fichero en formato plano, sin seguir la estandarización del XML.
+ A simple vista a lo mejor no hay mucha diferencia, pero realmente si que
+ la hay.
+ La diferencia fundamental que encontramos es la facilidad que se da en
+ el paso de obtener la información del fichero en XML, debido a que hay
+ diversas APIs que facilitan esta obtención de información, en cambio, sobre
+ un texto plano, no nos sería tan sencillo.
+\end_layout
+
+\begin_layout Standard
+Una vez explicado todo esto, sólo nos falta acabar de relacionar estas caracterí
+sticas del XML con funcionalidades de nuestro programa en concreto.
+\end_layout
+
+\begin_layout Standard
+El funcionamiento del programa ya se ha explicado en un capítulo previo,
+ por tanto solo añadir que los mensajes en XML que se envían, son el único
+ método de petición o comunicación que hay en nuestro programa.Es a través
+ de este mecanismo donde se actualiza información o se hacen demandas de
+ ficheros.
+ Por tanto, relacionándolo con las funcionalidades del XML, nuestro uso
+ va a ser tanto de comunicación, como de interacción como para guardar la
+ configuración del programa en ficheros.
+\end_layout
+
+\begin_layout Section
+Caracterización de las diferentes APIs
+\end_layout
+
+\begin_layout Standard
+En este apartado vamos a comentar las diferentes especificaciones que existen
+ para tratar en general el XML.
+ A continuación vamos a exponer los tipos que nos hemos planteado con sus
+ correspondientes características.
+\end_layout
+
+\begin_layout Subsection
+SAX (Simple API for XML)
+\end_layout
+
+\begin_layout Standard
+Esta especificación para parsear documentos en XML tiene diversas implementacion
+es, pero vamos a comentar de forma general las características de todas
+ ellas
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Extraído de 
+\begin_inset LatexCommand \cite{parsers-1}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+El procesamiento de la información es por eventos.
+ Cada vez que salta un evento se llama a una función que trata ese tipo
+ en concreto.
+ Quizás la complicación del uso de esta especificación es la reprogramación
+ de estas funciones.
+\end_layout
+
+\begin_layout Itemize
+No ocupa grandes cantidades de memoria ya que el procesamiento no necesita
+ cargar ningún tipo de estructura en memoria.
+\end_layout
+
+\begin_layout Itemize
+El procesamiento con este sistema es muy rápido y bastante sencillo.
+\end_layout
+
+\begin_layout Itemize
+Debido a que SAX funciona por eventos, no es posible manipular información
+ una vez procesada.
+\end_layout
+
+\begin_layout Subsection
+DOM (Document Object Model)
+\end_layout
+
+\begin_layout Standard
+De la misma forma que en SAX, vamos a comentar las características de esta
+ especificación 
+\begin_inset LatexCommand \cite{parsers-0}
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+Ofrece un conjunto de interfaces para describir una estructura abstracta
+ para un documento XML.
+\end_layout
+
+\begin_layout Itemize
+La aplicación que accede a la estructura del documento a través de la interfaz
+ de DOM puede insertar arbitrariamente, borrar y reordenar los nodos del
+ documento XML, es decir, con DOM se puede modificar el contenido, la estructura
+ y el estilo o presentación de los documentos.
+\end_layout
+
+\begin_layout Itemize
+Todas las acciones se realizan mediante llamadas a funciones que permiten
+ acceder, cambiar, borrar o añadir nodos de información.
+\end_layout
+
+\begin_layout Itemize
+Como inconveniente, encontramos un gasto excesivo de memoria, lo que conlleva
+ a una ralentización del parseado.
+\end_layout
+
+\begin_layout Standard
+A modo de ejemplo, generamos la estructura resultante de un documento XML
+ (figura 
+\begin_inset LatexCommand \ref{fig:ejemplo-dom}
+
+\end_inset
+
+) usado en nuestra práctica.
+ Concretamente, este documento contiene una lista de ficheros compartida.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename obradearte.png
+	lyxscale 40
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:ejemplo-dom}
+
+\end_inset
+
+Estructura generada con DOM.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+XML PULL 
+\end_layout
+
+\begin_layout Standard
+Seguimos la misma estructura que en los apartados anteriores, comentando
+ las características de esta especificación 
+\begin_inset LatexCommand \cite{xmlpull}
+
+\end_inset
+
+: 
+\end_layout
+
+\begin_layout Itemize
+Su funcionamiento se asemeja a SAX en el sentido de que su procesamiento
+ es a través de eventos.
+ Éso conlleva como en SAX, que la información no pueda ser manipulada una
+ vez acabado su procesamiento.
+\end_layout
+
+\begin_layout Itemize
+En XML PULL es la aplicación quien pide al parser cuando quiere recibir
+ el próximo dato o elemento.
+ En este sentido es bastante más manejable.
+\end_layout
+
+\begin_layout Itemize
+Debido a su funcionamiento a través de eventos, el proceso es muy rápido
+ y que gasta muy poca memoria.
+\end_layout
+
+\begin_layout Itemize
+Muy sencillo de usar.
+\end_layout
+
+\begin_layout Section
+Comparativa de las diferentes APIs
+\end_layout
+
+\begin_layout Standard
+Este apartado lo dedicaremos a comparar las diversas especificaciones que
+ hemos comentado antes con varias de sus implementaciones.
+ Nos vamos a basar en un estudio ya realizado previamente 
+\begin_inset LatexCommand \cite{XPB4J}
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A continuación vamos a mostrar una serie de gráficos que muestran una comparativ
+a muy bien detallada entre las mejores implementaciones de las interfaces
+ comentadas en el apartado anterior.
+ 
+\end_layout
+
+\begin_layout Standard
+El estudio se ha realizado sobre 3 ficheros en XML de diferentes tamaños
+ bien marcados.
+ Concretamente, SD1 con 11.9K, SD2 con 98.3K y SD3 con 111.7K.
+ De esta manera nos permite mostrar ampliamente su comportamiento en diferentes
+ situaciones.
+\end_layout
+
+\begin_layout Standard
+En la gráfica de la figura 
+\begin_inset LatexCommand \ref{fig:xml-comp-specs}
+
+\end_inset
+
+ se mide el tiempo que se tarda en parsear cada uno de los ficheros comentados
+ con la mejor implementación de cada tipo de especificación.
+ Nos basamos en decir que son las mejores, debido a las comparaciones de
+ este mismo estudio.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename comparacion3tipos.jpg
+	lyxscale 50
+	width 70line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:xml-comp-specs}
+
+\end_inset
+
+Comparativa entre especificaciones diferentes.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cabe destacar que XPP3 y J2SDK-SAX tienen un comportamiento parecido.
+ En cuanto a la implementación correspondiente a DOM, para ficheros muy
+ pequeños, el tiempo de proceso es similar, en cambio, para ficheros mas
+ grandes, la pérdida de tiempo es excesiva.
+\end_layout
+
+\begin_layout Standard
+Para acabar de remarcar y ver más diferenciado el comportamiento de los
+ diferentes parsers en lo que se refiere al tiempo, adjuntamos otra gráfica
+ (figura 
+\begin_inset LatexCommand \ref{fig:xml-comp-api}
+
+\end_inset
+
+).
+ Ésta contiene más implementaciones que en la anterior, pero no son relevantes
+ a nuestro estudio.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename comparacionrendimientos.jpg
+	lyxscale 50
+	width 70line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:xml-comp-api}
+
+\end_inset
+
+Comparación diversas APIs más detallada.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Otro aspecto a comprar es el consumo de memoria al realizar el parser.
+ El gráfico de la figura 
+\begin_inset LatexCommand \ref{fig:xml-consumo}
+
+\end_inset
+
+ muestra el consumo de memoria por parte de cada implementación.
+ Como en el ejemplo anterior, se usan ficheros de diferentes tamaños.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename comparacionmaster.jpg
+	lyxscale 50
+	width 70line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:xml-consumo}
+
+\end_inset
+
+Comparación de consumo de memoria con diferentes implementaciones.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Observamos primero que tanto con SAX como con XPP3 el consumo de memoria
+ es casi inexistente.
+ En este sentido, si miramos las cifras en concreto, el rendimiento de SAX
+ es un poco mejor que el de XPP3, pero es despreciable.
+ En cambio, vemos que el consumo de memoria requerido por DOM, crece mucho
+ a partir de un tamaño no muy elevado.
+\end_layout
+
+\begin_layout Standard
+Resumiendo este estudio, objetivamente vemos que seria bueno usar tanto
+ SAX como XML PULL, ya que tienen un rendimiento muy bueno tanto en tiempo
+ de proceso como en consumo de memoria.
+ Se diferencian bastante respecto a DOM, aunque esta metodología es diferente
+ y puede ser útil para determinados casos.
+\end_layout
+
+\begin_layout Section
+Decisión final de la API a usar
+\end_layout
+
+\begin_layout Standard
+Después de la comparativa del apartado anterior, hemos visto que lo mejor
+ en nuestro caso, sería usar o SAX o XPP3.
+ Este pensamiento es debido a que nos interesa un mínimo uso de memoria
+ y una ejecución rápida.
+ Creemos que ahora todo depende de nuestra subjetividad, por tanto nos guiaremos
+ en la facilidad de implementación, ya que las diferencias en cuanto a resultado
+s son insignificantes.
+ Tanto por probar una nueva especificación desconocida como por comodidad
+ hemos decidido usar XPP3, aunque nos ha llevado bastante tiempo la búsqueda
+ de información (ya que no hay mucha).
+ También la realización de pruebas para familiarizarnos con su funcionamiento.
+\end_layout
+
+\begin_layout Chapter
+Implementación
+\end_layout
+
+\begin_layout Standard
+En el siguiente capítulo nos disponemos a explicar los detalles más relevantes
+ o interesantes de la implementación del programa.
+\end_layout
+
+\begin_layout Section
+Diagrama de clases
+\end_layout
+
+\begin_layout Standard
+Hemos separado la aplicación en dos capas, la interfaz gráfica por un lado
+ y la capa de dominio y persistencia por otro.
+ En la figura 
+\begin_inset LatexCommand \ref{fig:Diagrama-de-clases}
+
+\end_inset
+
+ presentamos el diagrama de clases del dominio simplificado.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename diagramaclasessimplificado.png
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:Diagrama-de-clases}
+
+\end_inset
+
+Diagrama de clases.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A continuación vamos a describir el rol de cada clase dentro del sistema:
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Storage:
+\series default
+ Hace principalmente de controlador de dominio.
+ Es la que se encarga de almacenar los datos y validarlos.
+ La interfaz gráfica se comunica a través suyo ( no en todos los casos,
+ ya que la separación por capas no es estricta, la dimensión de la aplicación
+ tampoco lo requería).
+ Se comunica con la clase ParserXML a la que le envía los cambios locales
+ que quiere propagar a través de la red.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+ParserXML
+\series default
+: Es principalmente el enlace entre la red i la clase Storage.
+ Se encarga de traducir los cambios locales que transmite Storage a mensajes
+ XML que serán transmitidos al resto de la red.
+ Y viceversa, los mensajes procedentes de otros host que lleguen serán parseados
+ para obtener los datos y realizar las operaciones pertinentes.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Netfolder
+\series default
+: Es el enlace con la red y el modulo ParserXML.
+ No conoce el significado de los mensajes XML que llegan a través de la
+ red.
+ Este módulo únicamente se encarga de enviar y recibir tiras de bits.
+ Para realizar esta tarea, crea dos tipos de threads.
+ Uno (xmlThread) para escuchar los mensajes de control que le llegan por
+ el puerto 3330, y que transforma en String y lo envía a ParserXML.
+ Otro (fileTransferer) para escuchar las transferencias de los ficheros
+ por el puerto 3331.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Fichero
+\series default
+, 
+\series bold
+Disco
+\series default
+ y 
+\series bold
+MD5
+\series default
+: Su utilidad está destinada a mantener la gestión de los ficheros.
+ La clase 
+\series bold
+Fichero
+\series default
+ contiene la estructura necesaria para almacenar los datos que identifican
+ los ficheros compartidos.
+ La clase 
+\series bold
+Disco
+\series default
+ se encarga de dar soporte a la persistencia de los ficheros que están físicamen
+te en el directorio local.
+ 
+\series bold
+MD5
+\series default
+ es una clase de soporte para calcular los hash del contenido de los ficheros
+ para determinar su validez o si se han producido cambios.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+GUI
+\series default
+: Implementación de la interfaz gráfica.
+\end_layout
+
+\begin_layout Section
+Organización del código fuente
+\end_layout
+
+\begin_layout Standard
+Todas las clases de la aplicación están contenidas en el paquete 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+texttt{atory}
+\end_layout
+
+\end_inset
+
+.
+ Dentro de éste se diferencian los tres módulos principales en los paquetes
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+texttt{atory.gui}
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+texttt{atory.xml}
+\end_layout
+
+\end_inset
+
+ y 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+texttt{atory.net}
+\end_layout
+
+\end_inset
+
+.
+ Las clases del controlador se encuentran en el paquete base salvo la parte
+ de gestión del sistema de ficheros local que se encuentran 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+texttt{atory.fs}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Debido a algunas incidencias durante el diseño se concluyó programando las
+ clases más importantes de forma 
+\begin_inset Quotes eld
+\end_inset
+
+estática
+\begin_inset Quotes erd
+\end_inset
+
+ puesto que las interacciones entre módulos acabaron siendo complejas.
+ Inicialmente se pensaba enlazar las instancias de cada clase con el resto
+ pero presentaba problemas en la inicialización.
+ Posteriormente se planteó la aplicabilidad del patrón 
+\emph on
+singleton
+\emph default
+.
+ La decisión final fue alejarse un poco del paradigma de orientación a objetos
+ enfocando hacia un estilo más procedural.
+\end_layout
+
+\begin_layout Standard
+El sistema de generación de ficheros binarios se basa en la herramienta
+ 
+\emph on
+GNU Make
+\emph default
+, de esta forma eliminamos diversas dependencias externas y no nos atamos
+ a ningún entorno de desarrollo.
+ Desafortunadamente, únicamente es posible compilar en plataformas Unix
+ lo cual no supuso inconveniente pues la mayoría de copias de trabajo desde
+ las que se desarrollaba se encontraban en las plataformas adecuadas
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Por ejemplo, en los ordenadores del LCFIB.
+\end_layout
+
+\end_inset
+
+.
+ Hubo un intento de adaptar estos 
+\emph on
+Makefiles
+\emph default
+ con la posibilidad de compilar en sistemas 
+\emph on
+win32
+\emph default
+ con la ayuda de 
+\begin_inset LatexCommand \htmlurl[GNU utilities for win32]{http://unxutils.sourceforge.net}
+
+\end_inset
+
+; no obstante, surgieron ciertas complicaciones que podrían restar esfuerzo
+ humano de la tarea de desarrollo y en esos momentos ya existía retraso
+ en la planificación.
+\end_layout
+
+\begin_layout Standard
+A partir de aquí, la documentación está incluída en el mismo código fuente.
+\end_layout
+
+\begin_layout Chapter
+Diseño de pruebas
+\end_layout
+
+\begin_layout Standard
+En este capítulo vamos a comentar el tipo de pruebas que hemos pensado realizar
+ sobre nuestro programa.
+ Ésto pretende ser un patrón a seguir en espera de poder realizar las pruebas
+ sobre el producto completamente acabado.
+ Lo dividiremos de la siguiente forma: primero de todo, unos testeos básicos
+ para comprobar que las funcionalidades más simples funcionen de la manera
+ esperada.
+ Seguidamente, pruebas ya no referidas tanto a la funcionalidad, sino más
+ guiadas a someter la aplicación a casos límite.
+\end_layout
+
+\begin_layout Section
+Pruebas básicas
+\end_layout
+
+\begin_layout Subsection
+Transferencia de información
+\end_layout
+
+\begin_layout Standard
+Dividiremos este bloque en dos partes diferenciadas, una más orientada a
+ la conexión inicial del programa y otra a transferencia de información
+ por cambios realizados.
+\end_layout
+
+\begin_layout Itemize
+El primer bloque, como hemos dicho, consta de la conexión inicial del programa.
+ Controlar que el proceso de conexión a un peer de la red sea correcto y
+ se realicen las transferencias de información correctamente.
+ Ésto lleva a una prueba tanto de las clases encargadas de la conexión,
+ como las que hacen el tratamiento de la información.
+ 
+\end_layout
+
+\begin_layout Itemize
+El segundo bloque consta en hacer pruebas de cambios en el directorio compartido.
+ Colateralmente, un cambio local en un host, se tendrá que propagar hacia
+ los otros hosts de la red para que la información que se muestre no sea
+ inconsistente.
+ Ésto incluye, por una parte, la observación de desconexiones o de nuevas
+ conexiones en la red (una vez ya conectado) y, por otra, añadir, modificar
+ o eliminar cualquier fichero dentro de la carpeta compartida.
+ Por tanto, todo esto se tendrá que reflejar en la interfaz gráfica, primero
+ en la local, y luego una vez propagado el cambio, en los hosts remotos.
+\end_layout
+
+\begin_layout Subsection
+Transferencia de ficheros
+\end_layout
+
+\begin_layout Standard
+La primera de las pruebas a realizar en este apartado, es la básica: comprobar
+ que funciona correctamente la descarga de un fichero remoto a través de
+ una petición.
+ Los pasos a seguir son dos.
+ El primero consiste en ver si la petición es enviada y recibida correctamente.
+ El segundo, en verificar que el envío del fichero remoto solicitado sea
+ correcto.
+\end_layout
+
+\begin_layout Standard
+Tras esto, pasaremos a pruebas más comprometedoras.
+ 
+\end_layout
+
+\begin_layout Standard
+En primera instancia hay que asegurarse que se puede realizar más de una
+ recepción concurrentemente de una máquina.
+ A su vez se estará comprobando que una máquina puede enviar más de un archivo
+ en un instante de tiempo.
+\end_layout
+
+\begin_layout Standard
+Otra prueba interesante consiste en la recepción concurrente de máquinas
+ diferentes, sin que esto incurra en la corrupción de los archivos.
+\end_layout
+
+\begin_layout Section
+Pruebas de escalabilidad
+\end_layout
+
+\begin_layout Standard
+En esta sección se pondrá en tela de juicio la robustez del programa en
+ cuanto a términos de escalabilidad.
+\end_layout
+
+\begin_layout Standard
+Es importante puntualizar que el envío de datos de control en nuestra aplicación
+ tiene crecimiento 
+\begin_inset Formula $\Theta(n)$
+\end_inset
+
+, por lo que se espera que en un escenario con muchas máquinas y numerosos
+ envíos de modificaciones en los ficheros compartidos (bien por haber añadido
+ o eliminado archivos, o bien por un nuevo host conectado), el programa
+ no responderá a las necesidades de escalabilidad.
+\end_layout
+
+\begin_layout Standard
+Este tipo de pruebas serán hechas en los aularios del LCFIB por la noche,
+ para poder disponer de un grupo de máquinas suficiente.
+ 
+\end_layout
+
+\begin_layout Standard
+Partiremos de un número reducido de máquinas, el cual se irá incrementando
+ conforme se compruebe el funcionamiento del subconjunto base.
+\end_layout
+
+\begin_layout Chapter
+Gestión del proyecto
+\end_layout
+
+\begin_layout Standard
+Paralelamente al resto de las tareas, la supervisión del cumplimiento de
+ las tareas y la administración del repositorio suponen una parte crucial
+ en la correcta progresión de nuestro software.
+ Dichas tareas son importantes para mantener el equilibrio a lo largo del
+ tiempo.
+ De la parte de gestión del proyecto se diferencian tres etapas importantes:
+ preparación, seguimiento y finalización.
+\end_layout
+
+\begin_layout Standard
+En este capítulo vamos a contemplar, por encima, la gestión del repositorio.
+ A pesar de constituír una tarea diferente, inicialmente fue considerada
+ como parte del mismo paquete de trabajo que la planificación.
+\end_layout
+
+\begin_layout Section
+Planificación y supervisión
+\end_layout
+
+\begin_layout Standard
+Debido al gran abanico de posibilidades del que disponíamos para elegir
+ proyecto, añadido a la falta de coordinación en la toma de decisiones,
+ las tareas de planificación han sido las más perjudicadas.
+ El principal error fue una planificación demasiado optimista.
+ Por ejemplo, inicialmente teníamos una previsión de realizar tres prototipos
+ en cascada, es decir, todas las funcionalidades previstas repartidas en
+ tres fases claramente delimitadas; el resultado final ha sido un único
+ prototipo que implementa las funcionalidades más importantes del conjunto
+ inicial, descartando las demás por falta de tiempo.
+\end_layout
+
+\begin_layout Subsection
+Preparación
+\end_layout
+
+\begin_layout Standard
+La figura 
+\begin_inset LatexCommand \ref{fig:gantt_inicial}
+
+\end_inset
+
+ representa el diagrama de Gantt inicial.
+ Como ya hemos dicho, la idea original era seguir una metodología de desarrollo
+ basada en prototipos a los que se les van añadiendo funcionalidades tras
+ cada refinamiento marcado por un hito.
+ Por exigencias de tiempo el tercer prototipo añadiría menos funcionalidad
+ a la aplicación y pasaría a ser una versión 
+\begin_inset Quotes eld
+\end_inset
+
+madurada
+\begin_inset Quotes erd
+\end_inset
+
+ del programa.
+ Digamos que constituiría la transición entre prototipo (beta) y versión
+ final estable.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename gantt.png
+	lyxscale 25
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:gantt_inicial}
+
+\end_inset
+
+Diagrama de Gantt inicial.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para garantizar la calidad y el correcto funcionamiento de las características
+ implementadas, se iniciaba una tarea de diseño de juegos de pruebas y,
+ posteriormente, otra de pruebas ambas a un intervalo fijo tras el inicio
+ del desarrollo de dicho prototipo.
+ Los propósitos de las pruebas resultan evidentes, garantizar el buen funcionami
+ento de cada prototipo y así tener una base sólida sobre la que ampliar
+ el conjunto de funcionalidades.
+ Obviamente mantenemos los juegos de pruebas diseñados en prototipos anteriores
+ como tests de regresión.
+\end_layout
+
+\begin_layout Standard
+Además de los documentos relacionados con el proyecto en sí, también estaba
+ previsto el desarrollo de una documentación de usuario para ayudar en la
+ instalación y funcionamiento de 
+\emph on
+Atory
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+Seguimiento
+\end_layout
+
+\begin_layout Standard
+Siguiendo la línea de algunos de los grandes proyectos del software libre
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+En nuestro caso, KDE.
+\end_layout
+
+\end_inset
+
+, resultó atractivo cumplimentar los informes de seguimiento en forma de
+ 
+\emph on
+TODO List
+\emph default
+ dividia en tres secciones: tareas completadas, tareas en progreso y tareas
+ por hacer.
+ El primer problema que apareció para concretar el seguimiento fue la falta
+ de correspondencia entre tareas que aparecían en el informe de seguimiento
+ y las tareas programadas inicialmente en el diagrama de Gantt inicial.
+ Además, poco a poco estos informes fueron perdiendo dinamismo.
+\end_layout
+
+\begin_layout Standard
+Tras completar la fase de documentación inicial, en la que seleccionamos
+ las tecnologías que incorporaríamos a nuestro software, se comenzaron a
+ notar los imprevistos de planificación.
+ De ajustar las tareas para cumplir la planificación pasamos a alterar la
+ planificación para cumplir con las entregas.
+ Los factores importantes que distorsionaron la previsión de desarrollo
+ del proyecto fueron:
+\end_layout
+
+\begin_layout Itemize
+Falta de coordinación en el diseño.
+\end_layout
+
+\begin_layout Itemize
+Lagunas en la especificación del mismo diseño, lo cual supuso vueltas hacia
+ atrás en el desarrollo y retrasos importantes.
+\end_layout
+
+\begin_layout Itemize
+División difusa del trabajo.
+ Dependencias entre módulos de código impedían el progreso independiente
+ de cada uno
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Otra consecuencia de un diseño poco detallado.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Factores externos: exámenes parciales, prácticas de otras asignaturas, dificulta
+d para reunirnos todos juntos fuera de los horarios de clase, etc\SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout Standard
+Además de los desajustes
+\end_layout
+
+\begin_layout Subsection
+Finalización
+\end_layout
+
+\begin_layout Standard
+Tras sucumbir a las incidencias mencionadas, la planificación se acabó centrando
+ en un sólo prototipo cuyas funcionalidades se seleccionaron desde la union
+ de los tres prototipos iniciales (figura 
+\begin_inset LatexCommand \ref{fig:gantt_final}
+
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Ambos diagramas se adjuntan con este informe para facilitar su legibilidad.
+\end_layout
+
+\end_inset
+
+).
+ En consecuencia, las tareas asociadas de diseño de juegos de pruebas y
+ pruebas también se unieron en una sola, respectivamente.
+ Como se puede observar, además, quedaron desplazadas por completo hasta
+ el final puesto que la integración de los módulos, a lo largo del desarrollo,
+ provocaron ciertos retrasos en el inicio de la ejecución de las pruebas.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename gantt_final.png
+	lyxscale 25
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:gantt_final}
+
+\end_inset
+
+Diagrama de Gantt final.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Una dificultad añadida al ajuste final del Gantt fue que al comienzo del
+ retraso del primer prototipo se cayó en el clásico error de inveritr más
+ esfuerzo humano en la tarea que retrasaba el proyecto, lo que en parte
+ fue causante de los cambios en el diseño que, a su vez, produjeron más
+ retrasos.
+ En ese punto los roles comenzaron a intercambiarse de forma menos supervisada
+ por lo que se decidió dejar las tareas sin recursos asignados pues resultaba
+ extremadamente difícil y no resultaría útil artificiar los datos.
+\end_layout
+
+\begin_layout Standard
+También se eliminó completamente la tarea de documentación de usuario por
+ todos los motivos ya comentados.
+ En su lugar se han contemplado otras tareas de documentación que no aparecen
+ en el Gantt inicial.
+ Las únicas tareas que se han mantenido inamovibles dentro de la planificación
+ han sido, curiosamente, las tareas de supervisión y seguimiento.
+\end_layout
+
+\begin_layout Section
+Administración del repositorio
+\end_layout
+
+\begin_layout Standard
+A pesar de no tener demasiada relación, las tareas de administración del
+ repositorio CVS han ido ligadas a todo el progreso del proyecto puesto
+ que constitutía el soporte para todo el desarrollo.
+ En él se ha respaldado tanto el código fuente como la documentación importante.
+ Tal y como muestra el Gantt se dedicó una tarea a la configuración del
+ repositorio.
+\end_layout
+
+\begin_layout Standard
+Se han dedicado algunas horas de adiestramiento para algunos de los componentes
+ del grupo de cara a usar los clientes CVS tanto en plataformas Unix como
+ en 
+\emph on
+win32
+\emph default
+.
+ Ya que han sido horas muy esporádicas, encajan perfectamente como parte
+ de la tarea de seguimiento, así como el resto de tareas de mantenimiento
+ del repositorio.
+\end_layout
+
+\begin_layout Chapter
+Conclusiones
+\end_layout
+
+\begin_layout Standard
+Aquí acaba la memoria de nuestro proyecto.
+ Pero no queremos despedirnos sin hacer una reflexión de todo lo que nos
+ ha aportado esta experiencia.
+ También consideramos interesante lanzar una mirada crítica hacia el programa,
+ incluyendo un apartado de futuras mejoras.
+\end_layout
+
+\begin_layout Subsubsection*
+El proyecto
+\end_layout
+
+\begin_layout Standard
+Este no es el primer proyecto que realizamos en la carrera, sin embargo,
+ nos hemos dado cuenta de que el nivel de exigencia conforme nos vamos acercando
+ al PFC va aumentando.
+ En este proyecto hemos tenido que cuidar más detalles de planificación,
+ búsqueda de información y, en especial, de documentación.
+\end_layout
+
+\begin_layout Standard
+La falta de precisión en la planificación nos ha llevado a tener que atrasar
+ prototipos del programa que nos habíamos fijado para una fecha concreta.
+ Al ser un proyecto del cual teníamos que partir de cero se nos hizo muy
+ cuesta arriba la primera parte.
+ Además en nuestra mente teníamos un objetivo demasiado ambicioso como para
+ realizarlo en poco tiempo.
+\end_layout
+
+\begin_layout Standard
+La parte que más conflictos nos dio fue el diseño del protocolo de comunicación,
+ ya que no era trivial y había diversidad de opiniones que debían converger.
+ Este tipo de situaciones son propias de trabajos en grupo y ponen a prueba
+ nuestra capacidad de diálogo.
+\end_layout
+
+\begin_layout Subsubsection*
+Atory
+\end_layout
+
+\begin_layout Standard
+El punto débil de nuestro programa es la baja escalabilidad que implica
+ el envío de mensajes en la red, puesto que éste es del orden de n (donde
+ n es el número de hosts conectados).
+ Sin embargo, como la escalabilidad no era nuestro objetivo primordial puede
+ pasar a ser un mal menor.
+\end_layout
+
+\begin_layout Standard
+El uso de sockets de Unix en la transferencia entre máquinas puede resultar
+ para algunos un tanto chocante, habiendo hoy en día tanta diversidad de
+ tecnologías (como RMI, WebServices, ...).
+ No obstante, factores como la libertad en la plataforma o la velocidad
+ de la aplicación fueron determinantes para nuestra decisión, aunque podría
+ ser discutibles.
+\end_layout
+
+\begin_layout Standard
+Por otra parte, hemos alcanzado el objetivo propuesto de implementar en
+ un corto espacio de tiempo un sistema que permitiera una compartición de
+ ficheros transparente.
+ Admitimos que las limitaciones del programas son varias; es por ello, que
+ hemos definido en la sección de trabajo futuro una serie de puntos para
+ sacar una nueva versión del programa mejorada.
+\end_layout
+
+\begin_layout Subsubsection*
+Trabajo futuro
+\end_layout
+
+\begin_layout Itemize
+Conexión de redes mediante super peers.
+ Esto implica poder conectar redes pequeñas entre sí (a través de estos
+ super peers), y así limitar la carga de trabajo hacia un host en el momento
+ de mandar un mensaje.
+ Este método también ayuda a poder evitar firewalls y proporcionar una mayor
+ conectividad.
+\end_layout
+
+\begin_layout Itemize
+La definición de listas de control de acceso sigue en mente como método
+ de control de permisos.
+\end_layout
+
+\begin_layout Itemize
+Mejoras en la interfaz gráfica.
+\end_layout
+
+\begin_layout Itemize
+Scripts de instalación automática.
+\end_layout
+
+\begin_layout Chapter
+\start_of_appendix
+Resultados de las pruebas
+\end_layout
+
+\begin_layout Standard
+En base al diseño de las pruebas del capítulo sexto se han optenido una
+ serie de resultados que se comentarán a continuación.
+\end_layout
+
+\begin_layout Section
+Pruebas básicas
+\end_layout
+
+\begin_layout Subsection
+Transferencia de información
+\end_layout
+
+\begin_layout Standard
+Como se pudo ver en la demostración del programa realizada, los peers son
+ capaces de conectarse satisfactoriamente al peer que elijan como servidor
+ de conexión.
+\end_layout
+
+\begin_layout Standard
+Los cambios que también se pudieron ver en la demo en relación al directorio
+ compartido, fueron:
+\end_layout
+
+\begin_layout Itemize
+Al añadir o borrar ficheros en la carpeta compartida local y sincronizar,
+ los hosts de la red ven los cambios.
+\end_layout
+
+\begin_layout Itemize
+Al conectarse o desconectarse un host se verán los cambios pertinentes,
+ es decir, la incorporación de nuevos ficheros o su disminución.
+\end_layout
+
+\begin_layout Itemize
+Al descargarse un fichero un host, lo verá transformarse de remoto a local.
+\end_layout
+
+\begin_layout Subsection
+Transferencia de ficheros
+\end_layout
+
+\begin_layout Standard
+Para verificar que la transferencia de un archivo ha sido correcta se tendrá
+ que comprobar que el fichero transferido satisface el MD5 checksum, lo
+ cual es comprobado automáticamente por el programa.
+\end_layout
+
+\begin_layout Standard
+También se han realizado las pruebas que verifican el envío y recepción
+ concurrentes.
+ Esto se realizó enviando y recibiendo dos archivos de gran tamaño (un archivo
+ de 67 MB y otro de 4 MB) entre dos máquinas.
+\end_layout
+
+\begin_layout Standard
+El último test de este apartado repetir los pasos anteriores pero esta vez
+ enviando los dos archivos desde máquinas diferentes.
+\end_layout
+
+\begin_layout Section
+Pruebas de escalabilidad
+\end_layout
+
+\begin_layout Standard
+Los resultados obtenidos no han sido los que esperábamos en un principio.
+ Se ha probado la escalabilidad del programa en un aula del LCFIB con 13
+ pc's a las 23 horas para evitar tráfico ajeno.
+\end_layout
+
+\begin_layout Standard
+La primera de las pruebas (figura 
+\begin_inset LatexCommand \ref{fig:escalabilidad1}
+
+\end_inset
+
+) se ha realizado con tres archivos para toda la red que sólo tenía un host,
+ el cual se iba conectando y desconectando a una red cuyo número de nodos
+ se iba incrementando.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename grafesc1.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:escalabilidad1}
+
+\end_inset
+
+Gráfico de escalabilidad con pocos ficheros.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La segunda gráfica (figura 
+\begin_inset LatexCommand \ref{fig:escalabilidad2}
+
+\end_inset
+
+) representa exactamente la misma prueba anterior pero con la diferencia
+ de que esta vez la lista de archivos que se envía por la red tiene un tamaño
+ mayor (concretamente 100 archivos).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename grafesc2.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+\begin_inset LatexCommand \label{fig:escalabilidad2}
+
+\end_inset
+
+Gráfico de escalabilidad con muchos ficheros.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Conclusiones:
+\end_layout
+
+\begin_layout Itemize
+El número de máquinas utilizadas no ha sido suficiente.
+\end_layout
+
+\begin_layout Itemize
+La red, que era una fast ethernet, no se prestaba a este tipo de estudios
+ por su baja latencia de transmisión en comparación con el tráfico generado.
+\end_layout
+
+\begin_layout Itemize
+Al ser un programa que corre sobre la máquina virtual de Java es difícil
+ controlar cómo y cuándo realiza los accesos al sistema operativo para realizar
+ la E/S, y así obtener unos resultados fiables.
+ Esto se debe a que el SO puede hacer buffering en la E/S, así como la propia
+ JVM (aunque esto último es poco probable).
+\end_layout
+
+\begin_layout Chapter
+Protocolo Atory
+\end_layout
+
+\begin_layout Standard
+A continuación mostramos los mensajes XML que se transfieren por el canal
+ de control:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Descripción:
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+ Inicia el proceso de conexión de un nuevo peer.
+ Lo envia el peer que se une a la red a un peer determinado ya conectado.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<NewConnection>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</NewConnection>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Lista hosts:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia al host que ha iniciado un proceso de conexión pasándole el listado
+ de todas las IPs conectadas a la red.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<HostsList>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</HostsList>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Lista ficheros:
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+ Se envia al host que ha iniciado un proceso de conexión pasándole el listado
+ de los ficheros compartidos.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<FilesList>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+juas.jpg
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+d2f4125\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+56
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+memuero.txt
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+ca2345\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+28
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</FilesList>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Añadir host:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+El host que ha iniciado un proceso de conexión envia a cada peer su IP.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<AddHost>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</AddHost>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Eliminar host:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Cuando un host se desconecta, envia este mensaje a cada peer para indicar
+ que ha abandonado la red.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<DelHost>
+\end_layout
+
+\begin_layout LyX-Code
+  <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+</DelHost>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Añadir ficheros:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Cuando un host se conecta, o añade un nuevo fichero a su carpeta local,
+ se manda este mensaje a cada uno de los peers indicando los nuevos ficheros
+ que pasan a compartirse.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<AddFiles>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+jander.mp3
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+33ddf190\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+1123
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+  \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</AddFiles>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+Eliminar ficheros:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia a cada peer cuando un host elimina un fichero de su carpeta local.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<DelFiles>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+jander.mp3
+\begin_inset Quotes erd
+\end_inset
+
+ md5=
+\begin_inset Quotes erd
+\end_inset
+
+33ddf190\SpecialChar \ldots{}
+
+\begin_inset Quotes erd
+\end_inset
+
+ size=
+\begin_inset Quotes erd
+\end_inset
+
+1123
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+    \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout LyX-Code
+</DelFiles>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+\emph on
+Request
+\emph default
+ fichero:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Se envia a un peer determinado cuando se requiere un fichero suyo.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<ReqFile>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+ewane.mpg
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+</ReqFile>
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+\emph on
+Request secure
+\emph default
+ fichero:
+\series default
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Igual que el anterior però la transferencia se realiza encriptada.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+<ReqSecureFile>
+\end_layout
+
+\begin_layout LyX-Code
+  <File name=
+\begin_inset Quotes erd
+\end_inset
+
+ewane.mpg
+\begin_inset Quotes erd
+\end_inset
+
+>
+\end_layout
+
+\begin_layout LyX-Code
+    <host> \SpecialChar \ldots{}
+ </host>
+\end_layout
+
+\begin_layout LyX-Code
+  </File>
+\end_layout
+
+\begin_layout LyX-Code
+</ReqSecureFile>
+\end_layout
+
+\end_deeper
+\begin_layout Chapter
+Horas de trabajo
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename horas.png
+	width 100line%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Caption
+Horas de trabajo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset LatexCommand \bibtex[bibtotoc,plain]{atory}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

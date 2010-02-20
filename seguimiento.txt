@@ -1,0 +1,24 @@
+                             INFORME DE SEGUIMIENTO
+                             ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+Completado:
+
+- Primer prototipo. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Memoria del documento. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Pruebas para verificar el funcionamiento del prototipo.
+  [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Pruebas de escalabilidad. [Cecilia, Daniel, Isaac, Ivan, Sergi]
+- Correcciones estéticas en la interfaz gráfica. [Cecilia]
+- Guión para la demostración ante el profesor. [Daniel, Ivan, Sergi]]
+
+
+En progreso:
+
+- Empaquetado final y envío al BSCW. [Isaac]
+
+
+Por hacer:
+
+
+$Revision$
+

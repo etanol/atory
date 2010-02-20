@@ -1,0 +1,87 @@
+#! /bin/sh
+
+# pack - Script para empaquetar.
+#
+# $Revision$
+
+# Globales
+SYSDEPS_DIR='../sysdeps'
+LIB_DIR='../lib'
+SCRIPTS_DIR='..'
+
+if [ $# -eq 0 ]; then
+    echo 'Seleccione sistema operativo:'
+    echo '    - GNU/Linux (i386) [clave: linux]'
+    echo '    - Mac OS X         [clave: osx]'
+    echo '    - Hasefroch        [clave: hase]'
+    echo ''
+    echo -n 'Introduzca clave: '
+    read key
+else
+    key=$1
+fi
+
+ssl_files='c-cacerts.jks keystore'
+
+case "$key" in
+    linux) # Entorno para Linux
+        package_dir='linux_package'
+        package_name='atory_lin'
+        inst_script='linux_install.sh'
+        swt_jar='swt.jar'
+        sysdeps='libcairo.so.1 libswt-atk-gtk-3139.so libswt-awt-gtk-3139.so libswt-cairo-gtk-3139.so libswt-gnome-gtk-3139.so libswt-gtk-3139.so libswt-mozilla-gtk-3139.so libswt-pi-gtk-3139.so'
+        ;;
+    osx) # Entorno para OSX
+        exit 2
+        ;;
+    hase)
+        # Entorno para Hasefroch
+        package_dir='win_package'
+        package_name='atory_win'
+        inst_script='*.vbs'
+        swt_jar='swt_win32.jar'
+        sysdeps='javaw.exe.manifest swt-awt-win32-3139.dll swt-gdip-win32-3139.dll swt-win32-3139.dll'
+        ;;
+    *)
+        echo 'ERROR: Clave no reconocida'
+        exit 4
+        ;;
+esac
+
+#
+# Preparar directorios
+#
+dir="$package_dir/atory"
+test -d $dir || mkdir -p $dir
+
+#
+# Generar atory.jar
+#
+tmplist="/tmp/pkg_atory-$$"
+find atory '(' -name '*.class' -or -name '*.png' ')' -print >$tmplist
+jar cvf atory.jar `cat $tmplist`
+mv -v atory.jar $dir
+rm -f $tmplist
+
+#
+# Copiar los ficheros necesarios, sólo si hace falta
+#
+cp -vu $SCRIPTS_DIR/$inst_script $dir
+cp -vu $SCRIPTS_DIR/shishimaru.png $dir
+cp -vu $LIB_DIR/xpp3-1.1.3_7.jar $dir
+cp -vu $LIB_DIR/$swt_jar $dir/swt.jar
+
+for i in $sysdeps; do
+    cp -vu $SYSDEPS_DIR/$i $dir
+done
+
+for i in $ssl_files; do
+    cp -vu $SCRIPTS_DIR/$i $dir
+done
+
+#
+# Hacer el .ZIP
+#
+cd $package_dir
+zip -r9 $package_name.zip atory
+
